@@ -1,0 +1,30 @@
+% Common standalone PDF wrapper. Run latexmk from this directory.
+\documentclass{article}
+\usepackage[paperwidth=\FigureWidth,paperheight=\FigureHeight,margin=0pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\input{../figure-data.tex}
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{RadarNavy}{HTML}{12233F}
+\definecolor{RadarInk}{HTML}{243247}
+\definecolor{RadarMuted}{HTML}{5C6B80}
+\definecolor{RadarBlue}{HTML}{2563EB}
+\definecolor{RadarSky}{HTML}{EAF1FF}
+\definecolor{RadarTeal}{HTML}{0F766E}
+\definecolor{RadarPaleTeal}{HTML}{E7F3F1}
+\definecolor{RadarAmber}{HTML}{E99210}
+\definecolor{RadarPaleAmber}{HTML}{FFF4DC}
+\definecolor{RadarRule}{HTML}{D7DFEA}
+\definecolor{RadarTrack}{HTML}{EFF3F8}
+\definecolor{RadarPurple}{HTML}{7C3AED}
+\definecolor{RadarCyan}{HTML}{14919B}
+\definecolor{RadarGray}{HTML}{94A3B8}
+\newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\begin{document}
+\null
+\begin{tikzpicture}[remember picture,overlay,shift={(current page.south west)},
+  x=1bp,y=1bp,every node/.style={inner sep=0pt,text=RadarInk,font=\sffamily\fontsize{8}{10}\selectfont}]

@@ -1,0 +1,21 @@
+\def\FigureWidth{492bp}
+\def\FigureHeight{159bp}
+\input{figure-style.tex}
+\newcommand{\SourceBar}[3]{%
+  \pgfmathsetmacro{\barY}{145-23*#1}
+  \pgfmathsetmacro{\barWidth}{(#3/\ReportSourceMaximum)*315}
+  \ifcase#1\def\barColor{RadarBlue}\or\def\barColor{RadarTeal}\or
+    \def\barColor{RadarAmber}\or\def\barColor{RadarPurple}\or
+    \def\barColor{RadarCyan}\else\def\barColor{RadarGray}\fi
+  \node[anchor=west,font=\sffamily\fontsize{7.5}{9}\selectfont] at (2,\barY) {#2};
+  \fill[RadarTrack] (115.5,\barY-4.5) rectangle +(315,9);
+  % Rectangles keep zero at the same origin and bar length proportional to count.
+  \fill[\barColor] (115.5,\barY-4.5) rectangle +(\barWidth,9);
+  \node[anchor=east,font=\sffamily\bfseries\fontsize{7.4}{9}\selectfont]
+    at (489,\barY) {\ReportNumber{#3}};
+}
+\ReportSourceBars
+\node[text=RadarMuted,font=\sffamily\itshape\fontsize{6.9}{9}\selectfont] at (246,7)
+  {\ReportNumber{\ReportObservationCount} cumulative source observations through \ReportDataCutoff};
+\end{tikzpicture}
+\end{document}

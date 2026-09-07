@@ -1,33 +1,45 @@
-# Build the Benchmark Radar technical report.
-#
-#   make        -> main.pdf
-#   make arxiv  -> arxiv.tar.gz, the self-contained arXiv upload
-#   make clean  -> remove build intermediates
-
+# Build the manuscript and native TikZ figures from dated TeX inputs.
 LATEXMK ?= latexmk
-
-# Use-case screenshots are shared with the rest of the repository, so the source
-# tree keeps one copy and the arXiv target stages a flat build directory.
+PYTHON ?= python3
 SHARED_FIGURES := ../../../assets/use-case-492
+FIGURE_NAMES := cover-metrics pipeline-evaluation search-surface source-composition
+FIGURE_PDFS := $(addprefix figures/,$(addsuffix .pdf,$(FIGURE_NAMES)))
+FIGURE_SOURCES := $(addprefix figures/,$(addsuffix .tex,$(FIGURE_NAMES)))
 
-.PHONY: all arxiv clean
+.PHONY: all figures refresh-figure-data check-figure-data arxiv clean
 
 all: main.pdf
 
-main.pdf: main.tex references.bib $(wildcard figures/*) $(wildcard $(SHARED_FIGURES)/*)
-	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
+figures: $(FIGURE_PDFS)
 
-# arXiv runs no BibTeX pass, so the upload ships the built main.bbl. Every figure
-# is flattened into figures/ because the shared path does not exist upstream.
+figures/%.pdf: figures/%.tex figures/figure-style.tex figure-data.tex Makefile
+	cd figures && $(LATEXMK) -g -pdf -interaction=nonstopmode -halt-on-error $*.tex
+
+main.pdf: main.tex references.bib figure-data.tex $(FIGURE_PDFS) figures/abstract_overview.png $(wildcard $(SHARED_FIGURES)/*) Makefile
+	$(LATEXMK) -g -pdf -interaction=nonstopmode -halt-on-error main.tex
+
+# Explicit refresh only: first rebuild and audit the corpus from the repo root.
+# Normal TeX builds use the checked-in snapshot and need no Python or live data.
+refresh-figure-data:
+	$(PYTHON) ../../../scripts/export_report_figure_data.py
+
+check-figure-data:
+	$(PYTHON) ../../../scripts/export_report_figure_data.py --check
+
+# arXiv runs no BibTeX pass. Ship main.bbl, the dated numbers, native drawings,
+# and finished figures; shared screenshots are flattened into figures/.
 arxiv: main.pdf
+	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
 	rm -rf build/arxiv
 	mkdir -p build/arxiv/figures
-	cp main.tex main.bbl build/arxiv/
-	cp figures/* $(SHARED_FIGURES)/* build/arxiv/figures/
+	cp main.tex main.bbl figure-data.tex build/arxiv/
+	cp $(FIGURE_PDFS) $(FIGURE_SOURCES) figures/figure-style.tex figures/*.png $(SHARED_FIGURES)/*.png build/arxiv/figures/
 	sed -i.bak 's|{{figures/}{$(SHARED_FIGURES)/}}|{{figures/}}|' build/arxiv/main.tex
 	rm -f build/arxiv/main.tex.bak
 	tar -czf arxiv.tar.gz -C build/arxiv .
 
+# Keep tracked PDFs; remove only intermediates and the upload staging area.
 clean:
-	$(LATEXMK) -C
+	$(LATEXMK) -c main.tex
+	cd figures && $(LATEXMK) -c $(addsuffix .tex,$(FIGURE_NAMES))
 	rm -rf build arxiv.tar.gz
