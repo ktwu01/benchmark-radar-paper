@@ -6,17 +6,28 @@
 
 LATEXMK ?= latexmk
 
+# Use-case screenshots are shared with the rest of the repository, so the source
+# tree keeps one copy and the arXiv target stages a flat build directory.
+SHARED_FIGURES := ../../../assets/use-case-492
+
 .PHONY: all arxiv clean
 
 all: main.pdf
 
-main.pdf: main.tex references.bib $(wildcard figures/*)
+main.pdf: main.tex references.bib $(wildcard figures/*) $(wildcard $(SHARED_FIGURES)/*)
 	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
 
-# arXiv runs no BibTeX pass, so the upload ships the built main.bbl.
+# arXiv runs no BibTeX pass, so the upload ships the built main.bbl. Every figure
+# is flattened into figures/ because the shared path does not exist upstream.
 arxiv: main.pdf
-	tar -czf arxiv.tar.gz main.tex main.bbl figures
+	rm -rf build/arxiv
+	mkdir -p build/arxiv/figures
+	cp main.tex main.bbl build/arxiv/
+	cp figures/* $(SHARED_FIGURES)/* build/arxiv/figures/
+	sed -i.bak 's|{{figures/}{$(SHARED_FIGURES)/}}|{{figures/}}|' build/arxiv/main.tex
+	rm -f build/arxiv/main.tex.bak
+	tar -czf arxiv.tar.gz -C build/arxiv .
 
 clean:
 	$(LATEXMK) -C
-	rm -f arxiv.tar.gz
+	rm -rf build arxiv.tar.gz

@@ -41,7 +41,7 @@
 \newcommand{\datacutoff}{2026-09-06}
 \newcommand{\gitcommit}{76a6180}
 \newcommand{\doi}{10.5281/zenodo.22167102}
-\graphicspath{{figures/}}
+\graphicspath{{figures/}{../../../assets/use-case-492/}}
 
 \title{\textbf{Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research}}
 \author{Koutian Wu$^{1,2}$ \footnote{\small $^*$Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^4$ \quad Ergan Shang$^3$ \quad Jiayu Wang $^5$ \quad Pengqian Han$^6$\\[0.35em]
@@ -86,7 +86,7 @@ Benchmark Radar addresses this discovery problem. Rather than proposing another 
 
 \subsection{System Overview}
 
-Benchmark Radar is designed around the information needs of benchmark readers, model developers, and evaluation researchers. Instead of treating benchmark discovery as a single leaderboard query, the system separates several practical questions: what has appeared recently, which records match a task or benchmark name, which benchmarks are adopted in model-card documents, which numeric scores are protocol-comparable, and whether the same evidence can be queried outside the web dashboard. Table~\ref{tab:reader-questions} summarizes these researchers' questions and the corresponding access surfaces.
+Benchmark Radar adapts the multi-source daily-briefing pattern of BuilderPulse, an AI-powered daily intelligence project that answers a fixed question set from more than ten sources each morning \citep{builderpulse}, to benchmark discovery, normalized catalog search, and score history. Benchmark Radar is designed around the information needs of benchmark readers, model developers, and evaluation researchers. Instead of treating benchmark discovery as a single leaderboard query, the system separates several practical questions: what has appeared recently, which records match a task or benchmark name, which benchmarks are adopted in model-card documents, which numeric scores are protocol-comparable, and whether the same evidence can be queried outside the web dashboard. Table~\ref{tab:reader-questions} summarizes these researchers' questions and the corresponding access surfaces.
 
 \begin{table}[htbp]
 \centering
@@ -129,7 +129,7 @@ As an example of the results after using Benchmark Radar, the current cutoff run
 \label{fig:pipeline}
 \end{figure}
 
-The pipeline provides five operational capabilities. Reproducibility is supported by snapshots, schemas, parser versions, payload hashes, and deterministic rebuilds. Reliability is handled through a required-source gate, visible optional-source failures, and atomic client activation. Identity resolution uses exact anchors and reviewed external groups rather than title-only merging. The dashboard, command-line client, and HTTP interface share the same query service and JSON data contract. Verification is supported by a clean rebuild and 1,028 passing tests. The remaining gaps are discussed in Section~\ref{sec:caveat-future-work}.
+The pipeline provides five operational capabilities. Reproducibility is supported by snapshots, schemas, parser versions, payload hashes, and deterministic rebuilds. Reliability is handled through a required-source gate, visible optional-source failures, and atomic client activation. Identity resolution uses exact anchors and reviewed external groups rather than title-only merging. The dashboard, command-line client, and HTTP interface share the same query service and JSON data contract. Verification is supported by a clean rebuild and 1,236 passing tests. The remaining gaps are discussed in Section~\ref{sec:caveat-future-work}.
 
 \subsection{Identity, Ranking, and Search}
 
@@ -160,6 +160,7 @@ Search box & 1,259 & Unified query surface across all four layers, with source l
 In addition to artifact discovery, Benchmark Radar curates benchmark mentions and numeric scores from model-card and system-description documents \citep{mitchell2019modelcards}. The current curated snapshot includes 37 model documents from 12 organizations. These documents mention 110 canonical adoption benchmarks. When a document contains an interpretable numeric value and sufficient evaluation context, the curation layer records the score with instrument and protocol fields such as evaluation setup, shots, tool access, attempts, and evaluator when available. This stricter layer produced 322 scores across 86 benchmark tracks. Aggregator scores remain outside the curated progression unless they can be connected to a comparable protocol \citep{gebru2021datasheets,mitchell2019modelcards}.
 
 \section{Results}
+\label{sec:results}
 
 \subsection{Coverage at the Cutoff}
 
@@ -319,9 +320,149 @@ Daily briefing & Triage notes with citations and source-health context. & Each e
 \label{tab:internal-supporting-documents}
 \end{table}
 
+\section{Protocol-Controlled Saturation Audit}
+\label{app:saturation-audit}
+
+Section~\ref{sec:results} reports that eight bounded metrics sit within five points of their ceiling. This appendix gives the protocol controls behind that statement, because a raw best value and a repeat-controlled value answer different questions.
+
+\emph{Raw headroom} is the distance from the single highest reported value to the metric bound. \emph{Repeat-controlled headroom} uses only the closest series whose instrument and protocol are identical across at least two dates. Scores are grouped into a stratum solely when instrument and protocol match; differences in attempts, tool access, reasoning budget, judge, or temporal split keep readings in separate strata. Two dates support a paired comparison, not a field-wide trend.
+
+All 8 raw best readings come from a setup that appears on a single date. 4 of the eight benchmarks have a different setup repeated across dates, and each of those repeated setups is a two-date, single-organization pair. The remaining 4 have no repeated setup at all, so their headroom cannot be assessed under repeat control.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.20\textwidth}rrrL{0.16\textwidth}l}
+\toprule
+\textbf{Benchmark} & \textbf{Raw best} & \textbf{Raw gap} & \textbf{Repeat gap} & \textbf{Repeated setup} & \textbf{Claim}\\
+\midrule
+AIME & 99.2 & 0.8 & 20.2 & 2 dates, 1 org & replace\\
+Arena-Hard & 95.6 & 4.4 & 7.7 & 2 dates, 1 org & replace\\
+DeepSearchQA & 95 & 5 & n/a & none & qualify\\
+HMMT & 96.9 & 3.1 & 4.8 & 2 dates, 1 org & qualify\\
+MATH-500 & 98 & 2 & n/a & none & qualify\\
+MathVision & 97.8 & 2.2 & n/a & none & qualify\\
+SWE-bench Verified & 96 & 4 & 19.4 & 2 dates, 1 org & replace\\
+tau2-bench & 99.3 & 0.7 & n/a & none & qualify\\
+\bottomrule
+\end{tabularx}
+\caption{Raw and repeat-controlled headroom for the eight near-ceiling benchmarks. \emph{Claim} is the recommended wording change: \texttt{qualify} where repeated evidence is missing, \texttt{replace} where a repeated setup exists but falls outside the five-point threshold.}
+\label{tab:saturation-audit}
+\end{table}
+
+Sensitivity to the threshold shows why the raw and repeat-controlled readings should not be reported interchangeably. Benchmarks with no repeated setup are excluded from the eligible denominator rather than counted as negatives, since an unknown is not evidence of headroom.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Threshold} & \textbf{Raw readings} & \textbf{Repeated setups}\\
+\midrule
+$\leq$5 & 8 / 8 & 1 / 4 (4 unknown)\\
+$\leq$3 & 4 / 8 & 0 / 4 (4 unknown)\\
+$\leq$2 & 3 / 8 & 0 / 4 (4 unknown)\\
+\bottomrule
+\end{tabular}
+\caption{Threshold sensitivity for raw and repeat-controlled headroom.}
+\label{tab:saturation-sensitivity}
+\end{table}
+
+No raw-best setup qualifies as repeat-controlled. The audit therefore supports protocol-specific headroom statements only, and the per-benchmark wording below is the form each claim should take.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{L{0.15\textwidth}Y}
+\toprule
+\textbf{Benchmark} & \textbf{Recommended wording}\\
+\midrule
+AIME & AIME's 99.2 raw best leaves 0.8 points of headroom under the AIME 2026, temp 1.0, top\_p 0.95, max gen 163840 tokens, GPT-5.5 (medium) judge setup, but that setup appears on one date. The closest repeated setup leaves 20.2 points, outside the five-point threshold.\\
+Arena-Hard & Arena-Hard's 95.6 raw best leaves 4.4 points of headroom under the thinking mode setup, but that setup appears on one date. The closest repeated setup leaves 7.7 points, outside the five-point threshold.\\
+DeepSearchQA & DeepSearchQA's 95 result leaves 5 points of headroom under the F1, reasoning=max setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
+HMMT & HMMT's raw best is an isolated 96.9 result. A separate think max, pass@1 setup spans 2 dates from 1 organization and leaves 4.8 points of headroom. This supports a protocol-specific paired comparison.\\
+MATH-500 & MATH-500's 98 result leaves 2 points of headroom under the thinking mode setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
+MathVision & MathVision's 97.8 result leaves 2.2 points of headroom under the reasoning=max, with Python setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
+SWE-bench Verified & SWE-bench Verified's 96 raw best leaves 4 points of headroom under the adaptive thinking, max effort, averaged over 5 trials setup, but that setup appears on one date. The closest repeated setup leaves 19.4 points, outside the five-point threshold.\\
+tau2-bench & tau2-bench's 99.3 result leaves 0.7 points of headroom under the Thinking (High), Telecom setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
+\bottomrule
+\end{tabularx}
+\caption{Per-benchmark claim wording supported by the protocol-controlled audit.}
+\label{tab:saturation-wording}
+\end{table}
+
+The audit is regenerated from \texttt{data/benchmark\_scores.yml} and \texttt{data/model\_cards.yml} with \texttt{python -m benchmark\_radar.saturation\_audit}, which writes \texttt{docs/technical-report/saturation-audit-6.2.json}. That file records every protocol stratum, score identifier, exclusion, and counterexample behind each row above.
+
+
+\section{Worked Use Case: Prior-Art Check for a New Evaluation}
+\label{app:use-case}
+
+This appendix records one contributor workflow in full. It documents how the system was used in practice; it is not a measured user study, and no timing or accuracy claim is made from it.
+
+The task was to decide whether a proposed new evaluation would duplicate existing work, a check that determines whether a benchmark design is still novel. The session ran during August 2026 and surveyed recent work on credit assignment in agentic training, holding small Qwen-series baselines as a reproducibility constraint. Comparing a candidate design against the field normally requires long manual searches, and completeness is difficult to guarantee.
+
+The contributor gave the task to a coding agent together with the public consumer prompt for Benchmark Radar. The agent installed the command-line client and the Benchmark Radar Skill, initialized the local corpus, and queried candidate records offline.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{agent-session.png}
+\caption{A coding agent follows the consumer setup prompt, installs the Benchmark Radar client and Skill, and runs local queries.}
+\label{fig:use-case-session}
+\end{figure}
+
+Because the index links one artifact across its paper, repository, release, and dataset records, the agent could see at a glance whether a candidate had been announced as a paper with no released code, or shipped as code without its dataset. Figures~\ref{fig:use-case-paper} and~\ref{fig:use-case-code} show the two cases side by side.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{artifact-status-paper.png}
+\caption{Consolidated sources and release status for one artifact.}
+\label{fig:use-case-paper}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{artifact-status-code.png}
+\caption{A companion record in which the code is public but the dataset is not yet released.}
+\label{fig:use-case-code}
+\end{figure}
+
+Benchmark Radar search is deterministic lexical matching, so the agent also ran its own web search and cross-checked the two candidate sets before accepting a record. This second pass is what keeps a differently worded version of the same idea from being missed, and it is the reason the search surface is described as a candidate retriever rather than a suitability judge.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{cross-validation.png}
+\caption{Cross-checking Benchmark Radar candidates against the agent's own web search before accepting a record.}
+\label{fig:use-case-cross}
+\end{figure}
+
+The session ended with a focused summary table of related work that the contributor judged complete enough to act on.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{survey-table.png}
+\caption{Summary table of recent work on credit assignment in agentic training, assembled during the session.}
+\label{fig:use-case-survey}
+\end{figure}
+
+The comparison point is the contributor's earlier benchmark, AARRI-Bench, whose equivalent prior-art review consumed effort second only to producing the benchmark data itself, for a table of twelve rows and seven columns.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{aarri-bench-manual-table.png}
+\caption{The manually assembled twelve-by-seven prior-art table for AARRI-Bench, the workflow this session shortened.}
+\label{fig:use-case-aarri}
+\end{figure}
+
+Four limits apply. Search is deterministic lexical matching rather than semantic retrieval, so a differently worded query can change the candidate set. The session combined the Benchmark Radar client with the agent's general web search, so it does not isolate the contribution of either. Repository and dataset availability is a snapshot, not a permanent label. And the case documents a single workflow rather than a controlled comparison. The full evidence, including the summary table and session screenshots, is public in issue~\#492.
+
+\section{Contributor Credit}
+\label{app:contributor-credit}
+
+Junjie Zhou prepared the protocol-controlled saturation audit in Appendix~\ref{app:saturation-audit}, its machine-readable table, and the corresponding report revision, tracked in issue~\#457 on near-ceiling metrics under protocol controls. Jiayu Wang contributed the worked use case in Appendix~\ref{app:use-case} and its supporting evidence, tracked in issue~\#492. Both issue threads are public in the project repository.
+
 \section{Reproducibility, Access, and Citation}
 
-This paper evaluates Benchmark Radar \reportversion{} at Git commit \gitcommit{} and data cutoff \datacutoff{}. The release process replays validated snapshots into the cumulative corpus, normalizes external catalogs, classifies benchmark tracks, and packages a checksummed data release. Installed clients switch to a new data version only after checksum and schema validation. The \reportversion{} paper was generated from a clean rebuild with linting, formatting checks, external normalization, KW-Bench classification, release construction, and the full test suite; all 1,028 tests passed. Citation metadata is exposed through a DOI and a Citation File Format record, following software-citation practice \citep{smith2016,katz2021,cff}.
+This paper evaluates Benchmark Radar \reportversion{} at Git commit \gitcommit{} and data cutoff \datacutoff{}. The release process replays validated snapshots into the cumulative corpus, normalizes external catalogs, classifies benchmark tracks, and packages a checksummed data release. Installed clients switch to a new data version only after checksum and schema validation. The \reportversion{} paper was generated from a clean rebuild with linting, formatting checks, external normalization, KW-Bench classification, release construction, and the full test suite; all 1,236 tests passed. Citation metadata is exposed through a DOI and a Citation File Format record, following software-citation practice \citep{smith2016,katz2021,cff}.
 
 \begin{table}[htbp]
 \centering
