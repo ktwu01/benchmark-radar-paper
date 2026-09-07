@@ -1,0 +1,26 @@
+\def\FigureWidth{492bp}
+\def\FigureHeight{82bp}
+\input{figure-style.tex}
+\foreach \i/\title/\caption in {
+  0/DISCOVER/{public sources},
+  1/VALIDATE/{health + schema},
+  2/RESOLVE/{exact identifiers},
+  3/INTERPRET/{taxonomy + rubric},
+  4/PUBLISH/{web, RSS, JSON},
+  5/QUERY/{offline CLI + HTTP}} {
+  \pgfmathsetmacro{\left}{1+83*\i}
+  \ifodd\i\def\boxfill{RadarPaleTeal}\def\boxstroke{RadarTeal}
+  \else\def\boxfill{RadarSky}\def\boxstroke{RadarBlue}\fi
+  \draw[rounded corners=6bp,fill=\boxfill,draw=\boxstroke,line width=.9bp]
+    (\left,26) rectangle +(75,54);
+  \node[text=RadarNavy,font=\sffamily\bfseries\fontsize{7.1}{9}\selectfont] at (\left+37.5,61) {\title};
+  \node[text=RadarMuted,font=\sffamily\fontsize{5.8}{8}\selectfont] at (\left+37.5,44) {\caption};
+  \ifnum\i<5
+    \draw[-{Triangle[length=3bp,width=5bp]},RadarAmber,line width=1.2bp]
+      (\left+76,53) -- (\left+82,53);
+  \fi
+}
+\node[text=RadarMuted,font=\sffamily\itshape\fontsize{6.9}{9}\selectfont] at (246,10)
+  {The same snapshots and code produce the same derived files.};
+\end{tikzpicture}
+\end{document}

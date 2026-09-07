@@ -12,6 +12,7 @@
 \definecolor{LinkRed}{HTML}{CC0000}
 \definecolor{CiteBlue}{HTML}{0000CC}
 \usepackage{graphicx}
+\usepackage{pgf}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -38,7 +39,9 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcommand{\reportversion}{v0.10.0}
-\newcommand{\datacutoff}{2026-09-06}
+\input{figure-data.tex}
+\newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
+\newcommand{\datacutoff}{\ReportDataCutoff}
 \newcommand{\gitcommit}{76a6180}
 \newcommand{\doi}{10.5281/zenodo.22167102}
 \graphicspath{{figures/}{../../../assets/use-case-492/}}
@@ -58,7 +61,7 @@
 \maketitle
 \vspace{-2.0em}
 \begin{abstract}
-Large language model evaluation has become a fast-moving literature in its own right. New benchmarks now appear across coding, computer science, mathematics, finance, data analysis, agentic tool use, and discipline-specific reasoning. This growth improves measurement, but it also creates a discovery problem: model builders and benchmark researchers need to know which benchmarks exist, which sources first reported them, how often model cards adopt them, and where score comparisons remain protocol-dependent. We introduce Benchmark Radar, a live search and curation system for AI benchmark discovery. Benchmark Radar monitors public discovery sources, normalizes external catalogs, curates model-card benchmark adoption, records score histories when the evaluation protocol is interpretable, and publishes the resulting evidence through a web dashboard, RSS feed, JSON data files, and local search clients. At the current cutoff, the system contained 10,702 source observations, 6,304 exact-identifier-resolved artifacts, 1,259 searchable entries, 110 curated adoption benchmarks, and 322 curated scores across 86 benchmark tracks. Besides the detailed description of the system pipeline, searching methodology, and current empirical findings from this snapshot, caveats and potential future improvements are also discussed.
+Large language model evaluation has become a fast-moving literature in its own right. New benchmarks now appear across coding, computer science, mathematics, finance, data analysis, agentic tool use, and discipline-specific reasoning. This growth improves measurement, but it also creates a discovery problem: model builders and benchmark researchers need to know which benchmarks exist, which sources first reported them, how often model cards adopt them, and where score comparisons remain protocol-dependent. We introduce Benchmark Radar, a live search and curation system for AI benchmark discovery. Benchmark Radar monitors public discovery sources, normalizes external catalogs, curates model-card benchmark adoption, records score histories when the evaluation protocol is interpretable, and publishes the resulting evidence through a web dashboard, RSS feed, JSON data files, and local search clients. At the current cutoff, the system contained \ReportNumber{\ReportObservationCount} source observations, \ReportNumber{\ReportArtifactCount} exact-identifier-resolved artifacts, \ReportNumber{\ReportCatalogCount} searchable entries, 110 curated adoption benchmarks, and 322 curated scores across 86 benchmark tracks. Besides the detailed description of the system pipeline, searching methodology, and current empirical findings from this snapshot, caveats and potential future improvements are also discussed.
 \end{abstract}
 
 \begin{center}
@@ -135,23 +138,23 @@ The pipeline provides five operational capabilities. Reproducibility is supporte
 
 Benchmark Radar treats provenance as more important than aggressive merging. The resolver merges observations when they share a DOI, arXiv identifier, OpenReview identifier, GitHub repository, or Hugging Face artifact. Similar titles alone do not force a merge; they remain separate until review confirms that they describe the same artifact. This conservative identity policy reduces false joins, but it also means that plausible duplicates remain visible when a benchmark appears across papers, repositories, and catalogs without a common identifier.
 
-Search combines three external catalog layers with one curated Benchmark Radar layer, as summarized in Table~\ref{tab:search-layers}. The external layers are LLM Stats, OpenCompass Hub, and Artificial Analysis; the curated layer consists of score tracks extracted from primary model reports (see Appendix \ref{app:internal-documents}). The resulting search index contains 1,259 entries: 1,173 external catalog rows and 86 curated score tracks. The Search box queries all four layers together while preserving each row's source label. Search is lexical and reproducible. It ranks exact names, phrase matches, and field-token matches, and every result preserves its source label. Priority scoring for daily triage combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. The scoring recipe ships with the data, so downstream users can interpret a priority score alongside the snapshot that produced it.
+Search covers four catalog sources, as summarized in Table~\ref{tab:search-layers}: LLM Stats, OpenCompass Hub, Artificial Analysis, and Model reports (see Appendix \ref{app:internal-documents}). The resulting search index contains \ReportNumber{\ReportCatalogCount} source records, including \ReportModelReportCount{} model-report benchmarks. Of these model-report benchmarks, 86 have reported scores and 24 have no scores; both groups remain searchable. The Search box queries all four sources together while preserving each row's source label. Search is lexical and reproducible. It ranks exact names, phrase matches, and field-token matches, and every result preserves its source label. Priority scoring for daily triage combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. The scoring recipe ships with the data, so downstream users can interpret a priority score alongside the snapshot that produced it.
 
 \begin{table}[htbp]
 \centering
 \small
 \begin{tabularx}{\textwidth}{L{0.20\textwidth}rY}
 \toprule
-\textbf{Search layer} & \textbf{Rows} & \textbf{Primary use}\\
+\textbf{Catalog source} & \textbf{Rows} & \textbf{Primary use}\\
 \midrule
-LLM Stats & 687 & Broad benchmark names and descriptions from an external catalog.\\
-OpenCompass Hub & 461 & Paper, repository, release, and dataset links with source-specific identity fields.\\
-Artificial Analysis & 25 & Current commercial evaluation catalog entries.\\
-Curated score tracks & 86 & Model-report scores grouped by instrument and protocol.\\
-Search box & 1,259 & Unified query surface across all four layers, with source labels shown on every result.\\
+LLM Stats & \ReportLLMStatsCount{} & Benchmark names and descriptions with source provenance.\\
+OpenCompass Hub & \ReportOpenCompassCount{} & Paper, repository, release, and dataset links with source-specific identity fields.\\
+Artificial Analysis & \ReportArtificialAnalysisCount{} & Current commercial evaluation catalog entries.\\
+Model reports & \ReportModelReportCount{} & Benchmarks mentioned in model reports, including records without scores.\\
+Search box & \ReportNumber{\ReportCatalogCount} & Unified query surface across all four sources, with source labels shown on every result.\\
 \bottomrule
 \end{tabularx}
-\caption{Search layers unified by the Benchmark Radar query index.}
+\caption{Catalog sources in the Benchmark Radar query index.}
 \label{tab:search-layers}
 \end{table}
 
@@ -164,12 +167,12 @@ In addition to artifact discovery, Benchmark Radar curates benchmark mentions an
 
 \subsection{Coverage at the Cutoff}
 
-At the current cutoff, the cumulative corpus held 10,702 source observations and 6,304 exact-identifier-resolved artifacts. Primary or structured sources supplied 10,473 observations, or 97.86\% of the corpus. The dashboard reports several different units because discovery, search, adoption, and scoring count different objects. Table~\ref{tab:counts} summarizes the main units used in the snapshot.
+At the current cutoff, the cumulative corpus held \ReportNumber{\ReportObservationCount} source observations and \ReportNumber{\ReportArtifactCount} exact-identifier-resolved artifacts. Primary or structured sources supplied 10,473 observations, or 97.86\% of the corpus. The dashboard reports several different units because discovery, search, adoption, and scoring count different objects. Table~\ref{tab:counts} summarizes the main units used in the snapshot.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{cover-metrics.pdf}
-\caption{Headline metrics from the generated coverage summary.}
+\caption{Headline metrics at \datacutoff{}. Catalog records and discovery observations count different objects.}
 \label{fig:cover-metrics}
 \end{figure}
 
@@ -180,10 +183,10 @@ At the current cutoff, the cumulative corpus held 10,702 source observations and
 \toprule
 \textbf{Unit} & \textbf{Count} & \textbf{Interpretation}\\
 \midrule
-Snapshot & 45 & Dated replay history, including 41 observed and 4 simulated snapshots.\\
-Source observation & 10,702 & Persisted source records with provenance.\\
-Unique artifact & 6,304 & Papers, repositories, datasets, releases, or pages after exact-ID resolution.\\
-Searchable entry & 1,259 & External catalog rows plus curated score tracks.\\
+Snapshot & \ReportSnapshotCount{} & Dated replay history, including 41 observed and 4 simulated snapshots.\\
+Source observation & \ReportNumber{\ReportObservationCount} & Persisted source records with provenance.\\
+Unique artifact & \ReportNumber{\ReportArtifactCount} & Papers, repositories, datasets, releases, or pages after exact-ID resolution.\\
+Searchable entry & \ReportNumber{\ReportCatalogCount} & One benchmark record per source, including records without scores.\\
 Adoption benchmark & 110 & Canonical benchmarks mentioned in curated model reports.\\
 Model-card document & 37 & Curated reports from 12 organizations.\\
 Curated score & 322 & Numeric results across 86 benchmark tracks.\\
@@ -195,7 +198,7 @@ Curated score & 322 & Numeric results across 86 benchmark tracks.\\
 
 \subsection{Source Composition and Reliability}
 
-Five normalized source labels account for 9,532 of 10,702 observations, or 89.1\% of the cumulative corpus. This concentration is useful because it makes the main evidence paths easy to audit, but it also means that connector caps, rate limits, and API availability can change the apparent topic mix. The cutoff run illustrates this dependency: the required sources were healthy, while optional routes varied in yield because of rate limits, missing credentials, or empty result windows.
+Five normalized source labels account for 9,532 of \ReportNumber{\ReportObservationCount} observations, or 89.1\% of the cumulative corpus. This concentration is useful because it makes the main evidence paths easy to audit, but it also means that connector caps, rate limits, and API availability can change the apparent topic mix. The cutoff run illustrates this dependency: the required sources were healthy, while optional routes varied in yield because of rate limits, missing credentials, or empty result windows.
 
 \begin{figure}[htbp]
 \centering
@@ -204,13 +207,13 @@ Five normalized source labels account for 9,532 of 10,702 observations, or 89.1\
 \label{fig:source-composition}
 \end{figure}
 
-The conservative identity resolver produced high provenance but low corroboration across normalized sources. Fifty-nine of 6,304 artifacts were linked across more than one source, or 0.94\% of the artifact set. This is an intentional tradeoff: exact anchors prevent misleading joins, but paper-code-dataset relationships still require further review when identifiers are missing or inconsistent.
+The conservative identity resolver produced high provenance but low corroboration across normalized sources. Fifty-nine of \ReportNumber{\ReportArtifactCount} artifacts were linked across more than one source, or 0.94\% of the artifact set. This is an intentional tradeoff: exact anchors prevent misleading joins, but paper-code-dataset relationships still require further review when identifiers are missing or inconsistent.
 
 \subsection{Relationship to Existing Catalogs}
 
 The externally comparable sources in this paper are the three catalog layers that Benchmark Radar normalizes: LLM Stats, OpenCompass Hub, and Artificial Analysis. These projects have different goals. LLM Stats publishes live benchmark rankings and benchmark-family pages \citep{llmstats2026benchmarks}; OpenCompass is primarily an evaluation platform with a searchable dataset-statistics page \citep{opencompass2026datasetstatistics}; and Artificial Analysis publishes model evaluations and a documented intelligence-benchmarking methodology \citep{artificialanalysis2026methodology}. Internal project-history documents are used only as supporting materials and are summarized in Appendix~\ref{app:internal-documents}.
 
-Benchmark Radar uses these catalog sources as inputs rather than competitors. Quantitatively, the current index imports 687 rows from LLM Stats, 461 rows from OpenCompass Hub, and 25 rows from Artificial Analysis, for 1,173 external catalog rows. It then adds 86 internally curated score tracks, yielding 1,259 searchable entries. A strict head-to-head comparison would be misleading because row definitions, refresh cadence, source coverage, and score protocols differ across systems. The meaningful comparison in this paper is therefore functional: Benchmark Radar adds source-linked daily discovery, exact-identifier artifact resolution, model-card adoption evidence, and protocol-aware score curation on top of the external catalog inputs.
+Benchmark Radar uses these catalog sources as inputs rather than competitors. Quantitatively, the current index contains \ReportLLMStatsCount{} records from LLM Stats, \ReportOpenCompassCount{} from OpenCompass Hub, \ReportArtificialAnalysisCount{} from Artificial Analysis, and \ReportModelReportCount{} from Model reports, yielding \ReportNumber{\ReportCatalogCount} searchable source records. Records without scores remain in this total; source membership does not establish a trust ranking. A strict head-to-head comparison would be misleading because row definitions, refresh cadence, source coverage, and score protocols differ across systems. The meaningful comparison in this paper is therefore functional: Benchmark Radar adds source-linked daily discovery, exact-identifier artifact resolution, model-card adoption evidence, and protocol-aware score curation on top of the external catalog inputs.
 
 \subsection{Benchmark Adoption in Model Reports}
 
@@ -231,7 +234,7 @@ Third, Benchmark Radar should deepen its task-level coverage and make its public
 
 Benchmarking is now part of the infrastructure through which the AI community understands model progress. The pace and breadth of benchmark publication have made manual tracking increasingly fragile: benchmark papers, datasets, repositories, leaderboards, model-card mentions, and score tables appear across many sources and follow different conventions. Benchmark Radar reframes this as a search and evidence problem. The system does not propose a new test of model ability; instead, it provides a living, provenance-preserving index of benchmark artifacts and the reporting practices around them.
 
-The current snapshot demonstrates that such an index can be built reproducibly. It combines 37 public source routes, a 1,259-entry search index, curated adoption evidence from 37 model documents, and protocol-aware score histories. The results also show where the field needs better infrastructure. Benchmark identities still split across sources when exact anchors are absent, many reported scores cannot yet be compared because protocol details are missing, and benchmark discovery would benefit from semantic retrieval that preserves inspectable reasons for each result. We expect Benchmark Radar to serve as a practical layer between benchmark authors, model developers, and evaluators: a radar for what has appeared, where it was reported, how it is being adopted, and what evidence is still needed before scores can be compared.
+The current snapshot demonstrates that such an index can be built reproducibly. It combines 37 public source routes, a \ReportNumber{\ReportCatalogCount}-entry search index, curated adoption evidence from 37 model documents, and protocol-aware score histories. The results also show where the field needs better infrastructure. Benchmark identities still split across sources when exact anchors are absent, many reported scores cannot yet be compared because protocol details are missing, and benchmark discovery would benefit from semantic retrieval that preserves inspectable reasons for each result. We expect Benchmark Radar to serve as a practical layer between benchmark authors, model developers, and evaluators: a radar for what has appeared, where it was reported, how it is being adopted, and what evidence is still needed before scores can be compared.
 
 \bibliographystyle{plainnat}
 \bibliography{references}

@@ -1,0 +1,16 @@
+\def\FigureWidth{492bp}
+\def\FigureHeight{96bp}
+\input{figure-style.tex}
+\draw[fill=RadarSky,draw=RadarBlue,line width=.7bp] (1,1) rectangle (491,95);
+\node[anchor=west,text=RadarNavy,font=\sffamily\bfseries\fontsize{12}{14}\selectfont]
+  at (13,79) {Search every benchmark};
+\draw[fill=white,draw=RadarGray,line width=.7bp] (13,24) rectangle (479,65);
+\draw[RadarRule,line width=.4bp] (13,40) -- (479,40);
+\node[anchor=west,text=RadarMuted,font=\sffamily\fontsize{13}{15}\selectfont]
+  at (23,52) {Search benchmarks, tasks, domains\ldots};
+\node[anchor=west,text=RadarMuted] at (23,31)
+  {\ReportNumber{\ReportCatalogCount} benchmarks\enspace\textperiodcentered\enspace\ReportCatalogSourceCount{} sources};
+\node[anchor=west,text=RadarMuted,font=\sffamily\fontsize{6.8}{9}\selectfont] at (13,12)
+  {Illustration of the search surface; data cutoff: \ReportDataCutoff.};
+\end{tikzpicture}
+\end{document}
