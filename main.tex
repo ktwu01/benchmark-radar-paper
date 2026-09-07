@@ -444,6 +444,15 @@ The session ended with a focused summary table of related work that the contribu
 \label{fig:use-case-survey}
 \end{figure}
 
+Figure~\ref{fig:use-case-manual-table} shows what this artifact looks like when it is built by hand. It is the prior-art comparison table from an earlier benchmark-design effort by one of the contributors: ten related benchmarks scored across six design dimensions, each cell read out of a separate paper. Assembling it consumed effort second only to producing the benchmark data itself. The value of the retrieval surface is that it produces the candidate set for a table of this shape without the manual reading pass, and exposes the matched tokens and fields behind each candidate so the reader can check the retrieval rather than trust it.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{manual-prior-art-table.png}
+\caption{A prior-art comparison table assembled manually for an earlier benchmark-design effort. Each row is one related benchmark and each column one design dimension, all read from the source papers by hand.}
+\label{fig:use-case-manual-table}
+\end{figure}
+
 Four limits apply. Search is deterministic lexical matching rather than semantic retrieval, so a differently worded query can change the candidate set. The session combined the Benchmark Radar client with the agent's general web search, so it does not isolate the contribution of either. Repository and dataset availability is a snapshot, not a permanent label. And the case documents a single workflow rather than a controlled comparison. The full evidence, including the summary table and session screenshots, is public in issue~\#492.
 
 \section{Contributor Credit}
