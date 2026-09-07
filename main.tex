@@ -1,0 +1,354 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=0.9in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\definecolor{MidnightBlue}{HTML}{12233F}
+\definecolor{RadarBlue}{HTML}{2563EB}
+\definecolor{RadarInk}{HTML}{243247}
+\definecolor{RadarMuted}{HTML}{5C6B80}
+\definecolor{RadarRule}{HTML}{D7DFEA}
+\definecolor{RadarSky}{HTML}{EAF1FF}
+\definecolor{LinkRed}{HTML}{CC0000}
+\definecolor{CiteBlue}{HTML}{0000CC}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{caption}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=LinkRed,
+  urlcolor=CiteBlue,
+  citecolor=CiteBlue,
+  pdftitle={Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research},
+  pdfauthor={Koutian Wu and Junjie Zhou}
+}
+
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0.25em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\sloppy
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\reportversion}{v0.10.0}
+\newcommand{\datacutoff}{2026-09-06}
+\newcommand{\gitcommit}{76a6180}
+\newcommand{\doi}{10.5281/zenodo.22167102}
+\graphicspath{{figures/}}
+
+\title{\textbf{Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research}}
+\author{Koutian Wu$^{1,2}$ \footnote{\small $^*$Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^4$ \quad Ergan Shang$^3$ \quad Jiayu Wang $^5$ \quad Pengqian Han$^6$\\[0.35em]
+\small $^1$ Earth and Space AI \quad
+\small $^2$ Tacite AI \quad
+\small $^3$ Carnegie Mellon University\\
+\small $^4$ Hangzhou Dianzi University
+\small $^5$ Xi'an Jiaotong University\\
+\small $^6$ The University of Auckland
+}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2.0em}
+\begin{abstract}
+Large language model evaluation has become a fast-moving literature in its own right. New benchmarks now appear across coding, computer science, mathematics, finance, data analysis, agentic tool use, and discipline-specific reasoning. This growth improves measurement, but it also creates a discovery problem: model builders and benchmark researchers need to know which benchmarks exist, which sources first reported them, how often model cards adopt them, and where score comparisons remain protocol-dependent. We introduce Benchmark Radar, a live search and curation system for AI benchmark discovery. Benchmark Radar monitors public discovery sources, normalizes external catalogs, curates model-card benchmark adoption, records score histories when the evaluation protocol is interpretable, and publishes the resulting evidence through a web dashboard, RSS feed, JSON data files, and local search clients. At the current cutoff, the system contained 10,702 source observations, 6,304 exact-identifier-resolved artifacts, 1,259 searchable entries, 110 curated adoption benchmarks, and 322 curated scores across 86 benchmark tracks. Besides the detailed description of the system pipeline, searching methodology, and current empirical findings from this snapshot, caveats and potential future improvements are also discussed.
+\end{abstract}
+
+\begin{center}
+\vspace{0.3em}
+\includegraphics[width=0.92\textwidth,height=0.31\textheight]{abstract_overview.png}
+\captionof{figure}{\textbf{Overview of Benchmark Radar}. Heterogeneous benchmark signals are absorbed by the Benchmark Radar search engine, organized through domain-aware curation, and published as searchable benchmark evidence with model-card adoption and score metadata.}
+\label{fig:abstract}
+\vspace{0.8em}
+\end{center}
+
+
+\section{Introduction}
+
+Since the Transformer architecture established attention-based sequence modeling as a foundation for modern language models \citep{vaswani2017attention}, large language models have developed into a crowded ecosystem of frontier, open-weight, and domain-adapted systems. Representative model families such as GPT-4 and Claude Sonnet illustrate how quickly model capabilities and deployment patterns now change \citep{openai2023gpt4,anthropic2025claude37sonnetcode}. This proliferation has made evaluation a central infrastructure problem: qualitative demonstrations are no longer sufficient, and quantitative benchmarks are needed to compare model generations, expose failure modes, and separate genuine capability gains from changes in prompt, data split, or evaluation protocol \citep{hendrycks2021mmlu,rein2023gpqa,phan2025hle,shang2026llm}.
+
+The need for evaluation is amplified by the spread of large-scale models into traditional application domains. In recommender systems, Transformer-style sequence models and LLM-based methods are reshaping user, item, and preference modeling, while efficient training remains central at production scale \citep{kang2018selfattentive,sun2019bert4rec,shang2026erase}. In the field of natural sciences, foundation models have made biological, geoscientific and even physical problems more modelable and scalable \citep{theodoris2023transfer,cui2024scgpt,shang2025predicting,zhang2025genetic,wu2023perturbations}. In social and political analysis, language models support text annotation and simulated human samples, while network methods provide quantitative tools for balance and polarization dynamics \citep{leskovec2010signed,gilardi2023chatgpt,argyle2023out,li2026matraix,ng2026microverse,shang2026inference}. These examples make model evaluation consequential outside general chat: when AI systems enter scientific, industrial, and decision-support settings, benchmark scores become a compact but influential language for claiming progress.
+
+The benchmark itself has therefore become a major research artifact. Some benchmarks function like broad examinations of world knowledge and reasoning, such as MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle,zhou2026asi}. Others isolate increasingly specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tracks code-generation ability under contamination-aware temporal splits \citep{jain2024livecodebench}, Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. The domain coverage is also broad: finance and economics are represented by FinanceBench \citep{islam2023financebench}, mathematics by MATH \citep{hendrycks2021math}, scientific problem solving by SciBench \citep{wang2023scibench,wu2026esm,xu2026researchclawbench}, biology by LAB-Bench \citep{laurent2024labbench}, and chemistry by ChemBench \citep{mirza2025chembench}. These works define scientific tasks with reasonable scoring rules to claim what kind of model behavior should be measured, not merely providing question sets.
+
+This diversity improves measurement, but it creates a discovery problem. A practitioner who wants to know whether a new benchmark has appeared, whether it has an associated dataset or repository, and whether any model cards have started to report, it must search across paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and third-party catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide valuable leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. To the best of our knowledge, however, no existing system is framed primarily as a living benchmark search engine that unifies daily discovery, external catalog rows, model-card adoption evidence, and protocol-aware scores while preserving source provenance.
+
+Benchmark Radar addresses this discovery problem. Rather than proposing another benchmark, it treats the benchmark ecosystem as the object of measurement. The system continuously gathers benchmark-related artifacts from public sources, resolves exact identities where possible, preserves provenance, and exposes a searchable index with source labels, dates, adoption evidence, and score metadata. This paper makes three contributions. First, we present a live search engine for benchmark papers and artifacts that combines discovery connectors, external catalogs, curated model-card adoption, and score histories. Second, we describe the collection, normalization, ranking, and publication mechanisms that make the index reproducible. Third, we summarize what the current data snapshot says about benchmark coverage, model-card adoption, source concentration, and remaining potential future improvements and caveats in protocol capture.\footnote{Codes of \textbf{Benchmark Radar} are available on the \texttt{GitHub} at: \href{https://github.com/ktwu01/benchmark-radar}{\texttt{https://github.com/ktwu01/benchmark-radar}}.}
+
+\section{Methodology}
+
+\subsection{System Overview}
+
+Benchmark Radar is designed around the information needs of benchmark readers, model developers, and evaluation researchers. Instead of treating benchmark discovery as a single leaderboard query, the system separates several practical questions: what has appeared recently, which records match a task or benchmark name, which benchmarks are adopted in model-card documents, which numeric scores are protocol-comparable, and whether the same evidence can be queried outside the web dashboard. Table~\ref{tab:reader-questions} summarizes these researchers' questions and the corresponding access surfaces.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.18\textwidth}Y Y}
+\toprule
+\textbf{Surface} & \textbf{Reader question} & \textbf{Role in Benchmark Radar}\\
+\midrule
+Today & What appeared or changed? & Ranks new records and links the source evidence.\\
+Search box & Which records match this name, task, or domain? & Ranks exact names, phrases, and field-token matches in the unified index.\\
+Leaderboard & Which benchmarks do labs report? & Counts benchmark mentions across curated model-card documents.\\
+Scores & Which printed values can be connected? & Groups comparable values by instrument and protocol fields.\\
+Trends and map & Which topics and sources recur? & Uses coverage signatures to support cautious comparisons.\\
+CLI and HTTP & Can an analyst reproduce search locally? & Shares one query service and stable JSON contract with the dashboard.\\
+\bottomrule
+\end{tabularx}
+\caption{Researchers' questions and access surfaces supported by Benchmark Radar.}
+\label{tab:reader-questions}
+\end{table}
+
+% \begin{figure}[htbp]
+% \centering
+% \includegraphics[width=0.92\textwidth]{search-surface.pdf}
+% \caption{\textbf{Searching Surface of Benchmark Radar}. The web interface and local clients query the same schema-normalized benchmark index, so results use the same source labels, identity anchors, and score or adoption metadata across access modes.}
+% \label{fig:search-surface}
+% \end{figure}
+
+Answering these questions across public sources requires a common representation because paper servers, dataset hubs, code repositories, external catalogs, model-card documents, and score tables expose different fields and identifiers. Benchmark Radar therefore builds a normalized benchmark index: heterogeneous records are converted into shared fields with source labels, identity anchors, and searchable metadata before they are queried. The Today view, Search box, leaderboard, score view, command-line client, and local HTTP API all read from this shared index, so the same evidence can be inspected through both web and local surfaces \citep{mitchell2019modelcards}.
+
+\subsection{Collection and Source Health}
+
+Each collection run queries enabled connectors inside a 48-hour window, records per-source counts and errors, drops future-dated rows, and requires a configured set of core sources to be healthy before publication. The core sources at the current cutoff include arXiv \citep{arxivapi}, Hugging Face Hub \citep{huggingfacehub}, and GitHub Search \citep{githubsearchdocs}. Optional routes include GitHub organizations, Hugging Face Papers, Kaggle datasets \citep{kaggleapi}, Zenodo \citep{zenodoapi}, OpenReview \citep{openreview}, Semantic Scholar \citep{kinney2023semanticscholar}, GitHub Releases \citep{githubreleasesdocs}, OpenAlex \citep{priem2022openalex}, Brave Search \citep{bravesearchapi}, 24 first-party research or engineering feeds, and a separate public-attention collector based on Hacker News search through Algolia \citep{hnalgoliaapi}. At the current cutoff, all three core sources were healthy, although Semantic Scholar was rate-limited, Brave Search lacked an API key, and OpenReview returned no eligible rows. Appendix~\ref{app:source-inventory} gives the healthy direct connectors and first-party feeds used by the collection layer.
+
+As an example of the results after using Benchmark Radar, the current cutoff run fetched 867 rows, deduplicated them to 837 candidate records, classified 322 as eligible, and recommended 110 for reader-facing triage. Two collections ran within the cutoff window; after merging, the daily page contained 322 records, including 110 recommendations. The publisher keeps source URL, retrieval time, parser version, source identifier, timestamps, authors or organizations when supplied, and a SHA-256 fingerprint of the normalized payload, while excluding raw responses and credentials from the public artifact.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{pipeline-evaluation.pdf}
+\caption{\textbf{Pipeline of Benchmark Radar}. Public-source connectors first \textbf{discover} candidate benchmark artifacts and record source-specific metadata. The \textbf{validating} stage removes future-dated rows, applies benchmark-eligibility rules, and separates recommended records from lower-priority retained observations. The \textbf{identity} stage merges only exact DOI, arXiv, OpenReview, GitHub, or Hugging Face anchors, while catalog normalization maps external catalog rows and curated score tracks into the shared search schema. The \textbf{publication} stage packages checksummed JSON artifacts, and the \textbf{query} layer serves the same index to the dashboard, Search box, RSS feed, CLI, and local HTTP API.}
+\label{fig:pipeline}
+\end{figure}
+
+The pipeline provides five operational capabilities. Reproducibility is supported by snapshots, schemas, parser versions, payload hashes, and deterministic rebuilds. Reliability is handled through a required-source gate, visible optional-source failures, and atomic client activation. Identity resolution uses exact anchors and reviewed external groups rather than title-only merging. The dashboard, command-line client, and HTTP interface share the same query service and JSON data contract. Verification is supported by a clean rebuild and 1,028 passing tests. The remaining gaps are discussed in Section~\ref{sec:caveat-future-work}.
+
+\subsection{Identity, Ranking, and Search}
+
+Benchmark Radar treats provenance as more important than aggressive merging. The resolver merges observations when they share a DOI, arXiv identifier, OpenReview identifier, GitHub repository, or Hugging Face artifact. Similar titles alone do not force a merge; they remain separate until review confirms that they describe the same artifact. This conservative identity policy reduces false joins, but it also means that plausible duplicates remain visible when a benchmark appears across papers, repositories, and catalogs without a common identifier.
+
+Search combines three external catalog layers with one curated Benchmark Radar layer, as summarized in Table~\ref{tab:search-layers}. The external layers are LLM Stats, OpenCompass Hub, and Artificial Analysis; the curated layer consists of score tracks extracted from primary model reports (see Appendix \ref{app:internal-documents}). The resulting search index contains 1,259 entries: 1,173 external catalog rows and 86 curated score tracks. The Search box queries all four layers together while preserving each row's source label. Search is lexical and reproducible. It ranks exact names, phrase matches, and field-token matches, and every result preserves its source label. Priority scoring for daily triage combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. The scoring recipe ships with the data, so downstream users can interpret a priority score alongside the snapshot that produced it.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.20\textwidth}rY}
+\toprule
+\textbf{Search layer} & \textbf{Rows} & \textbf{Primary use}\\
+\midrule
+LLM Stats & 687 & Broad benchmark names and descriptions from an external catalog.\\
+OpenCompass Hub & 461 & Paper, repository, release, and dataset links with source-specific identity fields.\\
+Artificial Analysis & 25 & Current commercial evaluation catalog entries.\\
+Curated score tracks & 86 & Model-report scores grouped by instrument and protocol.\\
+Search box & 1,259 & Unified query surface across all four layers, with source labels shown on every result.\\
+\bottomrule
+\end{tabularx}
+\caption{Search layers unified by the Benchmark Radar query index.}
+\label{tab:search-layers}
+\end{table}
+
+\subsection{Adoption and Score Curation}
+
+In addition to artifact discovery, Benchmark Radar curates benchmark mentions and numeric scores from model-card and system-description documents \citep{mitchell2019modelcards}. The current curated snapshot includes 37 model documents from 12 organizations. These documents mention 110 canonical adoption benchmarks. When a document contains an interpretable numeric value and sufficient evaluation context, the curation layer records the score with instrument and protocol fields such as evaluation setup, shots, tool access, attempts, and evaluator when available. This stricter layer produced 322 scores across 86 benchmark tracks. Aggregator scores remain outside the curated progression unless they can be connected to a comparable protocol \citep{gebru2021datasheets,mitchell2019modelcards}.
+
+\section{Results}
+
+\subsection{Coverage at the Cutoff}
+
+At the current cutoff, the cumulative corpus held 10,702 source observations and 6,304 exact-identifier-resolved artifacts. Primary or structured sources supplied 10,473 observations, or 97.86\% of the corpus. The dashboard reports several different units because discovery, search, adoption, and scoring count different objects. Table~\ref{tab:counts} summarizes the main units used in the snapshot.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\textwidth]{cover-metrics.pdf}
+\caption{Headline metrics from the generated coverage summary.}
+\label{fig:cover-metrics}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.24\textwidth}rY}
+\toprule
+\textbf{Unit} & \textbf{Count} & \textbf{Interpretation}\\
+\midrule
+Snapshot & 45 & Dated replay history, including 41 observed and 4 simulated snapshots.\\
+Source observation & 10,702 & Persisted source records with provenance.\\
+Unique artifact & 6,304 & Papers, repositories, datasets, releases, or pages after exact-ID resolution.\\
+Searchable entry & 1,259 & External catalog rows plus curated score tracks.\\
+Adoption benchmark & 110 & Canonical benchmarks mentioned in curated model reports.\\
+Model-card document & 37 & Curated reports from 12 organizations.\\
+Curated score & 322 & Numeric results across 86 benchmark tracks.\\
+\bottomrule
+\end{tabularx}
+\caption{Principal count units in the current Benchmark Radar snapshot.}
+\label{tab:counts}
+\end{table}
+
+\subsection{Source Composition and Reliability}
+
+Five normalized source labels account for 9,532 of 10,702 observations, or 89.1\% of the cumulative corpus. This concentration is useful because it makes the main evidence paths easy to audit, but it also means that connector caps, rate limits, and API availability can change the apparent topic mix. The cutoff run illustrates this dependency: the required sources were healthy, while optional routes varied in yield because of rate limits, missing credentials, or empty result windows.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{source-composition.pdf}
+\caption{Cumulative source composition at the current cutoff.}
+\label{fig:source-composition}
+\end{figure}
+
+The conservative identity resolver produced high provenance but low corroboration across normalized sources. Fifty-nine of 6,304 artifacts were linked across more than one source, or 0.94\% of the artifact set. This is an intentional tradeoff: exact anchors prevent misleading joins, but paper-code-dataset relationships still require further review when identifiers are missing or inconsistent.
+
+\subsection{Relationship to Existing Catalogs}
+
+The externally comparable sources in this paper are the three catalog layers that Benchmark Radar normalizes: LLM Stats, OpenCompass Hub, and Artificial Analysis. These projects have different goals. LLM Stats publishes live benchmark rankings and benchmark-family pages \citep{llmstats2026benchmarks}; OpenCompass is primarily an evaluation platform with a searchable dataset-statistics page \citep{opencompass2026datasetstatistics}; and Artificial Analysis publishes model evaluations and a documented intelligence-benchmarking methodology \citep{artificialanalysis2026methodology}. Internal project-history documents are used only as supporting materials and are summarized in Appendix~\ref{app:internal-documents}.
+
+Benchmark Radar uses these catalog sources as inputs rather than competitors. Quantitatively, the current index imports 687 rows from LLM Stats, 461 rows from OpenCompass Hub, and 25 rows from Artificial Analysis, for 1,173 external catalog rows. It then adds 86 internally curated score tracks, yielding 1,259 searchable entries. A strict head-to-head comparison would be misleading because row definitions, refresh cadence, source coverage, and score protocols differ across systems. The meaningful comparison in this paper is therefore functional: Benchmark Radar adds source-linked daily discovery, exact-identifier artifact resolution, model-card adoption evidence, and protocol-aware score curation on top of the external catalog inputs.
+
+\subsection{Benchmark Adoption in Model Reports}
+
+Model-card adoption is concentrated around a small reporting core. In the curated snapshot, eight benchmarks appeared in documents from at least six organizations: GPQA Diamond \citep{rein2023gpqa}, Humanity's Last Exam \citep{phan2025hle}, SWE-bench Verified \citep{jimenez2023swebench}, Terminal-Bench \citep{merrill2026terminalbench}, AIME \citep{maa2026aime}, LiveCodeBench \citep{jain2024livecodebench}, MMLU-Pro \citep{wang2024mmlupro}, and BrowseComp \citep{wei2025browsecomp}. GPQA Diamond appeared in 27 of 37 documents from 11 organizations, making it the most common benchmark in the curated model-card layer. This concentration suggests that frontier-model reporting has partially converged on a shared vocabulary, even as new benchmark papers continue to broaden the field.
+
+The score layer shows why adoption counts and numeric comparisons should be interpreted separately. A benchmark can be widely mentioned without providing a comparable score trajectory, and a score can be misleading if its reasoning budget, tool access, number of attempts, evaluator, or temporal split differs from another reported value \citep{gebru2021datasheets,mitchell2019modelcards}. In the current snapshot, eight bounded metrics had five points of headroom or less: AIME \citep{maa2026aime}, Arena-Hard \citep{li2024arenahard}, DeepSearchQA \citep{gupta2026deepsearchqa}, HMMT \citep{hmmt2026}, MATH-500 \citep{hendrycks2021math}, MathVision \citep{wang2024mathvision}, SWE-bench Verified \citep{jimenez2023swebench}, and tau2-bench \citep{tau2bench}. Six benchmarks gained model-card mentions after their last readable score, showing that adoption evidence can advance faster than protocol-comparable scoring.
+
+\section{Caveat and Future Work}
+\label{sec:caveat-future-work}
+
+The same constraints that make Benchmark Radar auditable also define its potential future improvement. First, search recall remains limited by the retrieval strategy and the availability of upstream sources. Lexical retrieval is transparent and reproducible, but it can miss paraphrased benchmark names, renamed tasks, or semantically related descriptions. Future search should therefore add optional semantic retrieval while preserving the source, field, and token-level match evidence that makes each result inspectable \citep{reimers2019sentencebert}. Source coverage also depends on public endpoints, API credentials, and rate limits. Because optional-source failures can change realized coverage, exported counts should carry explicit units and cutoff context across the dashboard, JSON files, papers, and downstream analyses.
+
+Second, cross-source identity resolution and score comparison remain intentionally conservative. The current exact-anchor policy avoids false joins, but it leaves plausible paper-code-dataset relationships unmerged when shared identifiers are absent. Future releases should add reviewed identity groups, stronger repository-to-paper anchors, and provenance-preserving explanations for each merge decision. The score layer needs the same caution. In the current snapshot, 12,594 aggregator scores remain outside the curated score progression because they lack protocol fields such as shots, tool access, attempts, evaluator, temporal split, or harness. Expanding protocol capture would make score trajectories more defensible and would help users distinguish broad adoption from genuinely comparable measurement.
+
+Third, Benchmark Radar should deepen its task-level coverage and make its public surfaces more explicit. KW-Bench contains 5,661 tracks whose task-capability classification is incomplete at the cutoff, which limits how well the index can summarize what kinds of model abilities the benchmark ecosystem is testing. Completing these labels would make the system more useful as a measurement map, not only as a search engine. The dashboard and local outputs should also make count units visible throughout the interface, since observations, artifacts, catalog rows, searchable entries, model-card mentions, and curated scores answer different questions. These changes would improve recall, comparability, and interpretability while preserving the auditability that motivates the system.
+
+\section{Conclusion}
+
+Benchmarking is now part of the infrastructure through which the AI community understands model progress. The pace and breadth of benchmark publication have made manual tracking increasingly fragile: benchmark papers, datasets, repositories, leaderboards, model-card mentions, and score tables appear across many sources and follow different conventions. Benchmark Radar reframes this as a search and evidence problem. The system does not propose a new test of model ability; instead, it provides a living, provenance-preserving index of benchmark artifacts and the reporting practices around them.
+
+The current snapshot demonstrates that such an index can be built reproducibly. It combines 37 public source routes, a 1,259-entry search index, curated adoption evidence from 37 model documents, and protocol-aware score histories. The results also show where the field needs better infrastructure. Benchmark identities still split across sources when exact anchors are absent, many reported scores cannot yet be compared because protocol details are missing, and benchmark discovery would benefit from semantic retrieval that preserves inspectable reasons for each result. We expect Benchmark Radar to serve as a practical layer between benchmark authors, model developers, and evaluators: a radar for what has appeared, where it was reported, how it is being adopted, and what evidence is still needed before scores can be compared.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\appendix
+\begin{center}
+{\LARGE\bfseries Appendix}
+\end{center}
+\vspace{0.75em}
+
+\section{Source Inventory and Health}
+\label{app:source-inventory}
+
+The direct connector inventory records public routes that completed successfully at the current cutoff. \emph{Connector} names the route queried by the collector. \emph{Role} describes the type of upstream artifact the route contributes. \emph{Cutoff status} reports health and the number of rows returned by that connector during the cutoff run before cross-source deduplication and downstream ranking; zero eligible rows can still be healthy if the connector completed successfully and produced a parseable response. \emph{Core} indicates whether the source is part of the publication gate. A core source must be healthy because it covers one of the minimum evidence channels for the system: primary papers, shared model or dataset artifacts, or source-code artifacts. Optional sources enrich coverage, and their failures are surfaced without blocking publication.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.21\textwidth}Y L{0.21\textwidth}L{0.08\textwidth}}
+\toprule
+\textbf{Connector} & \textbf{Role} & \textbf{Cutoff status} & \textbf{Core}\\
+\midrule
+arXiv & Primary papers via selected AI, language, vision, and software categories & Healthy; 0 rows & Yes\\
+Hugging Face Hub & Datasets and Spaces connected to benchmark artifacts & Healthy; 92 rows & Yes\\
+GitHub Search & Code repositories and benchmark artifacts & Healthy; 300 rows; at cap & Yes\\
+GitHub Organizations & Reviewed organization repositories & Healthy; 4 rows & No\\
+Hugging Face Papers & Community-surfaced papers & Healthy; 0 rows & No\\
+Kaggle Datasets & Public benchmark datasets & Healthy; 32 rows & No\\
+Zenodo & DOI-bearing research artifacts & Healthy; 57 rows & No\\
+OpenReview & Conference submissions & Healthy; no eligible rows & No\\
+GitHub Releases & Curated first-party releases & Healthy; 6 rows & No\\
+OpenAlex & Scholarly discovery metadata & Healthy; 200 rows & No\\
+\bottomrule
+\end{tabularx}
+\caption{Healthy direct discovery connectors at the current cutoff.}
+\label{tab:healthy-connectors}
+\end{table}
+
+The first-party feed inventory (Table \ref{tab:first-party-feeds}) lists institution-operated research or engineering feeds monitored in addition to the discovery connectors. These feeds are not benchmark entries by themselves; they are upstream routes that can surface new benchmark papers, datasets, model announcements, or engineering posts. The feed collector yielded one relevant record at the current cutoff. Some healthy feeds produced zero matches after relevance filtering, and domain-constrained searches cover organizations that lack a verified feed.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{Y Y}
+\toprule
+\textbf{Feeds 1-12} & \textbf{Feeds 13-24}\\
+\midrule
+Meituan Engineering & Ai2\\
+OpenAI News & Together AI\\
+Google AI & Sakana AI\\
+Google DeepMind & Qwen\\
+Google Research & Ollama\\
+Apple Machine Learning Research & Stability AI\\
+AWS Machine Learning & Nomic AI\\
+Hugging Face Blog & Replicate\\
+Microsoft Research & NVIDIA Developer\\
+NVIDIA AI Blog & IBM Research\\
+Mistral AI & Databricks\\
+Meta Research & LangChain\\
+\bottomrule
+\end{tabularx}
+\caption{First-party research and engineering feeds monitored by Benchmark Radar.}
+\label{tab:first-party-feeds}
+\end{table}
+
+\section{Internal Supporting Documents}
+\label{app:internal-documents}
+
+The source materials (Table \ref{tab:internal-supporting-documents}) include internal Benchmark Radar documents used to audit the release. These documents are part of the project history and data-validation trail; they are not treated as external benchmark-search baselines in the main text.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.24\textwidth}Y Y}
+\toprule
+\textbf{Document} & \textbf{Use in the release} & \textbf{Date limit}\\
+\midrule
+Landscape document, 31 Jul & Dated study of benchmark sightings, artifacts, and agentic-evaluation records. & Totals stop on 31 July, before the external catalog import and newer connectors.\\
+Source probes, 27 Aug & Endpoint checks for Hugging Face Papers, Kaggle, Spaces, and Zenodo. & Records one source-health probe on 27 August.\\
+External catalog audit & Review of OpenCompass identity fields and score-heavy catalog inputs. & Keeps same-name records separate until identity review.\\
+Daily briefing & Triage notes with citations and source-health context. & Each edition covers one collection window.\\
+\bottomrule
+\end{tabularx}
+\caption{Internal supporting documents used for project-history and data-validation context.}
+\label{tab:internal-supporting-documents}
+\end{table}
+
+\section{Reproducibility, Access, and Citation}
+
+This paper evaluates Benchmark Radar \reportversion{} at Git commit \gitcommit{} and data cutoff \datacutoff{}. The release process replays validated snapshots into the cumulative corpus, normalizes external catalogs, classifies benchmark tracks, and packages a checksummed data release. Installed clients switch to a new data version only after checksum and schema validation. The \reportversion{} paper was generated from a clean rebuild with linting, formatting checks, external normalization, KW-Bench classification, release construction, and the full test suite; all 1,028 tests passed. Citation metadata is exposed through a DOI and a Citation File Format record, following software-citation practice \citep{smith2016,katz2021,cff}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.28\textwidth}Y}
+\toprule
+\textbf{Artifact} & \textbf{Canonical or permanent location}\\
+\midrule
+Archived paper & \url{https://doi.org/10.5281/zenodo.22167102}\\
+Source code & \url{https://github.com/ktwu01/benchmark-radar}\\
+Dashboard & \url{https://benchmark-radar.org/}\\
+Cumulative JSON & \url{https://benchmark-radar.org/data/radar.json}\\
+Benchmark catalog & \url{https://benchmark-radar.org/data/benchmark-index.json}\\
+RSS & \url{https://benchmark-radar.org/feed.xml}\\
+Citation metadata & \url{https://github.com/ktwu01/benchmark-radar/blob/main/CITATION.cff}\\
+\bottomrule
+\end{tabularx}
+\caption{Access and citation artifacts for Benchmark Radar.}
+\label{tab:access-artifacts}
+\end{table}
+
+Counts were recomputed from \texttt{site/data/radar.json}, \texttt{site/data/benchmark-index.json}, \texttt{site/data/models.json}, \texttt{data/model\_cards.yml}, \texttt{data/benchmark\_scores.yml}, normalized files under \texttt{data/external/}, and \texttt{config.yml}. The paper is a dated interpretation. The rolling dashboard may change after the cutoff; cite its current number with a retrieval date.
+
+% \section{Licensing}
+% Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
+% Commercial republication, resale, paid newsletters, dataset packaging, or commercial
+% product integration requires prior written permission from Koutian Wu. Third-party
+% source material remains under its original terms.
+
+\end{document}
