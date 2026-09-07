@@ -5,7 +5,7 @@
 \foreach \x in {123,246,369} {\draw[white,line width=.6bp] (\x,83) -- (\x,141);}
 \foreach \x/\value/\label in {
   62/\ReportObservationCount/{source observations\\across \ReportSnapshotCount{} snapshots},
-  185/\ReportArtifactCount/{unique artifacts in the\\cumulative evidence graph},
+  185/\ReportArtifactCount/{artifacts grouped by\\matching identifiers},
   308/\ReportCatalogCount/{searchable benchmark\\records, including unscored},
   430/\ReportCatalogSourceCount/{catalog sources\\with source labels retained}} {
   \node[text=RadarNavy,font=\sffamily\bfseries\fontsize{21}{23}\selectfont] at (\x,123) {\ReportNumber{\value}};
@@ -13,7 +13,7 @@
 }
 \draw[fill=RadarPaleAmber,draw=RadarAmber,line width=.6bp] (1,18) rectangle (491,69);
 \node[anchor=west,text width=466bp,text=RadarNavy,font=\sffamily\bfseries\fontsize{10}{13}\selectfont] at (13,44)
-  {Benchmark Radar brings daily discoveries, catalog search, model-report adoption, and sourced scores into one place. Each count measures a different kind of evidence.};
+  {An observation is a collected source record. Matching identifiers link observations to artifacts. The catalog counts benchmark records separately for each source.};
 \node[text=RadarMuted,font=\sffamily\itshape\fontsize{7}{9}\selectfont] at (246,7)
   {Data cutoff: \ReportDataCutoff. Catalog records and discovery observations are separate units.};
 \end{tikzpicture}
