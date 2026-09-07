@@ -310,8 +310,8 @@ The source materials (Table \ref{tab:internal-supporting-documents}) include int
 \toprule
 \textbf{Document} & \textbf{Use in the release} & \textbf{Date limit}\\
 \midrule
-Landscape document, 31 Jul & Dated study of benchmark sightings, artifacts, and agentic-evaluation records. & Totals stop on 31 July, before the external catalog import and newer connectors.\\
-Source probes, 27 Aug & Endpoint checks for Hugging Face Papers, Kaggle, Spaces, and Zenodo. & Records one source-health probe on 27 August.\\
+Landscape document, 31 July 2026 & Dated study of benchmark sightings, artifacts, and agentic-evaluation records. & Totals stop on 31 July 2026, before the external catalog import and newer connectors.\\
+Source probes, 27 August 2026 & Endpoint checks for Hugging Face Papers, Kaggle, Spaces, and Zenodo. & Records one source-health probe on 27 August 2026.\\
 External catalog audit & Review of OpenCompass identity fields and score-heavy catalog inputs. & Keeps same-name records separate until identity review.\\
 Daily briefing & Triage notes with citations and source-health context. & Each edition covers one collection window.\\
 \bottomrule
@@ -325,9 +325,9 @@ Daily briefing & Triage notes with citations and source-health context. & Each e
 
 Section~\ref{sec:results} reports that eight bounded metrics sit within five points of their ceiling. This appendix gives the protocol controls behind that statement, because a raw best value and a repeat-controlled value answer different questions.
 
-\emph{Raw headroom} is the distance from the single highest reported value to the metric bound. \emph{Repeat-controlled headroom} uses only the closest series whose instrument and protocol are identical across at least two dates. Scores are grouped into a stratum solely when instrument and protocol match; differences in attempts, tool access, reasoning budget, judge, or temporal split keep readings in separate strata. Two dates support a paired comparison, not a field-wide trend.
+Every metric in this appendix is scored on a percentage scale whose bound is 100, so headroom is measured against that ceiling. \emph{Raw headroom} is the distance from the single highest reported value to the metric bound. \emph{Repeat-controlled headroom} uses only the closest series whose instrument and protocol are identical across at least two dates. Scores are grouped into a stratum solely when instrument and protocol match; differences in attempts, tool access, reasoning budget, judge, or temporal split keep readings in separate strata. Two dates support a paired comparison, not a field-wide trend.
 
-All 8 raw best readings come from a setup that appears on a single date. 4 of the eight benchmarks have a different setup repeated across dates, and each of those repeated setups is a two-date, single-organization pair. The remaining 4 have no repeated setup at all, so their headroom cannot be assessed under repeat control.
+All eight raw best readings come from a setup that appears on a single date. Four of the eight benchmarks have a different setup repeated across dates, and each of those repeated setups is a two-date, single-organization pair. The remaining four have no repeated setup at all, so their headroom cannot be assessed under repeat control.
 
 \begin{table}[htbp]
 \centering
