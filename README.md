@@ -2,10 +2,9 @@
 
 [Read the paper](main.pdf) · [Edit the LaTeX](main.tex) · [Benchmark Radar](https://github.com/ktwu01/benchmark-radar)
 
-This repository contains the manuscript, bibliography, dated figure inputs, and
-all images needed to build the Benchmark Radar technical report. The software
-repository includes a reviewed commit of this repository as a Git submodule at
-`docs/technical-report/latex`.
+**Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research** describes how researchers can discover evaluations, retrieve candidates, and inspect their task materials and reported scores. It combines the system and reader workflows with a reproducible census of the full benchmark catalog and concrete, scoped reporting examples.
+
+This repository contains the manuscript, bibliography, dated figure inputs, and all images needed to build the paper independently. The software repository pins a reviewed commit here as its `docs/technical-report/latex` submodule.
 
 ## Data cutoff rule: v0.11.0
 
@@ -113,6 +112,8 @@ paper root:
 ```bash
 python scripts/audit_catalog.py /path/to/benchmark-radar
 python scripts/audit_catalog.py /path/to/benchmark-radar --check
+python scripts/audit_examples.py /path/to/benchmark-radar
+python scripts/audit_examples.py /path/to/benchmark-radar --check
 make arxiv
 ```
 
@@ -143,6 +144,14 @@ together. Push the reviewed paper
 commit before updating the parent pointer below. The full-corpus rules in
 [principle.md](https://github.com/ktwu01/benchmark-radar/blob/main/principle.md)
 apply to paper tables and figures as well as the website.
+
+## Restored reporting examples
+
+`scripts/audit_examples.py` first verifies the entire rebuilt catalog against the frozen census. It then exports `example-data.tex` and `evidence/restored-examples.json`, retaining input hashes, every record's headroom eligibility, exact score observation IDs and settings, and the cited documents behind mentions and date gaps. Metric names come from the frozen score archive through exact model-report record keys; this join adds no records or scores.
+
+The frozen evidence supports 16 benchmark records mentioned by at least six organizations in the 37-report collection; eight near-ceiling records among 82 with eligible declared percentage scales; and six report-publication gaps of at least 180 days. The other 708 scored records and 493 unscored records remain accounted for. All eight near-ceiling records happen to come from Model reports after applying the same eligibility rule to the full catalog. These observations describe the archive, without establishing saturation, repeated-run controls, or field-wide adoption.
+
+The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. The full linked census appears in Results. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
 
 ## Updating the paper used by Benchmark Radar
 
