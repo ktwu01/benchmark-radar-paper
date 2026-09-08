@@ -170,7 +170,7 @@ The previous reporting tables restricted the main findings to a report-document 
 
 The cutoff and released input hashes are unchanged. Paper CI checks generated findings against the checksummed v0.11.0 archive before compiling the manuscript. Run `python -m pytest -q tests` for population, missing-evidence, and numeric-warning regression cases. The obsolete `example-data.tex`, its `audit_examples.py` generator, and `evidence/restored-examples.json` have been removed; Git history preserves that earlier subset.
 
-The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. Figure 3 uses the supplied Humanity’s Last Exam interface snapshot, linked to its interactive view. The full linked census appears in the appendix. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
+The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. The Results section uses the supplied Humanity’s Last Exam interface snapshot, linked to its interactive view. The full linked census appears in the appendix. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
 
 ## Updating the paper used by Benchmark Radar
 
