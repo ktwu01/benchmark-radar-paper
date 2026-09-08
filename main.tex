@@ -237,7 +237,7 @@ MATH-500 & 2025-05-14 & 2026-04-22 & 343\\
 \subsection{Near-Ceiling Reported Scores}
 \label{sec:headroom}
 
-Eight of the 86 model-report benchmark tracks had a highest archived score within five points of a 100-point ceiling. Table~\ref{tab:reported-headroom} retains the model and evaluation settings behind each value. Headroom is the metric's upper bound minus the reported score. For example, GLM-5.2 scored 99.2 on AIME 2026, leaving 0.8 points, while Gemini 3.1 Pro scored 99.3 on the Telecom domain of tau2-bench, leaving 0.7 points. These results identify test settings where further gains have little room on the reported scale.
+Eight of the 86 model-report benchmark tracks had a highest archived score within five points of a 100-point ceiling.\footnote{Junjie Zhou prepared the score-archive audit and report revisions underlying this analysis, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}.} Table~\ref{tab:reported-headroom} retains the model and evaluation settings behind each value. Headroom is the metric's upper bound minus the reported score. For example, GLM-5.2 scored 99.2 on AIME 2026, leaving 0.8 points, while Gemini 3.1 Pro scored 99.3 on the Telecom domain of tau2-bench, leaving 0.7 points. These results identify test settings where further gains have little room on the reported scale.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -276,6 +276,9 @@ Task-level coverage is incomplete. The capability-classification component, KW-B
 \section{Conclusion}
 
 Benchmark Radar makes \ReportNumber{\ReportCatalogCount} benchmark records searchable alongside their sources, model-report mentions, and score histories. The reporting evidence identifies widely used tests, near-ceiling results, and benchmarks whose score coverage has fallen behind later mentions. Researchers can use these records to assemble prior art, inspect evaluation settings, and target missing evidence for review. The next priorities are broader retrieval evaluation, task-capability labels, and more complete protocol capture from primary reports.
+
+\medskip
+\noindent\textit{Author note.} Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Ergan Shang prepared figures and contributed copyediting. Pengqian Han contributed copyediting.
 
 \begingroup
 \small
@@ -419,12 +422,7 @@ Figure~\ref{fig:use-case-manual-table} shows a comparison table from an earlier 
 \end{minipage}
 \end{center}
 
-This case records one workflow combining Benchmark Radar with web search; it has no measured time or accuracy comparison. The summary table and session evidence are available in the project's public \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
-
-\section{Contributor Credit}
-\label{app:contributor-credit}
-
-Junjie Zhou prepared the score-archive audit and report revisions underlying the near-ceiling analysis in Section~\ref{sec:headroom}, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}. Jiayu Wang contributed the worked use case in Appendix~\ref{app:use-case} and its supporting evidence, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
+This case records one workflow combining Benchmark Radar with web search; it has no measured time or accuracy comparison.\footnote{Jiayu Wang contributed this worked use case and its supporting evidence.} The summary table and session evidence are available in the project's public \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
 
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
