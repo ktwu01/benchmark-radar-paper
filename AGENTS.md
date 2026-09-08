@@ -20,3 +20,18 @@
   before advancing the software repository's pointer. Do not add submodules or
   symlinks here: this repository must be importable by Overleaf.
 - Merge pull requests with a merge commit; never squash-merge.
+
+## Full-catalog findings
+
+- Read the software repository's `principle.md` before revising benchmark claims.
+  Start from every source record in a cleanly rebuilt shared catalog.
+- Use `scripts/audit_catalog.py` to refresh `catalog-data.tex` and
+  `evidence/catalog-audit.json`; its `--check` mode must pass against that rebuild.
+  Refresh `figure-data.tex` only with the software exporter as described above.
+- A statistic may require a score, scale, date, or protocol. State its eligible
+  coverage and keep records with missing measurements in the population census.
+  Do not substitute a model-report-only audit for the paper's main findings.
+- Distinct scored models, numeric observations, and cited documents are different
+  units. Preserve source-record identities; do not sum similarly named records.
+- Keep one mark per source record in the corpus overview and preserve its detail
+  link when building the manuscript. Check the links against the census IDs.

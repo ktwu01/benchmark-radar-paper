@@ -1,0 +1,13 @@
+\documentclass{article}
+\usepackage[paperwidth=496bp,paperheight=222bp,margin=2bp]{geometry}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\usepackage{tikz}
+\usepackage{helvet}
+\usepackage[hidelinks]{hyperref}
+\input{../figure-data.tex}
+\input{../catalog-data.tex}
+\newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
+\begin{document}
+\resizebox{\linewidth}{!}{\input{corpus-evidence-body.tex}}
+\end{document}

@@ -1,26 +1,18 @@
 \def\FigureWidth{492bp}
-\def\FigureHeight{82bp}
+\def\FigureHeight{124bp}
 \input{figure-style.tex}
-\foreach \i/\title/\caption in {
-  0/DISCOVER/{public sources},
-  1/VALIDATE/{source health + format},
-  2/RESOLVE/{exact identifiers},
-  3/INTERPRET/{classify + prioritize},
-  4/PUBLISH/{web, RSS, JSON},
-  5/QUERY/{offline CLI + HTTP}} {
-  \pgfmathsetmacro{\left}{1+83*\i}
-  \ifodd\i\def\boxfill{RadarPaleTeal}\def\boxstroke{RadarTeal}
-  \else\def\boxfill{RadarSky}\def\boxstroke{RadarBlue}\fi
-  \draw[rounded corners=6bp,fill=\boxfill,draw=\boxstroke,line width=.9bp]
-    (\left,26) rectangle +(75,54);
-  \node[text=RadarNavy,font=\sffamily\bfseries\fontsize{7.1}{9}\selectfont] at (\left+37.5,61) {\title};
-  \node[text=RadarMuted,font=\sffamily\fontsize{5.8}{8}\selectfont] at (\left+37.5,44) {\caption};
-  \ifnum\i<5
-    \draw[-{Triangle[length=3bp,width=5bp]},RadarAmber,line width=1.2bp]
-      (\left+76,53) -- (\left+82,53);
-  \fi
+\foreach \y/\title/\subtitle in {91/{BENCHMARK CATALOG}/{registries + model reports},34/{DISCOVERY HISTORY}/{dated mention + release snapshots}} {
+ \draw[rounded corners=4bp,fill=RadarSky,draw=RadarBlue] (1,\y-22) rectangle (182,\y+22);
+ \node[text=RadarNavy,font=\sffamily\bfseries\fontsize{9}{11}\selectfont] at (91,\y+7) {\title};
+ \node[text=RadarMuted,font=\sffamily\fontsize{8}{10}\selectfont] at (91,\y-9) {\subtitle};
+ \draw[-{Triangle[length=4bp,width=5bp]},RadarAmber,line width=1.2bp] (184,\y) -- (216,\y);
 }
-\node[text=RadarMuted,font=\sffamily\itshape\fontsize{6.9}{9}\selectfont] at (246,10)
-  {Dated source records and fixed collection settings make the results reproducible.};
+\draw[rounded corners=4bp,fill=RadarPaleTeal,draw=RadarTeal] (218,12) rectangle (351,113);
+\node[align=center,text=RadarNavy,font=\sffamily\bfseries\fontsize{10}{14}\selectfont] at (284,85) {SHARED EVIDENCE};
+\node[align=center,text=RadarMuted,font=\sffamily\fontsize{8}{13}\selectfont] at (284,51)
+ {source-record IDs\\scores, models, citations\\links to discovery evidence};
+\draw[-{Triangle[length=4bp,width=5bp]},RadarAmber,line width=1.2bp] (353,62) -- (373,62);
+\node[align=center,text=RadarNavy,font=\sffamily\bfseries\fontsize{9}{15}\selectfont] at (433,69) {WEB + DOWNLOADS\\OFFLINE QUERY};
+\node[text=RadarMuted,font=\sffamily\fontsize{7.5}{10}\selectfont] at (433,38) {same benchmark IDs};
 \end{tikzpicture}
 \end{document}

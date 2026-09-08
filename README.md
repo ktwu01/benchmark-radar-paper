@@ -71,10 +71,42 @@ and writes this repository's `figure-data.tex` through the submodule. Its header
 records the input SHA-256 hashes; `--check` verifies the complete export against
 those local inputs. Do not edit the numbers or hashes by hand.
 
-Review the new cutoff and numbers, update affected prose in `main.tex`, then
-rebuild and inspect the figures and PDF. Commit and push the reviewed paper
-changes before updating the parent pointer below. Normal paper builds do not
-refresh numbers automatically.
+The paper's full-catalog census uses those same rebuilt records. After copying
+the software-generated `figure-data.tex` into this paper checkout, run from the
+paper root:
+
+```bash
+python scripts/audit_catalog.py /path/to/benchmark-radar
+python scripts/audit_catalog.py /path/to/benchmark-radar --check
+make arxiv
+```
+
+The script reads the complete index, all its detail shards, the shared model
+and document registries, and discovery snapshots. It writes `catalog-data.tex`
+and `evidence/catalog-audit.json`, with one audit row per source record and
+SHA-256 hashes of its inputs. It checks record IDs, observation uniqueness,
+model and document counts, and scored/unscored reconciliation. Missing or
+malformed artifacts fail visibly. It preserves source identities and applies
+the same measurement rules across sources.
+
+`figures/corpus-evidence-body.tex` draws one linked mark per census record.
+The manuscript includes that TikZ source directly so the PDF keeps the links;
+`figures/corpus-evidence.pdf` provides a standalone figure. Normal paper builds
+use the committed data and require no software checkout.
+
+The current audit uses software commit
+[`8f46bbf`](https://github.com/ktwu01/benchmark-radar/commit/8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0)
+and a **2026-09-07** discovery cutoff. Registry snapshots retain their August
+collection dates. The census has 1,283 source records, including 790 scored and
+493 unscored records, with 12,916 numeric observations. Of the unscored records,
+464 provide artifact links. These counts preserve separate source records for
+related benchmarks; they do not count distinct underlying tests.
+
+Review the cutoff, prose, figures, and rendered PDF together. Commit the analysis
+outputs, figure sources and PDFs, and `main.pdf` together. Push the reviewed paper
+commit before updating the parent pointer below. The full-corpus rules in
+[principle.md](https://github.com/ktwu01/benchmark-radar/blob/main/principle.md)
+apply to paper tables and figures as well as the website.
 
 ## Updating the paper used by Benchmark Radar
 
