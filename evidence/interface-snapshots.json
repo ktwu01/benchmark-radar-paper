@@ -4,9 +4,9 @@
   "snapshots": [
     {
       "asset": "figures/leaderboard-frontier.png",
-      "sha256": "74b3a1e0112dab39b67b9f321ff196ced8673f57487815b39972945c47287fb3",
+      "sha256": "ff445640c1d06e59abf00f9e2ee6f474071b2b4a819bc193976af858d7ffe583",
       "interactive_url": "https://benchmark-radar.org/leaderboard/",
-      "origin": "User-supplied screenshot; capture timestamp not supplied",
+      "origin": "User-supplied screenshot captured 2026-09-08 10:58:18 America/Chicago",
       "scope": "Interface illustration of the scored, dated benchmark view; the full population remains in the main coverage tables and appendix census. Hollow markers indicate unverified scales or counts; dotted outlines indicate model-release date proxies. Image labels alone do not identify exact source records."
     },
     {
