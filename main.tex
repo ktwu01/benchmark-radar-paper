@@ -138,7 +138,7 @@ The pipeline provides five operational capabilities. Reproducibility is supporte
 
 Benchmark Radar treats provenance as more important than aggressive merging. The resolver merges observations when they share a DOI, arXiv identifier, OpenReview identifier, GitHub repository, or Hugging Face artifact. Similar titles alone do not force a merge; they remain separate until review confirms that they describe the same artifact. This conservative identity policy reduces false joins, but it also means that plausible duplicates remain visible when a benchmark appears across papers, repositories, and catalogs without a common identifier.
 
-Search covers four catalog sources, as summarized in Table~\ref{tab:search-layers}: LLM Stats, OpenCompass Hub, Artificial Analysis, and Model reports (see Appendix \ref{app:internal-documents}). The resulting search index contains \ReportNumber{\ReportCatalogCount} source records, including \ReportModelReportCount{} model-report benchmarks. Of these model-report benchmarks, 86 have reported scores and 24 have no scores; both groups remain searchable. The Search box queries all four sources together while preserving each row's source label. Search is lexical and reproducible. It ranks exact names, phrase matches, and field-token matches, and every result preserves its source label. Priority scoring for daily triage combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. The scoring recipe ships with the data, so downstream users can interpret a priority score alongside the snapshot that produced it.
+Search covers four catalog sources, as summarized in Table~\ref{tab:search-layers}: LLM Stats, OpenCompass Hub, Artificial Analysis, and Model reports. The resulting search index contains \ReportNumber{\ReportCatalogCount} source records, including \ReportModelReportCount{} model-report benchmarks. Of these model-report benchmarks, 86 have reported scores and 24 have no scores; both groups remain searchable. The Search box queries all four sources together while preserving each row's source label. Search is lexical and reproducible. It ranks exact names, phrase matches, and field-token matches, and every result preserves its source label. Priority scoring for daily triage combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. The scoring recipe ships with the data, so downstream users can interpret a priority score alongside the snapshot that produced it.
 
 \begin{table}[htbp]
 \centering
@@ -211,7 +211,7 @@ The conservative identity resolver produced high provenance but low corroboratio
 
 \subsection{Relationship to Existing Catalogs}
 
-The externally comparable sources in this paper are the three catalog layers that Benchmark Radar normalizes: LLM Stats, OpenCompass Hub, and Artificial Analysis. These projects have different goals. LLM Stats publishes live benchmark rankings and benchmark-family pages \citep{llmstats2026benchmarks}; OpenCompass is primarily an evaluation platform with a searchable dataset-statistics page \citep{opencompass2026datasetstatistics}; and Artificial Analysis publishes model evaluations and a documented intelligence-benchmarking methodology \citep{artificialanalysis2026methodology}. Internal project-history documents are used only as supporting materials and are summarized in Appendix~\ref{app:internal-documents}.
+The externally comparable sources in this paper are the three catalog layers that Benchmark Radar normalizes: LLM Stats, OpenCompass Hub, and Artificial Analysis. These projects have different goals. LLM Stats publishes live benchmark rankings and benchmark-family pages \citep{llmstats2026benchmarks}; OpenCompass is primarily an evaluation platform with a searchable dataset-statistics page \citep{opencompass2026datasetstatistics}; and Artificial Analysis publishes model evaluations and a documented intelligence-benchmarking methodology \citep{artificialanalysis2026methodology}.
 
 Benchmark Radar uses these catalog sources as inputs rather than competitors. Quantitatively, the current index contains \ReportLLMStatsCount{} records from LLM Stats, \ReportOpenCompassCount{} from OpenCompass Hub, \ReportArtificialAnalysisCount{} from Artificial Analysis, and \ReportModelReportCount{} from Model reports, yielding \ReportNumber{\ReportCatalogCount} searchable source records. Records without scores remain in this total; source membership does not establish a trust ranking. A strict head-to-head comparison would be misleading because row definitions, refresh cadence, source coverage, and score protocols differ across systems. The meaningful comparison in this paper is therefore functional: Benchmark Radar adds source-linked daily discovery, exact-identifier artifact resolution, model-card adoption evidence, and protocol-aware score curation on top of the external catalog inputs.
 
@@ -299,28 +299,6 @@ Meta Research & LangChain\\
 \end{tabularx}
 \caption{First-party research and engineering feeds monitored by Benchmark Radar.}
 \label{tab:first-party-feeds}
-\end{table}
-
-\section{Internal Supporting Documents}
-\label{app:internal-documents}
-
-The source materials (Table \ref{tab:internal-supporting-documents}) include internal Benchmark Radar documents used to audit the release. These documents are part of the project history and data-validation trail; they are not treated as external benchmark-search baselines in the main text.
-
-\begin{table}[htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.24\textwidth}Y Y}
-\toprule
-\textbf{Document} & \textbf{Use in the release} & \textbf{Date limit}\\
-\midrule
-Landscape document, 31 July 2026 & Dated study of benchmark sightings, artifacts, and agentic-evaluation records. & Totals stop on 31 July 2026, before the external catalog import and newer connectors.\\
-Source probes, 27 August 2026 & Endpoint checks for Hugging Face Papers, Kaggle, Spaces, and Zenodo. & Records one source-health probe on 27 August 2026.\\
-External catalog audit & Review of OpenCompass identity fields and score-heavy catalog inputs. & Keeps same-name records separate until identity review.\\
-Daily briefing & Triage notes with citations and source-health context. & Each edition covers one collection window.\\
-\bottomrule
-\end{tabularx}
-\caption{Internal supporting documents used for project-history and data-validation context.}
-\label{tab:internal-supporting-documents}
 \end{table}
 
 \section{Protocol-Controlled Saturation Audit}
