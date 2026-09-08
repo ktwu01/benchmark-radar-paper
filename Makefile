@@ -15,7 +15,7 @@ figures/%.pdf: figures/%.tex figures/figure-style.tex figure-data.tex catalog-da
 
 figures/corpus-evidence.pdf: figures/corpus-evidence-body.tex
 
-main.pdf: main.tex references.bib figure-data.tex catalog-data.tex example-data.tex figures/corpus-evidence-body.tex $(FIGURE_PDFS) $(wildcard figures/*.png) Makefile
+main.pdf: main.tex references.bib figure-data.tex catalog-data.tex findings-data.tex figures/corpus-evidence-body.tex $(FIGURE_PDFS) $(wildcard figures/*.png) Makefile
 	$(LATEXMK) -g -pdf -interaction=nonstopmode -halt-on-error main.tex
 
 # arXiv runs no BibTeX pass. Ship main.bbl, the dated numbers, native drawings,
@@ -24,7 +24,7 @@ arxiv: main.pdf
 	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
 	rm -rf build/arxiv
 	mkdir -p build/arxiv/figures
-	cp main.tex main.bbl figure-data.tex catalog-data.tex example-data.tex build/arxiv/
+	cp main.tex main.bbl figure-data.tex catalog-data.tex findings-data.tex build/arxiv/
 	cp $(FIGURE_PDFS) $(FIGURE_SOURCES) figures/figure-style.tex figures/corpus-evidence-body.tex figures/*.png build/arxiv/figures/
 	tar -czf arxiv.tar.gz -C build/arxiv .
 

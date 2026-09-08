@@ -42,7 +42,7 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \input{figure-data.tex}
 \input{catalog-data.tex}
-\input{example-data.tex}
+\input{findings-data.tex}
 \newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
 \newcommand{\datacutoff}{\ReportDataCutoff}
 \newcommand{\gitcommit}{8f46bbf}
@@ -86,7 +86,7 @@ Benchmarks differ in the abilities they test. Broad evaluations of knowledge and
 
 Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. Benchmark RADAR centers on benchmark retrieval and discovery, combining these catalog records with daily discovery, mentions in model reports, and scores with documented evaluation settings and sources.
 
-Benchmark RADAR gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores. We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, adoption in model reports, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
+Benchmark RADAR gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores. We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, documentation and scored-model coverage across all catalog sources, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
 
 The system preserves one record per source benchmark, including entries without scores, dates, or citations. Reviewed identity links connect related records while retaining their separate measurements. We contribute this living search system, shared web and offline access to its evidence, and a reproducible full-catalog census. The census establishes the coverage behind the examples: \CensusNoScoreWithLinks{} unscored records still link to task materials, and score comparisons require explicit scale, date, and protocol checks. Section~\ref{sec:worked-example} shows how a contributor used retrieval and source inspection to assemble prior art.
 
@@ -193,7 +193,7 @@ Figure~\ref{fig:hle-scores} shows how a retrieved benchmark opens into reported 
 \begin{figure}[tp]
 \centering
 \href{https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}{\includegraphics[width=\textwidth]{hle-score-history.png}}
-\caption{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains 577 reported scores; the highest displayed score is 55.47. Marks identify model organizations, and the line connects successive best scores ordered by model release date. These are not evaluation dates: older models can be tested after a benchmark's release. The snapshot illustrates score inspection, without establishing matched evaluation settings or a validated percentage ceiling. Click the image to open the interactive view.}
+\caption{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. These are not evaluation dates: older models can be tested after a benchmark's release. The snapshot illustrates score inspection, without establishing matched evaluation settings or a validated percentage ceiling. Click the image to open the interactive view.}
 \label{fig:hle-scores}
 \end{figure}
 
@@ -222,9 +222,9 @@ Of the \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} have at lea
 
 \subsection{Document Counts Do Not Measure Model Coverage}
 
-The common document registry contains \ReportNumber{\CensusDocuments} distinct cited documents, attached to \ReportNumber{\CensusDocumentsKnown} of the \ReportNumber{\CensusRecords} benchmark records. Five records have no cited documents. The shared model registry contains \CensusModels{} model identities. Within the catalog, all \CensusScored{} scored records have sufficient model IDs to count distinct models; unscored records have unknown scored-model coverage.
+The common document registry contains \ReportNumber{\CensusDocuments} distinct cited documents, attached to \ReportNumber{\CensusDocumentsKnown} of the \ReportNumber{\CensusRecords} benchmark records. \FindingsMissingDocuments{} records have no cited documents. The shared model registry contains \CensusModels{} model identities. Within the catalog, all \CensusScored{} scored records have sufficient model IDs to count distinct models; unscored records have unknown scored-model coverage.
 
-Table~\ref{tab:model-document-coverage} illustrates why these counts cannot substitute for one another. The Artificial Analysis record for GPQA Diamond contains scores for 586 models and cites one registry page. The Model reports record cites 27 documents and contains 21 numeric observations for 19 models. Both describe useful evidence, but adding their counts would require reviewed model and evaluation identities. Neither row alone measures adoption across the field.
+Table~\ref{tab:model-document-coverage} illustrates why these counts cannot substitute for one another. The Artificial Analysis record for GPQA Diamond contains scores for \FindingsGpqaAAModels{} models and cites \FindingsGpqaAADocuments{} registry page. The Model reports record cites \FindingsGpqaReportsDocuments{} documents and contains \FindingsGpqaReportsScores{} numeric observations for \FindingsGpqaReportsModels{} models. Both describe useful evidence, but adding their counts would require reviewed model and evaluation identities. Neither row alone measures adoption across the field.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -233,11 +233,7 @@ Table~\ref{tab:model-document-coverage} illustrates why these counts cannot subs
 \toprule
 \textbf{Benchmark record} & \textbf{Source} & \textbf{Models} & \textbf{Documents} & \textbf{Scores}\\
 \midrule
-GPQA Diamond & Artificial Analysis & 586 & 1 & 586\\
-GPQA Diamond & Model reports & 19 & 27 & 21\\
-Humanity's Last Exam & Artificial Analysis & 577 & 1 & 577\\
-SciCode & Artificial Analysis & 577 & 1 & 577\\
-CritPt & Artificial Analysis & 492 & 1 & 492\\
+\FindingsModelDocumentRows
 \bottomrule
 \end{tabularx}
 \captionof{table}{One cited page can document hundreds of scored models. Models count distinct source model IDs within a record; documents count distinct citation IDs; scores count numeric observations. These selected examples illustrate the units. The census retains all source records.}
@@ -245,7 +241,7 @@ CritPt & Artificial Analysis & 492 & 1 & 492\\
 \end{minipage}
 \end{center}
 
-Table~\ref{tab:model-document-coverage} also records 577 scored models for Humanity's Last Exam and SciCode, and 492 for CritPt, each under one Artificial Analysis citation. Reading that citation count as model coverage would hide the measured breadth of those records.
+Table~\ref{tab:model-document-coverage} also records \FindingsHleAAModels{} scored models for Humanity's Last Exam, \FindingsSciCodeAAModels{} for SciCode, and \FindingsCritPtAAModels{} for CritPt, each under one Artificial Analysis citation. Reading that citation count as model coverage would hide the measured breadth of those records.
 
 \subsection{Numeric Scores Often Lack a Verified Common Scale}
 
@@ -270,7 +266,7 @@ Full population & \ReportNumber{\CensusRecords} & Every source record remains in
 \end{minipage}
 \end{center}
 
-The catalog records benchmark release dates for \CensusReleaseKnown{} records, leaving 668 without a release date. Across score observations, 12,594 entries carry model-announcement dates and 322 carry document-publication dates. Neither date basis directly establishes an evaluation date. This archive therefore cannot support a catalog-wide claim about score stagnation from a gap between model-report mentions and score-entry dates. Researchers must first establish dates and comparable evaluation settings for the relevant source records.
+The catalog records benchmark release dates for \CensusReleaseKnown{} records, leaving \FindingsMissingRelease{} without a release date. Across score observations, \ReportNumber{\FindingsModelDateScores} entries carry model-announcement dates and \FindingsDocumentDateScores{} carry document-publication dates. Neither date basis directly establishes an evaluation date. This archive therefore cannot support a catalog-wide claim about score stagnation from a gap between model-report mentions and score-entry dates. Researchers must first establish dates and comparable evaluation settings for the relevant source records.
 
 A small gap to a metric ceiling can describe a reported setup. It does not show that a benchmark has exhausted its ability to distinguish models across versions and settings. Catalog-wide headroom or recency estimates require the eligible measurement coverage alongside the statistic.
 
@@ -287,9 +283,9 @@ Figure~\ref{fig:leaderboard-frontier} puts these coverage distinctions into a br
 
 \subsection{Discovery Coverage Alongside the Catalog}
 
-The daily discovery collection contains \ReportNumber{\ReportObservationCount} observations and \ReportNumber{\ReportArtifactCount} artifacts linked by exact identifiers across \ReportSnapshotCount{} snapshots. Four snapshots are simulated historical backfills; their dates describe reconstructed collection windows. These discovery units remain separate from benchmark records.
+The daily discovery collection contains \ReportNumber{\ReportObservationCount} observations and \ReportNumber{\ReportArtifactCount} artifacts linked by exact identifiers across \ReportSnapshotCount{} snapshots. \CensusSimulatedSnapshots{} snapshots are simulated historical backfills; their dates describe reconstructed collection windows. These discovery units remain separate from benchmark records.
 
-Five discovery source labels account for 9,743 of \ReportNumber{\ReportObservationCount} observations (88.0\%). Figure~\ref{fig:source-composition} includes the remaining labels in one aggregate bar. Source caps and collection failures can affect this mix, so it does not estimate the distribution of benchmark research. Fifty-nine of \ReportNumber{\ReportArtifactCount} artifacts have observations from multiple sources; missing or inconsistent identifiers can leave further relationships unresolved.
+Five discovery source labels account for \ReportNumber{\FindingsTopFiveObservations} of \ReportNumber{\ReportObservationCount} observations (\FindingsTopFiveShare\%). Figure~\ref{fig:source-composition} includes the remaining labels in one aggregate bar. Source caps and collection failures can affect this mix, so it does not estimate the distribution of benchmark research. \CensusMultisourceArtifacts{} of \ReportNumber{\ReportArtifactCount} artifacts have observations from multiple sources; missing or inconsistent identifiers can leave further relationships unresolved.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -310,69 +306,77 @@ Figure~\ref{fig:discovery-trends} complements source coverage with the daily rea
 \label{fig:discovery-trends}
 \end{figure}
 
-\subsection{Benchmark Mentions in Model Reports}
+\subsection{Documentation Across All Catalog Sources}
 
-The catalog includes \ExampleReportDocuments{} model reports from \ExampleReportOrganizations{} organizations. Within that document collection, \ExampleAdoptionCount{} benchmark records are mentioned by at least six organizations (Table~\ref{tab:report-mentions}). GPQA Diamond appears in 27 of the 37 documents from 11 organizations. The frequently mentioned records span scientific reasoning, coding, agents, mathematics, and multilingual or multimodal tasks. This describes reporting choices in the collected documents; it does not measure field-wide adoption or establish that different versions of a named benchmark are equivalent.
+The documentation analysis covers all \ReportNumber{\FindingsRecords} benchmark records. It finds \ReportNumber{\CensusDocuments} distinct cited documents supporting \ReportNumber{\CensusDocumentsKnown} records; \FindingsMissingDocuments{} records have no cited document. Table~\ref{tab:report-mentions} includes every source and keeps benchmark records separate from document counts. A registry page and a model report both count as one cited document when attached to a record. Repeated citations to the same document do not increase its count.
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering\small
-\begin{tabular}{lrr}
+\begin{tabularx}{\textwidth}{Y r r r r}
 \toprule
-\textbf{Benchmark record} & \textbf{Documents} & \textbf{Organizations}\\
+\textbf{Source} & \textbf{Records} & \textbf{With docs} & \textbf{Documents} & \shortstack[r]{\textbf{Docs without}\\\textbf{named org.}}\\
 \midrule
-\ExampleAdoptionRows
+\FindingsDocumentRows
+\midrule
+Total & \ReportNumber{\CensusRecords} & \ReportNumber{\CensusDocumentsKnown} & \ReportNumber{\CensusDocuments} & \ReportNumber{\FindingsDocumentsUnknownOrganization}\\
 \bottomrule
-\end{tabular}
-\captionof{table}{Every model-report benchmark record mentioned by at least six organizations. Counts deduplicate document IDs and organization names within each record. This scoped analysis starts from the full catalog; its report evidence covers 105 of the 110 Model reports records. The accompanying audit lists each document and source URL.}
+\end{tabularx}
+\captionof{table}{Documentation across the complete frozen catalog. ``With docs'' counts benchmark records; the last two columns count distinct documents. Missing organization metadata remains unknown. A catalog source label does not identify an organization that evaluated a benchmark.}
 \label{tab:report-mentions}
 \end{minipage}
 \end{center}
 
-\subsection{Near-Ceiling Reported Scores}
+Documentation is widespread, but the frozen evidence does not identify an organization for \ReportNumber{\FindingsDocumentsUnknownOrganization} cited documents. Counting only named report publishers would remove most of this evidence. The complete export retains each document's identity and source URL on its benchmark record, allowing readers to inspect documentation without interpreting it as field-wide adoption.
+
+\subsection{Reported Scores Across the Full Catalog}
 \label{sec:headroom}
 
-Across the full catalog, \ExampleHeadroomEligible{} records declare a percentage scale, have higher-is-better direction, and contain numeric values within 0--100. Of these, \ExampleNearCount{} have a highest archived value within five points of 100. All eight qualifying records come from Model reports; 708 scored records on other or unverified scales and 493 unscored records remain in the census with unknown upper-ceiling headroom. Table~\ref{tab:reported-headroom} gives the model, metric, and recorded settings behind each example.
-
-Headroom is 100 minus the reported value for that setup. It describes the remaining range of its metric, without establishing benchmark saturation or comparing models across settings. The values are maxima within the archived source records, not necessarily the best results in the cited documents or the field. The examples cite the GLM-5.2, GLM-5, Qwen3, Kimi K3, Claude Opus 5, and Gemini 3.1 Pro reports \citep{zai2026glm52card,zai2026glm5card,qwen2025qwen3report,moonshot2026kimik3card,anthropic2026opus5card,google2026gemini31card}.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.17\textwidth}L{0.22\textwidth}rrY}
-\toprule
-\textbf{Benchmark} & \textbf{Model and source} & \textbf{Score} & \textbf{Gap} & \textbf{Metric and recorded settings}\\
-\midrule
-\ExampleNearRows
-\bottomrule
-\end{tabularx}
-\captionof{table}{Highest archived scores for the \ExampleNearCount{} near-ceiling source records. All qualifying records in the full-catalog scale audit are from Model reports. Scores use 0--100 scales; gaps are percentage points below 100. The metrics include accuracy, pass@1, F1, resolved-task rate, and win rate. Each row links to the reporting source registered in the frozen catalog.}
-\label{tab:reported-headroom}
-\end{minipage}
-\end{center}
-
-The test version and settings determine what each small gap means. AIME 2026 and AIME 2024 use different problem sets; the 99.2 result above and the archive's older AIME 2024 result of 79.8 describe different tests. Likewise, the tau2-bench value above concerns Telecom, and the MathVision value includes Python access. Benchmark Radar preserves these details so readers can select the relevant test and inspect the score in context. Comparisons require checking the source documents for matching versions, reasoning budgets, tools, attempts, and evaluators \citep{gebru2021datasheets,mitchell2019modelcards}.
-
-
-\subsection{Later Mentions Identify Gaps in Archived Scores}
-
-Six benchmark records have a later model-report mention at least 180 days after the document supplying their latest archived numeric score (Table~\ref{tab:score-coverage-gaps}). The gaps range from 343 to 775 days. These records give a reader newer reports to inspect for possible score extraction. Both endpoints are recorded document-publication dates, not evaluation dates; revised reports can also acquire mentions after first publication. The intervals describe the archive's document coverage and cannot establish a period without benchmark progress.
+The score analysis retains all \ReportNumber{\FindingsRecords} records and their \ReportNumber{\CensusNumericScores} numeric observations. Table~\ref{tab:reported-headroom} summarizes scored-model coverage for each source. \FindingsBroadModelRecords{} benchmark records contain numeric scores for at least 100 distinct source model IDs. The \CensusOtherNumeric{} records on other or unverified scales contribute their scores and model counts on the same terms as percentage-scale records. The \CensusUnscored{} records without numeric scores remain in the population with unknown scored-model coverage.
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering\small
-\begin{tabular}{lrrr}
+\begin{tabularx}{\textwidth}{Y r r r r r r}
 \toprule
-\textbf{Benchmark} & \textbf{Score document} & \textbf{Mention document} & \textbf{Gap (days)}\\
+\textbf{Source} & \textbf{Records} & \textbf{Scored} & \textbf{Unscored} & \shortstack[r]{\textbf{Score}\\\textbf{rows}} & \shortstack[r]{\textbf{Median}\\\textbf{models}} & \shortstack[r]{\textbf{Max.}\\\textbf{models}}\\
 \midrule
-\ExampleGapRows
+\FindingsScoreRows
+\midrule
+Total & \ReportNumber{\CensusRecords} & \CensusScored{} & \CensusUnscored{} & \ReportNumber{\CensusNumericScores} & & \\
 \bottomrule
-\end{tabular}
-\captionof{table}{All six records meeting the 180-day archive-gap rule. Each date links to its source document. Dates and scores remain attached to the same source record; no similarly named aggregator record supplies a replacement score date.}
+\end{tabularx}
+\captionof{table}{Reported scores across every source in frozen v0.11.0. Models count distinct source model IDs within each benchmark record. Medians and maxima use records with known model counts; unscored records are not assigned zero models. Model counts are not summed across benchmarks. The record-level score export contains every catalog record, including raw maxima, all tied reporting models and citations, units, settings, and explicit missing values.}
+\label{tab:reported-headroom}
+\end{minipage}
+\end{center}
+
+The accompanying \texttt{evidence/catalog-findings.csv} contains one row per benchmark record, with a JSON counterpart retaining detailed evidence. Each scored record has its highest numeric value on the source's native scale and every tied score observation. Units and score direction remain attached to that record; a numeric maximum need not be the best result for a lower-is-better metric. Display multipliers are recorded separately and do not establish a percentage unit. Related benchmark names do not authorize transferring a higher score from another source record.
+
+Percentage headroom remains a separate calculation: 100 minus a record's highest value, only when its unit is explicitly percent, its direction is higher-is-better, and its values stay within 0--100. Missing scale evidence leaves headroom unknown while preserving the scores themselves. The export records eligibility for every benchmark. Test versions, reasoning budgets, tools, attempts, and evaluators must still be checked before comparing results \citep{gebru2021datasheets,mitchell2019modelcards}.
+
+\subsection{Date Evidence Across the Full Catalog}
+
+The date analysis also retains all \ReportNumber{\FindingsRecords} source records. Table~\ref{tab:score-coverage-gaps} separates benchmark release dates from dates attached to numeric observations. A known model announcement date supplies a source-record proxy, not an evaluation date. Missing release dates do not remove scores, and a later report mention does not establish a period without benchmark progress.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{Y r r r r r}
+\toprule
+\textbf{Source} & \textbf{Records} & \shortstack[r]{\textbf{Release}\\\textbf{known}} & \shortstack[r]{\textbf{Doc.-dated}\\\textbf{scores}} & \shortstack[r]{\textbf{Model-dated}\\\textbf{scores}} & \shortstack[r]{\textbf{Undated}\\\textbf{scores}}\\
+\midrule
+\FindingsDateRows
+\midrule
+Total & \ReportNumber{\CensusRecords} & \CensusReleaseKnown{} & \FindingsDocumentDateScores{} & \ReportNumber{\FindingsModelDateScores} & \FindingsUndatedScores{}\\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Date evidence for the complete frozen catalog. The first two numeric columns count benchmark records; the final three count numeric score observations. Release dates and score dates describe different events and must not be added together. Records with no scores remain in the Records column.}
 \label{tab:score-coverage-gaps}
 \end{minipage}
 \end{center}
+
+The exported rows preserve each record's release date and the date basis of its scores. A study of score progress needs actual reporting or evaluation dates and comparable settings for the records being studied. Filtering to documents from one source would miss the bulk of the available scores while leaving these requirements unresolved.
 
 
 \section{Worked Example: Checking Prior Art}
@@ -400,7 +404,7 @@ The census describes this catalog at its recorded cutoff. Collection limits, fai
 
 The study does not measure retrieval precision, task suitability, or time saved. The worked example combines local queries with web search and has no controlled baseline. Lexical matching can miss paraphrases and renamed tasks. Evaluating semantic retrieval \citep{reimers2019sentencebert} will require reviewed relevance judgments across queries and candidate records, including less familiar benchmark families.
 
-The scale and date audit identifies metadata gaps. The restored score and mention examples describe specific archived evidence, without establishing benchmark saturation or score stagnation. Establishing those outcomes requires source review for comparable test versions and settings, and dates tied to actual score reporting or evaluation. Matching archive labels cannot verify independent repeated runs.
+The scale and date audit identifies metadata gaps. The full-catalog score, document, and date analyses retain measurements across all sources, without establishing benchmark saturation or score stagnation. Establishing those outcomes requires source review for comparable test versions and settings, and dates tied to actual score reporting or evaluation. Matching archive labels cannot verify independent repeated runs.
 
 Task-capability classification also remains unvalidated in this rebuild. The deterministic null extractor used in CI assigns no capability levels to its \ReportNumber{\CensusUnclassified} discovery-derived tracks. Completing and evaluating those labels is a separate task from maintaining the benchmark catalog.
 
@@ -408,7 +412,7 @@ Task-capability classification also remains unvalidated in this rebuild. The det
 
 Benchmark RADAR brings daily benchmark discovery, catalog search, model-report mentions, and score histories into one living search engine. Readers can find candidate evaluations, locate task materials, inspect reporting choices, and follow the settings and citations behind a score. Shared benchmark IDs connect the web dashboard, downloadable catalog, and offline query clients.
 
-The frozen release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog census and scoped examples distinguish benchmark records, scored models, cited documents, and numeric observations. Further work should evaluate retrieval with reviewed relevance judgments, resolve missing artifact identities, and recover the protocol and date evidence needed for score comparisons.
+The frozen release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog analyses distinguish benchmark records, scored models, cited documents, and numeric observations.
 
 \section*{Author Contributions}
 \label{sec:author-contributions}
@@ -443,7 +447,7 @@ The score view in Figure~\ref{fig:hle-scores} selects one benchmark. This census
 \section{Collection Settings and Display Filters}
 \label{app:operations}
 
-The \datacutoff{} snapshot records 1,003 fetched rows and 954 candidates after duplicate removal. Of these, 366 qualified for publication and 138 met the recommendation threshold. These are discovery-run counts, separate from the benchmark catalog census. Published evidence retains source URLs, retrieval times, parser versions, identifiers, and payload checksums. Raw responses and credentials remain outside the public artifact.
+The \datacutoff{} snapshot records \ReportNumber{\FindingsRunFetched} fetched rows and \FindingsRunDeduplicated{} candidates after duplicate removal. Of these, \FindingsRunPublished{} qualified for publication and \FindingsRunRecommended{} met the recommendation threshold. These are discovery-run counts, separate from the benchmark catalog census. Published evidence retains source URLs, retrieval times, parser versions, identifiers, and payload checksums. Raw responses and credentials remain outside the public artifact.
 
 Benchmark Frontier, on the Leaderboard tab, requires a numeric score and excludes known pre-2024 benchmarks. It retains scored records with unknown dates or counts through labelled marks, and keeps unverified scales outside Pareto calculations. Its initial score cutoff is 70. The linked score ranking retains its date and numeric-score requirements independently of that cutoff. General catalog search and exports retain the full population. The census in this paper applies none of these display filters.
 
@@ -462,17 +466,17 @@ Table~\ref{tab:healthy-connectors} lists source connectors that completed succes
 \toprule
 \textbf{Connector} & \textbf{Role} & \textbf{Cutoff status} & \textbf{Core}\\
 \midrule
-arXiv & Primary papers via selected AI, language, vision, and software categories & Healthy; 46 rows & Yes\\
-Hugging Face Hub & Datasets and Spaces connected to benchmark artifacts & Healthy; 101 rows & Yes\\
-GitHub Search & Code repositories and benchmark artifacts & Healthy; 300 rows; at cap & Yes\\
-GitHub Organizations & Reviewed organization repositories & Healthy; 6 rows & No\\
-Hugging Face Papers & Community-surfaced papers & Healthy; 26 rows & No\\
-Kaggle Datasets & Public benchmark datasets & Healthy; 30 rows & No\\
-Zenodo & DOI-bearing research artifacts & Healthy; 65 rows & No\\
-Crossref & DOI metadata & Healthy; 180 rows & No\\
+arXiv & Primary papers via selected AI, language, vision, and software categories & Healthy; \FindingsConnectorArxiv{} rows & Yes\\
+Hugging Face Hub & Datasets and Spaces connected to benchmark artifacts & Healthy; \FindingsConnectorHuggingface{} rows & Yes\\
+GitHub Search & Code repositories and benchmark artifacts & Healthy; \FindingsConnectorGithub{} rows; at cap & Yes\\
+GitHub Organizations & Reviewed organization repositories & Healthy; \FindingsConnectorGithubOrganizations{} rows & No\\
+Hugging Face Papers & Community-surfaced papers & Healthy; \FindingsConnectorHuggingfacePapers{} rows & No\\
+Kaggle Datasets & Public benchmark datasets & Healthy; \FindingsConnectorKaggleDatasets{} rows & No\\
+Zenodo & DOI-bearing research artifacts & Healthy; \FindingsConnectorZenodo{} rows & No\\
+Crossref & DOI metadata & Healthy; \FindingsConnectorCrossref{} rows & No\\
 OpenReview & Conference submissions & Healthy; no eligible rows & No\\
-GitHub Releases & First-party releases & Healthy; 1 row & No\\
-OpenAlex & Scholarly discovery metadata & Healthy; 248 rows & No\\
+GitHub Releases & First-party releases & Healthy; \FindingsConnectorGithubReleases{} row & No\\
+OpenAlex & Scholarly discovery metadata & Healthy; \FindingsConnectorOpenalex{} rows & No\\
 \bottomrule
 \end{tabularx}
 \captionof{table}{Healthy direct discovery connectors at the current cutoff.}
@@ -575,7 +579,7 @@ This case records one workflow combining Benchmark Radar with web search; it has
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
-This revision uses the frozen \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. All 1,314 tests passed. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
+This revision uses the frozen \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
 
 The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff}.
 
@@ -606,7 +610,7 @@ The census reads \texttt{site/data/benchmark-index.json}, the detail shards unde
 
 The paper repository contains \texttt{scripts/audit\_catalog.py}, which validates IDs and counts, computes the census, and exports \texttt{catalog-data.tex} plus \texttt{evidence/catalog-audit.json}. The JSON includes every source-record key, measurement state, per-record model and document counts, citation IDs, and SHA-256 hashes of the inputs. The script checks score-observation uniqueness, record-to-shard identity, document-registry coverage, and reconciliation of scored and unscored records. Its \texttt{--check} mode compares a fresh calculation against the committed outputs. Figure~\ref{fig:corpus-evidence} draws one linked dot per census record in source-key order.
 
-Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_examples.py} take the rebuilt software path. The example audit writes \texttt{example-data.tex} and \texttt{evidence/restored-examples.json}, recording every record's headroom eligibility, tied maximum-score observations and settings, mention documents and organizations, and the citations behind date gaps. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains a frozen earlier deposit; live dashboard counts require a retrieval date.
+Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_findings.py} take the rebuilt software path. The findings audit writes \texttt{findings-data.tex} and \texttt{evidence/catalog-findings.json} plus a CSV export. Every analysis retains exactly the catalog's source-record IDs. It records native score maxima and all tied observations, units, settings, cited documents, model counts, and date evidence. Table cells and repeated numeric claims are generated from these same frozen inputs. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains a frozen earlier deposit; live dashboard counts require a retrieval date.
 
 % \section{Licensing}
 % Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.

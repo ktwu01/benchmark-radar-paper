@@ -40,3 +40,9 @@
   units. Preserve source-record identities; do not sum similarly named records.
 - Keep one mark per source record in the corpus overview and preserve its detail
   link when building the manuscript. Check the links against the census IDs.
+- Main document, score, and date analyses use `scripts/audit_findings.py` and
+  `findings-data.tex`. Each retains the exact full frozen catalog ID set; a
+  measurement eligibility filter must not become a population filter.
+- Run `audit_findings.py /path/to/frozen-software --check` and the paper's
+  regression tests before building. Never reinstate model-report-only main
+  findings or substitute document counts for benchmark-record coverage.

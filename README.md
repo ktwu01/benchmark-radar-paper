@@ -2,7 +2,7 @@
 
 [Read the paper](main.pdf) · [Edit the LaTeX](main.tex) · [Benchmark Radar](https://github.com/ktwu01/benchmark-radar)
 
-**Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research** describes how researchers can discover evaluations, retrieve candidates, and inspect their task materials and reported scores. It combines the system and reader workflows with a reproducible census of the full benchmark catalog and concrete, scoped reporting examples.
+**Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research** describes how researchers can discover evaluations, retrieve candidates, and inspect their task materials and reported scores. Its document, score, and date analyses each retain the complete frozen benchmark catalog.
 
 This repository contains the manuscript, bibliography, dated figure inputs, and all images needed to build the paper independently. The software repository pins a reviewed commit here as its `docs/technical-report/latex` submodule.
 
@@ -112,8 +112,8 @@ paper root:
 ```bash
 python scripts/audit_catalog.py /path/to/benchmark-radar
 python scripts/audit_catalog.py /path/to/benchmark-radar --check
-python scripts/audit_examples.py /path/to/benchmark-radar
-python scripts/audit_examples.py /path/to/benchmark-radar --check
+python scripts/audit_findings.py /path/to/benchmark-radar
+python scripts/audit_findings.py /path/to/benchmark-radar --check
 make arxiv
 ```
 
@@ -145,11 +145,13 @@ commit before updating the parent pointer below. The full-corpus rules in
 [principle.md](https://github.com/ktwu01/benchmark-radar/blob/main/principle.md)
 apply to paper tables and figures as well as the website.
 
-## Restored reporting examples
+## Full-catalog findings
 
-`scripts/audit_examples.py` first verifies the entire rebuilt catalog against the frozen census. It then exports `example-data.tex` and `evidence/restored-examples.json`, retaining input hashes, every record's headroom eligibility, exact score observation IDs and settings, and the cited documents behind mentions and date gaps. Metric names come from the frozen score archive through exact model-report record keys; this join adds no records or scores.
+`scripts/audit_findings.py` verifies the rebuilt inputs against the frozen census, then exports `findings-data.tex`, `evidence/catalog-findings.json`, and `evidence/catalog-findings.csv`. The JSON and CSV each contain all 1,283 source records. Documentation, reported scores, and dates use the same record IDs across all four sources. Numeric maxima, every tied observation and its settings, document identities, model counts, units, and date evidence stay attached to their source record. Missing measurements remain unknown.
 
-The frozen evidence supports 16 benchmark records mentioned by at least six organizations in the 37-report collection; eight near-ceiling records among 82 with eligible declared percentage scales; and six report-publication gaps of at least 180 days. The other 708 scored records and 493 unscored records remain accounted for. All eight near-ceiling records happen to come from Model reports after applying the same eligibility rule to the full catalog. These observations describe the archive, without establishing saturation, repeated-run controls, or field-wide adoption.
+The previous reporting tables restricted the main findings to a report-document subset and eight percentage-headroom examples. The percentage-unit requirement removed 708 scored records from the displayed score analysis. Recomputing that exporter reproduced the small tables without fixing their coverage. The replacement retains all 790 scored records and 493 unscored records, with native score maxima in the complete CSV and JSON. Percentage headroom is an optional field, not an inclusion rule. Document counts never substitute for benchmark-record counts, and source labels never substitute for unknown organization identities.
+
+The cutoff and released input hashes are unchanged. Paper CI checks generated findings against the checksummed v0.11.0 archive before compiling the manuscript. Run `python -m pytest -q tests` for population and missing-evidence regression cases. The earlier `audit_examples.py` outputs remain historical evidence and are not manuscript build inputs.
 
 The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. Figure 3 uses the supplied Humanity’s Last Exam interface snapshot, linked to its interactive view. The full linked census appears in the appendix. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
 
