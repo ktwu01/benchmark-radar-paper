@@ -129,3 +129,19 @@ def test_main_findings_tables_use_the_full_catalog_exports():
         )[1]
         assert "\\" + rows in table
         assert r"\CensusRecords" in table
+
+
+def test_obsolete_report_subset_cannot_return_as_a_second_data_pipeline():
+    paper = Path(__file__).resolve().parents[1]
+    for obsolete in [
+        "example-data.tex",
+        "scripts/audit_examples.py",
+        "evidence/restored-examples.json",
+    ]:
+        assert not (paper / obsolete).exists(), (
+            f"Obsolete report-subset artifact returned: {obsolete}"
+        )
+    for source in [paper / "main.tex", paper / "Makefile"]:
+        text = source.read_text()
+        assert "example-data.tex" not in text
+        assert "audit_examples.py" not in text

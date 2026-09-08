@@ -65,7 +65,8 @@ See [Overleaf's GitHub sync documentation](https://docs.overleaf.com/integration
 ## Build locally
 
 Install a TeX distribution with `latexmk`, pdfLaTeX, TikZ, and the manuscript's
-LaTeX packages (TeX Live or TinyTeX). From this repository's root:
+LaTeX packages (TeX Live or TinyTeX), plus Python 3, Poppler (`pdftotext` and
+`pdftoppm`), and Tesseract OCR. From this repository's root:
 
 ```bash
 make
@@ -76,6 +77,22 @@ make arxiv
 manuscript edits. Inspect the cover, changed pages, figures, and references before
 committing. Overleaf compiles the manuscript using the checked-in figure PDFs;
 after editing a figure's `.tex` source, rebuild it locally and sync its PDF too.
+
+Every `make` or `make arxiv` scans the rendered PDF text and page images. Each
+detected number below 100 prints:
+
+```text
+less than 100 is abnormal, ref to https://github.com/ktwu01/benchmark-radar/blob/main/principle.md
+```
+
+Warnings include the page, value, extraction method, and surrounding text.
+Page numbers, citations, dates, percentages, model versions, and individual
+source counts are included. Warnings do not rewrite evidence or fail the build;
+missing tools and unreadable PDFs do. OCR can misread or miss small image text,
+so inspect the flagged pages as part of visual review. The full warning report
+is written to `build/small-number-warnings.json` and uploaded by CI. Run
+`python scripts/check_small_numbers.py main.pdf --text-only` only for an explicit
+partial scan; it warns that image coverage is incomplete.
 
 `make arxiv` writes `arxiv.tar.gz`, including `main.bbl` and all figure inputs.
 Unpack and compile that archive independently before submitting it. The archive
@@ -151,7 +168,7 @@ apply to paper tables and figures as well as the website.
 
 The previous reporting tables restricted the main findings to a report-document subset and eight percentage-headroom examples. The percentage-unit requirement removed 708 scored records from the displayed score analysis. Recomputing that exporter reproduced the small tables without fixing their coverage. The replacement retains all 790 scored records and 493 unscored records, with native score maxima in the complete CSV and JSON. Percentage headroom is an optional field, not an inclusion rule. Document counts never substitute for benchmark-record counts, and source labels never substitute for unknown organization identities.
 
-The cutoff and released input hashes are unchanged. Paper CI checks generated findings against the checksummed v0.11.0 archive before compiling the manuscript. Run `python -m pytest -q tests` for population and missing-evidence regression cases. The earlier `audit_examples.py` outputs remain historical evidence and are not manuscript build inputs.
+The cutoff and released input hashes are unchanged. Paper CI checks generated findings against the checksummed v0.11.0 archive before compiling the manuscript. Run `python -m pytest -q tests` for population, missing-evidence, and numeric-warning regression cases. The obsolete `example-data.tex`, its `audit_examples.py` generator, and `evidence/restored-examples.json` have been removed; Git history preserves that earlier subset.
 
 The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. Figure 3 uses the supplied Humanity’s Last Exam interface snapshot, linked to its interactive view. The full linked census appears in the appendix. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
 

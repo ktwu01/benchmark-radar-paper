@@ -46,3 +46,12 @@
 - Run `audit_findings.py /path/to/frozen-software --check` and the paper's
   regression tests before building. Never reinstate model-report-only main
   findings or substitute document counts for benchmark-record coverage.
+- Every number below 100 appearing in the rendered paper must produce this
+  warning: `less than 100 is abnormal, ref to https://github.com/ktwu01/benchmark-radar/blob/main/principle.md`.
+  Apply it without exemptions for page numbers, citations, dates, model versions,
+  percentages, or source-specific counts. `make` and `make arxiv` run the check
+  on PDF text and OCR of rendered pages. Review the page/context warnings;
+  do not change frozen evidence merely to silence them.
+- Do not restore `example-data.tex`, `scripts/audit_examples.py`, or
+  `evidence/restored-examples.json`. Git history preserves the removed subset;
+  `findings-data.tex` and the full-catalog exports are the current analysis.
