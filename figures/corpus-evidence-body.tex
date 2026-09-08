@@ -1,0 +1,24 @@
+% Included directly by main.tex so each record retains its PDF hyperlink.
+\begin{tikzpicture}[x=1bp,y=1bp,every node/.style={inner sep=0pt,font=\sffamily\fontsize{8}{10}\selectfont}]
+\definecolor{CensusBlue}{HTML}{2563EB}
+\definecolor{CensusGray}{HTML}{94A3B8}
+\definecolor{CensusInk}{HTML}{12233F}
+\useasboundingbox (0,0) rectangle (492,218);
+\node[anchor=west,text=CensusInk,font=\sffamily\bfseries\fontsize{12}{14}\selectfont] at (0,208)
+ {\ReportNumber{\CensusRecords} records. \CensusScored{} with scores. \CensusUnscored{} without.};
+\foreach \i/\label/\count in {0/{LLM Stats}/\ReportLLMStatsCount,1/{OpenCompass Hub}/\ReportOpenCompassCount,2/{Artificial Analysis}/\ReportArtificialAnalysisCount,3/{Model reports}/\ReportModelReportCount} {
+ \node[anchor=west,text=CensusInk,font=\sffamily\bfseries\fontsize{8}{10}\selectfont] at (123*\i,187) {\label};
+ \node[anchor=west,text=CensusInk,font=\sffamily\fontsize{7}{9}\selectfont] at (123*\i,175) {\count{} records};
+}
+\newcommand{\CensusDot}[5]{%
+ \node[inner sep=0pt] at (2+123*#1+5.4*#2,162-3.8*#3)
+  {\href{https://benchmark-radar.org/benchmarks/#5/}{\textcolor{#4}{\rule{2.6bp}{2.6bp}}}};}
+\colorlet{RadarTeal}{CensusBlue}
+\colorlet{RadarBlue}{CensusBlue}
+\colorlet{RadarGray}{CensusGray}
+\CensusMarks
+\node[anchor=west,text=CensusInk,font=\sffamily\fontsize{8}{10}\selectfont] at (0,18)
+ {\textcolor{CensusBlue}{\rule{5bp}{5bp}}\enspace Numeric score recorded\qquad\textcolor{CensusGray}{\rule{5bp}{5bp}}\enspace No numeric score recorded};
+\node[anchor=west,text=CensusInk,font=\sffamily\fontsize{7.5}{10}\selectfont] at (0,4)
+ {\CensusNoScoreWithLinks{} of the \CensusUnscored{} unscored records still link to a paper, repository, or dataset.};
+\end{tikzpicture}

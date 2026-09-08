@@ -13,6 +13,8 @@
 \definecolor{CiteBlue}{HTML}{0000CC}
 \usepackage{graphicx}
 \usepackage{pgf}
+\usepackage{tikz}
+\usepackage{helvet}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -27,7 +29,7 @@
   urlcolor=CiteBlue,
   citecolor=CiteBlue,
   pdftitle={Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research},
-  pdfauthor={Koutian Wu and Junjie Zhou}
+  pdfauthor={Koutian Wu, Junjie Zhou, Ergan Shang, Jiayu Wang, and Pengqian Han}
 }
 
 \setlength{\parindent}{1.2em}
@@ -38,19 +40,20 @@
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\newcommand{\reportversion}{v0.10.0}
 \input{figure-data.tex}
+\input{catalog-data.tex}
+\input{example-data.tex}
 \newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
 \newcommand{\datacutoff}{\ReportDataCutoff}
-\newcommand{\gitcommit}{76a6180}
+\newcommand{\gitcommit}{8f46bbf}
 \graphicspath{{figures/}}
 
 \title{\textbf{Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research}}
-\author{Koutian Wu$^{1,2}$ \footnote{\small $^*$Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^4$ \quad Ergan Shang$^3$ \quad Jiayu Wang $^5$ \quad Pengqian Han$^6$\\[0.35em]
+\author{Koutian Wu$^{1,2}$ \footnote{\small Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^4$ \quad Ergan Shang$^3$ \quad Jiayu Wang$^5$ \quad Pengqian Han$^6$\\[0.35em]
 \small $^1$ Earth and Space AI \quad
 \small $^2$ Tacite AI \quad
 \small $^3$ Carnegie Mellon University\\
-\small $^4$ Hangzhou Dianzi University
+\small $^4$ Hangzhou Dianzi University \quad
 \small $^5$ Xi'an Jiaotong University\\
 \small $^6$ The University of Auckland
 }
@@ -60,84 +63,53 @@
 \maketitle
 \vspace{-2.0em}
 \begin{abstract}
-Benchmark researchers and model developers need to find relevant evaluations, trace their sources, and determine which reported scores can be compared. Benchmark Radar collects benchmark papers, repositories, datasets, catalog entries, and model reports in a searchable system. It records which benchmarks model reports mention and preserves the evaluation settings attached to numeric scores. As of \datacutoff{}, the collection contained \ReportNumber{\ReportObservationCount} source observations, meaning records collected from public sources, and \ReportNumber{\ReportArtifactCount} artifacts after observations with matching identifiers were grouped. Its catalog held \ReportNumber{\ReportCatalogCount} searchable benchmark records. Model reports mentioned 110 benchmarks and supplied 322 scores across 86 benchmark tracks, each collecting results for a named benchmark. The web dashboard, RSS feed, JSON downloads, and local search clients provide access to this evidence. We describe the collection and search methods, examine source coverage and benchmark adoption, and assess the limits of score comparisons when evaluation settings differ.
+Benchmark researchers and model developers need to find relevant evaluations, locate their data and code, and understand the settings behind reported scores. We present Benchmark RADAR, a living search engine for retrieval and discovery of AI benchmark research. The system combines daily discovery of papers, repositories, datasets, and releases with a searchable benchmark catalog, model-report mentions, and score histories. It retains source identities and citations so readers can inspect candidate benchmarks and their evaluation evidence. At the \datacutoff{} cutoff, the catalog contains \ReportNumber{\CensusRecords} source records across \ReportCatalogSourceCount{} sources and \ReportNumber{\CensusNumericScores} numeric observations on \CensusScored{} records. Of its \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} still link to task materials. We describe collection and retrieval, audit the full catalog, and examine reporting patterns and the limits of score comparisons. A contributor's prior-art workflow illustrates how catalog queries and source inspection inform evaluation design. We release the web dashboard, feeds, downloadable evidence, offline query interfaces, and reproducible analysis.
 \end{abstract}
 
 \begin{center}
-\vspace{0.3em}
-\includegraphics[width=0.92\textwidth,height=0.31\textheight]{abstract_overview.png}
-\captionof{figure}{Benchmark Radar collects papers, repositories, datasets, and model reports, organizes them by topic, and makes them searchable alongside benchmark mentions and reported scores.}
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=0.96\textwidth]{abstract_overview.png}
+\captionof{figure}{Benchmark RADAR connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples, not rankings or measured coverage. The catalog count uses the frozen release.}
 \label{fig:abstract}
-\vspace{0.8em}
+\end{minipage}
 \end{center}
 
-
+\clearpage
 \section{Introduction}
 
 The Transformer architecture established attention-based sequence modeling as a foundation for modern large language models (LLMs) \citep{vaswani2017attention}. GPT-6 Astra and Claude Fable 5.1 are designed for coding, research, and tasks that span multiple tools \citep{openai2026gpt6astra,anthropic2026fable51}. Comparing these models requires benchmarks that expose failures and distinguish capability gains from changes in prompts, data splits, or evaluation procedures \citep{hendrycks2021mmlu,rein2023gpqa,phan2025hle,shang2026llm}.
 
 Evaluation also matters beyond general-purpose chat. In recommender systems, Transformer-style sequence models and LLM-based methods support user, item, and preference modeling, with efficient training needed at production scale \citep{kang2018selfattentive,sun2019bert4rec,shang2026erase}. Foundation models are also used to model biological, geoscientific, and physical processes \citep{theodoris2023transfer,cui2024scgpt,shang2025predicting,zhang2025genetic,wu2023perturbations}. In social and political analysis, language models support text annotation and simulated human samples, while network methods quantify balance and polarization dynamics \citep{leskovec2010signed,gilardi2023chatgpt,argyle2023out,li2026matraix,ng2026microverse,shang2026inference}. Benchmark scores inform claims of progress across these scientific, industrial, and decision-support settings.
 
-Benchmarks differ in the abilities they test. Broad evaluations of knowledge and reasoning include MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle,zhou2026asi}. Others isolate more specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tests code generation with date-based splits to reduce contamination from training data \citep{jain2024livecodebench}, and Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. Domain-specific evaluations include FinanceBench for finance and economics \citep{islam2023financebench}, MATH for mathematics \citep{hendrycks2021math}, SciBench for scientific problem solving \citep{wang2023scibench,wu2026esm,xu2026researchclawbench}, LAB-Bench for biology \citep{laurent2024labbench}, and ChemBench for chemistry \citep{mirza2025chembench}. Their tasks and scoring rules specify which model behaviors count as successful performance.
+Benchmarks differ in the abilities they test. Broad evaluations of knowledge and reasoning include MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle}. Others isolate more specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tests code generation with date-based splits to reduce contamination from training data \citep{jain2024livecodebench}, and Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. Domain-specific evaluations include FinanceBench for finance and economics \citep{islam2023financebench}, MATH for mathematics \citep{hendrycks2021math}, SciBench for scientific problem solving \citep{wang2023scibench}, LAB-Bench for biology \citep{laurent2024labbench}, and ChemBench for chemistry \citep{mirza2025chembench}. ESM-BENCH tests agents' understanding of Earth system model physics and code \citep{wu2026esm}; ResearchClawBench evaluates end-to-end autonomous scientific research \citep{xu2026researchclawbench}; and ASI-Bench examines scientific exploration and execution with progressively less methodological guidance \citep{zhou2026asi}. Their tasks and scoring rules specify which model behaviors count as successful performance.
 
-Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. To our knowledge, no existing system centers on benchmark search while combining daily discovery, catalog records, mentions in model reports, and scores with documented evaluation settings and sources.
+Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. Benchmark RADAR centers on benchmark retrieval and discovery, combining these catalog records with daily discovery, mentions in model reports, and scores with documented evaluation settings and sources.
 
-Benchmark Radar gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores. We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, adoption in model reports, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
+Benchmark RADAR gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores. We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, adoption in model reports, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
 
-\section{Methodology}
+The system preserves one record per source benchmark, including entries without scores, dates, or citations. Reviewed identity links connect related records while retaining their separate measurements. We contribute this living search system, shared web and offline access to its evidence, and a reproducible full-catalog census. The census establishes the coverage behind the examples: \CensusNoScoreWithLinks{} unscored records still link to task materials, and score comparisons require explicit scale, date, and protocol checks. Section~\ref{sec:worked-example} shows how a contributor used retrieval and source inspection to assemble prior art.
 
-\subsection{System Overview}
+\section{Related Work and Scope}
 
-Benchmark Radar adapts the daily collection approach of BuilderPulse, which answers a fixed question set from more than ten sources each morning \citep{builderpulse}. It applies this approach to benchmark discovery, catalog search, and score histories. Readers can look for recent releases, search for a task or benchmark name, inspect mentions in model reports, and compare scores collected under matching evaluation settings. Table~\ref{tab:reader-questions} lists these uses and the interfaces that support them.
+\paragraph{Benchmark catalogs and evaluations.}
+LLM Stats publishes benchmark descriptions and reported model results \citep{llmstats2026benchmarks}. OpenCompass provides an evaluation platform and a benchmark registry with artifact metadata \citep{opencompass2026datasetstatistics}. Artificial Analysis publishes model evaluations and their methodology \citep{artificialanalysis2026methodology}. Benchmark Radar uses records from these sources alongside model-report evidence. Benchmark RADAR adds daily discovery, artifact histories, benchmark retrieval, and source inspection through shared web and offline access. These functions help readers investigate evaluations across the contributing catalogs; they do not change the evaluations themselves.
 
-\begin{table}[htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.18\textwidth}Y Y}
-\toprule
-\textbf{Interface} & \textbf{Reader question} & \textbf{Role in Benchmark Radar}\\
-\midrule
-Today & What appeared or changed? & Ranks new records and links the source evidence.\\
-Search box & Which records match this name, task, or domain? & Matches names, phrases, and query words in the benchmark index.\\
-Leaderboard & Which benchmarks do labs report? & Counts benchmark mentions across curated model-card documents.\\
-Scores & Which reported scores can be compared? & Groups scores by benchmark version, metric, and evaluation settings.\\
-Trends and map & Which topics and sources recur? & Records source coverage so changes in collection can be considered when comparing topics.\\
-CLI and HTTP & Can an analyst reproduce search locally? & Use one query service and a shared JSON response format.\\
-\bottomrule
-\end{tabularx}
-\caption{Reader questions and the interfaces used to answer them.}
-\label{tab:reader-questions}
-\end{table}
+\paragraph{Documenting evaluation evidence.}
+Model cards and datasheets motivate documenting evaluation conditions and dataset characteristics \citep{mitchell2019modelcards,gebru2021datasheets}. Benchmark Radar retains that information when the collected sources provide it, with citations for follow-up review. Benchmarks such as GPQA \citep{rein2023gpqa}, SWE-bench \citep{jimenez2023swebench}, and SciBench \citep{wang2023scibench} define different tasks; placing their records in one catalog does not make their scores interchangeable. The census measures which evidence is available for inspection and which metadata still needs review.
 
-The source systems expose different fields and identifiers. Benchmark Radar converts their records into common fields for names, descriptions, source labels, identifiers, dates, and supporting documents. A source observation is a collected record; an artifact is a paper, repository, dataset, release, or page identified from those observations. The benchmark catalog retains one record per benchmark within each source, so similarly named entries from different sources remain distinct. Model reports describe model development and evaluation, and their benchmark mentions provide evidence of adoption \citep{mitchell2019modelcards}. Here, adoption means a documented mention; it does not imply a comparable numeric score.
+\section{System and Methods}
 
-\subsection{Collection and Source Health}
+\subsection{System Overview and Daily Discovery}
 
-Connectors are programs that retrieve records from public sources. Each collection run searches a 48-hour window, records counts and errors by source, removes future-dated rows, and requires healthy responses from a configured set of core sources before publication. The core sources at the cutoff were arXiv \citep{arxivapi}, Hugging Face Hub \citep{huggingfacehub}, and GitHub Search \citep{githubsearchdocs}. Optional routes include GitHub organizations, Hugging Face Papers, Kaggle datasets \citep{kaggleapi}, Zenodo \citep{zenodoapi}, OpenReview \citep{openreview}, Semantic Scholar \citep{kinney2023semanticscholar}, GitHub Releases \citep{githubreleasesdocs}, OpenAlex \citep{priem2022openalex}, Brave Search \citep{bravesearchapi}, 24 institution-operated research or engineering feeds, and a separate collector of public attention through Hacker News search on Algolia \citep{hnalgoliaapi}. All three core sources were healthy at the cutoff. Semantic Scholar was rate-limited, Brave Search lacked an API key, and OpenReview returned no eligible rows. Appendix~\ref{app:source-inventory} lists the healthy connectors and monitored feeds.
+Benchmark Radar adapts BuilderPulse's daily public-source collection approach \citep{builderpulse}. Figure~\ref{fig:pipeline} separates the benchmark catalog from discovery history. Model reports include model cards, technical reports, system cards, and release posts; they contribute through the same record structure as benchmark registries.
 
-The collection run at the cutoff fetched 867 rows, reduced them to 837 candidate records after removing duplicates, classified 322 as eligible, and recommended 110 for readers to review. Two collections ran within the cutoff window; after merging, the daily page contained 322 records, including 110 recommendations. Published records retain the source URL, retrieval time, parser version, source identifier, timestamps, authors or organizations when supplied, and a SHA-256 checksum for verifying the stored record. Raw responses and credentials are excluded.
+Table~\ref{tab:catalog-sources} summarizes the four catalog sources and their primary uses in the frozen release.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{pipeline-evaluation.pdf}
-\caption{Collection and publication stages. Connectors retrieve public records and check source health and record formats. Matching DOI, arXiv, OpenReview, GitHub, or Hugging Face identifiers link observations to artifacts. Classification and priority scoring organize the records before publication. Web pages, feeds, and local clients expose the collected evidence.}
-\label{fig:pipeline}
-\end{figure}
-
-Dated snapshots, record formats, parser versions, and checksums allow the published data to be rebuilt and checked. Publication requires healthy core sources; failures in optional sources remain visible. Installed clients validate an update before activating it. Identity resolution relies on exact identifiers and reviewed links between source records. The evaluated release passed 1,236 tests after a clean rebuild. Section~\ref{sec:caveat-future-work} describes the remaining limitations.
-
-\subsection{Identity, Ranking, and Search}
-
-The resolver groups observations when they share a DOI, arXiv identifier, OpenReview identifier, GitHub repository, or Hugging Face artifact. Similar titles alone do not force a merge; they remain separate until review confirms that they describe the same artifact. This policy reduces false joins but leaves possible duplicates visible when papers, repositories, and catalogs lack a common identifier.
-
-Search covers four catalog sources, as summarized in Table~\ref{tab:search-layers}: LLM Stats, OpenCompass Hub, Artificial Analysis, and Model reports. The index contains \ReportNumber{\ReportCatalogCount} source records, including \ReportModelReportCount{} model-report benchmarks. Of these model-report benchmarks, 86 have reported scores and 24 have no scores; both groups remain searchable. Search matches query words and phrases against record fields, including benchmark names. It searches all four sources together and preserves each result's source label. The same query against the same index produces the same ranking.
-
-A separate priority score for daily recommendations combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. These weights describe daily reading priority; search relevance depends on the query. The scoring configuration is included with the published data.
-
-\begin{table}[htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.20\textwidth}rY}
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{L{0.23\textwidth}r Y}
 \toprule
 \textbf{Catalog source} & \textbf{Rows} & \textbf{Primary use}\\
 \midrule
@@ -145,90 +117,303 @@ LLM Stats & \ReportLLMStatsCount{} & Benchmark names and descriptions with sourc
 OpenCompass Hub & \ReportOpenCompassCount{} & Paper, repository, release, and dataset links with source-specific identity fields.\\
 Artificial Analysis & \ReportArtificialAnalysisCount{} & Current commercial evaluation catalog entries.\\
 Model reports & \ReportModelReportCount{} & Benchmarks mentioned in model reports, including records without scores.\\
+\midrule
 Total & \ReportNumber{\ReportCatalogCount} & All four sources, retaining each record's source label.\\
 \bottomrule
 \end{tabularx}
-\caption{Catalog sources in the Benchmark Radar query index.}
-\label{tab:search-layers}
-\end{table}
+\captionof{table}{Catalog sources in the frozen v0.11.0 release. Rows count source-specific benchmark records, including records without scores.}
+\label{tab:catalog-sources}
+\end{minipage}
+\end{center}
 
-\subsection{Adoption and Score Curation}
+\subsection{Discovery Collection}
 
-Benchmark Radar records benchmark mentions and numeric scores from model-card and system-description documents \citep{mitchell2019modelcards}. This collection includes 37 model documents from 12 organizations. They mention 110 benchmarks whose names have been reconciled within the model-report collection. When a document contains an interpretable numeric value and sufficient context, the score archive records the benchmark version and metric (the instrument), along with evaluation settings (the protocol). These settings include examples supplied in the prompt (shots), tool access, attempts, and the evaluator when available. The archive contains 322 scores across 86 benchmark tracks. A score track groups results for a named benchmark; comparisons within it still require matching instruments and protocols. Scores from benchmark registries remain outside these model-report score histories unless they can be connected to a comparable protocol \citep{gebru2021datasheets,mitchell2019modelcards}.
+Daily discovery observations describe mentions, releases, and updates found across public sources. An observation is one collected record; an artifact is a paper, repository, dataset, release, or page linked by exact identifiers. These objects differ from source-specific benchmark records. We retain their histories alongside the catalog without adding discovery observations to the benchmark total.
+
+Each collection run searches a 48-hour window, records counts and errors by source, removes future-dated rows, and requires healthy core sources before publication. At the cutoff, arXiv \citep{arxivapi}, Hugging Face Hub \citep{huggingfacehub}, and GitHub Search \citep{githubsearchdocs} were the core sources. Additional routes cover scholarly indexes, dataset hosts, repository releases, and institutional feeds. Appendix~\ref{app:source-inventory} records their cutoff status.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=\textwidth]{pipeline-evaluation.pdf}
+\captionof{figure}{Two input paths support publication: dated discovery snapshots preserve mention and release evidence, while benchmark registries and model reports populate the shared catalog. Clients use the catalog's stable source-record IDs.}
+\label{fig:pipeline}
+\end{minipage}
+\end{center}
+
+Table~\ref{tab:reader-questions} describes the interfaces. Search and exports retain the full catalog; display filters affect only the selected view.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{L{0.18\textwidth}Y Y}
+\toprule
+\textbf{Interface} & \textbf{Reader question} & \textbf{Evidence and scope}\\
+\midrule
+Today & What appeared or changed? & Daily discovery observations, source health, and links.\\
+Search & Which benchmarks match this task? & The complete catalog, including unscored records.\\
+Leaderboard & Which evaluations combine lower scores with broader measured use? & Scored source records; distinct scored models or cited documents supply the selected count.\\
+Saturation & What scores and settings were reported? & Benchmark browsing and complete score histories; search reaches every source and year.\\
+CLI and HTTP & Can I inspect the same evidence locally? & One query service and the same benchmark IDs and response format.\\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Reader questions and evidence scope. A search result is a candidate for inspection, not a suitability judgment.}
+\label{tab:reader-questions}
+\end{minipage}
+\end{center}
+
+
+
+\subsection{Preserve Records Before Comparing Measurements}
+
+A source record is one benchmark entry from one contributing source. We normalize names, identifiers, artifact links, score observations, model identities, and cited documents into common fields. A record remains in the catalog if a score, date, or citation is absent. Reviewed identity links connect related records while preserving their separate observations and counts. A similar name alone does not authorize a merge.
+
+Daily discovery contributes a different kind of evidence: collected mentions, releases, and updates. Exact identifiers such as DOIs, arXiv IDs, and repository URLs link those observations to artifacts. Discovery observations do not increase the benchmark catalog total. Appendix~\ref{app:operations} records detailed collection settings and display filters; Appendix~\ref{app:source-inventory} records source health at the cutoff.
+
+\subsection{Retrieve Candidates with Their Evidence}
+
+The same benchmark IDs reach web search, detail pages, dataset exports, and offline clients. Lexical search uses BM25F, a field-weighted word-matching score \citep{robertson2004bm25f}, with bounded boosts for name and phrase matches. Each result exposes matched and missing query words, the fields they occur in, and the score components. Source membership does not change the ranking. A shared query service supplies the CLI and HTTP interfaces with the same response format and local data provenance.
+
+Candidate retrieval precedes suitability judgment. An analyst or agent can try focused query variants, inspect a record's tasks and score settings, and follow its citations. The interface preserves the evidence needed for that review. This paper evaluates catalog and measurement coverage; the contributor case illustrates usage without measuring retrieval accuracy or time saved.
+
+\subsection{Audit the Full Population}
+\label{sec:census-method}
+
+The census starts with every record in the rebuilt catalog index and reads its detail file. It applies no date, score, or interface filter. We count finite numeric score observations once by observation ID. Within each benchmark record, we count scored models by source model ID, preserving separately evaluated configurations, and cited documents by document ID. Repeated observations do not create additional models or documents. The global model registry uses its recorded identity links; per-benchmark model counts are not summed into a global total.
+
+Eligibility depends on the measurement a calculation needs. A declared percentage unit, known score direction, and numeric values within 0--100 permit a percentage-scale summary. Rescaling a displayed value or reading an aggregator's declared maximum does not establish that unit. Matching scales also do not establish matching test versions, prompts, tools, attempts, or evaluators.
+
+Date coverage counts valid recorded benchmark release dates. Score entries retain their own date basis, including model announcements and document publication. We do not substitute those dates for an evaluation date. Appendix~\ref{app:reproducibility} provides the software revision, input hashes, census script, and validation procedure.
 
 \section{Results}
 \label{sec:results}
 
-\subsection{Coverage at the Cutoff}
+Figure~\ref{fig:hle-scores} shows how a retrieved benchmark opens into reported model scores. The full-population results below retain every source record; Appendix~\ref{app:full-catalog} provides the complete linked census.
 
-At the \datacutoff{} cutoff, the cumulative discovery collection held \ReportNumber{\ReportObservationCount} source observations and \ReportNumber{\ReportArtifactCount} artifacts grouped by exact identifiers. Primary or structured sources supplied 10,473 observations, or 97.86\% of the collection. This category covers scholarly records, institution-operated feeds, code repositories, and dataset or artifact hosts. Discovery observations, benchmark records, model-report mentions, and scores count different objects and must not be added together. Table~\ref{tab:counts} defines each unit.
-
-\begin{figure}[htbp]
+\begin{figure}[tp]
 \centering
-\includegraphics[width=0.96\textwidth]{cover-metrics.pdf}
-\caption{Source observations, resolved artifacts, searchable benchmark records, and catalog sources as of \datacutoff{}.}
-\label{fig:cover-metrics}
+\href{https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}{\includegraphics[width=\textwidth]{hle-score-history.png}}
+\caption{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains 577 reported scores; the highest displayed score is 55.47. Marks identify model organizations, and the line connects successive best scores ordered by model release date. These are not evaluation dates: older models can be tested after a benchmark's release. The snapshot illustrates score inspection, without establishing matched evaluation settings or a validated percentage ceiling. Click the image to open the interactive view.}
+\label{fig:hle-scores}
 \end{figure}
 
-\begin{table}[htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.24\textwidth}rY}
+\subsection{Unscored Records Still Provide Routes to Prior Work}
+
+The rebuilt catalog contains \ReportNumber{\ReportCatalogCount} source records across \ReportCatalogSourceCount{} sources. We found \ReportNumber{\CensusNumericScores} numeric score observations on \CensusScored{} records, with \CensusUnscored{} records lacking numeric scores (Table~\ref{tab:catalog-coverage}). These are source-record counts: two sources can describe a related benchmark, and we retain both records without claiming they represent distinct underlying tests.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{lrrrr}
 \toprule
-\textbf{Unit} & \textbf{Count} & \textbf{Interpretation}\\
+\textbf{Source} & \textbf{Records} & \textbf{Scored} & \textbf{Unscored} & \textbf{Numeric scores}\\
 \midrule
-Snapshot & \ReportSnapshotCount{} & Dated collection records, including 41 observed and 4 simulated snapshots.\\
-Source observation & \ReportNumber{\ReportObservationCount} & Collected records with their source and retrieval information.\\
-Unique artifact & \ReportNumber{\ReportArtifactCount} & Papers, repositories, datasets, releases, or pages grouped by matching identifiers.\\
-Searchable entry & \ReportNumber{\ReportCatalogCount} & One benchmark record per source, including records without scores.\\
-Adoption benchmark & 110 & Benchmarks mentioned in model reports, with names reconciled within that collection.\\
-Model-card document & 37 & Curated reports from 12 organizations.\\
-Curated score & 322 & Numeric results across 86 benchmark tracks.\\
+\CensusSourceRows
+\midrule
+\textbf{Total} & \textbf{\ReportNumber{\CensusRecords}} & \textbf{\CensusScored} & \textbf{\CensusUnscored} & \textbf{\ReportNumber{\CensusNumericScores}}\\
+\bottomrule
+\end{tabular}
+\captionof{table}{Score coverage across the full catalog: \CensusScored{} records have numeric observations and \CensusUnscored{} do not. The zero in the OpenCompass score column describes this snapshot, not whether those benchmarks have ever been evaluated. Scores count observations, not distinct models.}
+\label{tab:catalog-coverage}
+\end{minipage}
+\end{center}
+
+Of the \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} have at least one paper, repository, or dataset link. Across the full catalog, \CensusPaperLinks{} records have a paper link, \CensusRepoLinks{} have a repository link, and \CensusDatasetLinks{} have a dataset link; the categories overlap. For example, the OpenCompass Hub record for A-Bench links a paper, code repository, and dataset despite having no archived score. These links give researchers routes to inspect tasks and baselines before deciding whether an evaluation fits their work. Link presence does not establish current availability or permission to use an artifact.
+
+\subsection{Document Counts Do Not Measure Model Coverage}
+
+The common document registry contains \ReportNumber{\CensusDocuments} distinct cited documents, attached to \ReportNumber{\CensusDocumentsKnown} of the \ReportNumber{\CensusRecords} benchmark records. Five records have no cited documents. The shared model registry contains \CensusModels{} model identities. Within the catalog, all \CensusScored{} scored records have sufficient model IDs to count distinct models; unscored records have unknown scored-model coverage.
+
+Table~\ref{tab:model-document-coverage} illustrates why these counts cannot substitute for one another. The Artificial Analysis record for GPQA Diamond contains scores for 586 models and cites one registry page. The Model reports record cites 27 documents and contains 21 numeric observations for 19 models. Both describe useful evidence, but adding their counts would require reviewed model and evaluation identities. Neither row alone measures adoption across the field.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{Y L{0.25\textwidth}rrr}
+\toprule
+\textbf{Benchmark record} & \textbf{Source} & \textbf{Models} & \textbf{Documents} & \textbf{Scores}\\
+\midrule
+GPQA Diamond & Artificial Analysis & 586 & 1 & 586\\
+GPQA Diamond & Model reports & 19 & 27 & 21\\
+Humanity's Last Exam & Artificial Analysis & 577 & 1 & 577\\
+SciCode & Artificial Analysis & 577 & 1 & 577\\
+CritPt & Artificial Analysis & 492 & 1 & 492\\
 \bottomrule
 \end{tabularx}
-\caption{What each count measures at \datacutoff{}.}
-\label{tab:counts}
-\end{table}
+\captionof{table}{One cited page can document hundreds of scored models. Models count distinct source model IDs within a record; documents count distinct citation IDs; scores count numeric observations. These selected examples illustrate the units. The census retains all source records.}
+\label{tab:model-document-coverage}
+\end{minipage}
+\end{center}
 
-\subsection{Source Composition and Reliability}
+Table~\ref{tab:model-document-coverage} also records 577 scored models for Humanity's Last Exam and SciCode, and 492 for CritPt, each under one Artificial Analysis citation. Reading that citation count as model coverage would hide the measured breadth of those records.
 
-Five source labels account for 9,532 of \ReportNumber{\ReportObservationCount} observations, or 89.1\% of the cumulative collection. Because these sources supply most observations, their retrieval caps, rate limits, and availability can change the apparent topic mix. At the cutoff, the required sources were healthy, while optional routes varied in yield because of rate limits, missing credentials, or empty result windows.
+\subsection{Numeric Scores Often Lack a Verified Common Scale}
 
-\begin{figure}[htbp]
+Only \CensusPercent{} of the \CensusScored{} scored records declare a percentage unit with a known direction and values within 0--100. The remaining \CensusOtherNumeric{} scored records use other or unverified scales. We retain their numeric observations, which do not support a shared percentage-headroom calculation. Table~\ref{tab:measurement-coverage} accounts for the entire catalog before any such comparison.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{Y r L{0.46\textwidth}}
+\toprule
+\textbf{Measurement state} & \textbf{Records} & \textbf{Interpretation}\\
+\midrule
+Numeric scores, declared percentage scale & \CensusPercent & Supports scale-specific summaries; protocols still need checking.\\
+Numeric scores, other or unverified scale & \CensusOtherNumeric & Retain scores; do not assume a 100-point ceiling.\\
+No numeric score & \CensusUnscored & Score headroom remains unknown.\\
+\midrule
+Full population & \ReportNumber{\CensusRecords} & Every source record remains in the census.\\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Only \CensusPercent{} of \CensusScored{} scored records meet the percentage-scale rule in Section~\ref{sec:census-method}. All \ReportNumber{\CensusRecords} records remain accounted for. A declared scale alone does not establish a common evaluation protocol.}
+\label{tab:measurement-coverage}
+\end{minipage}
+\end{center}
+
+The catalog records benchmark release dates for \CensusReleaseKnown{} records, leaving 668 without a release date. Across score observations, 12,594 entries carry model-announcement dates and 322 carry document-publication dates. Neither date basis directly establishes an evaluation date. This archive therefore cannot support a catalog-wide claim about score stagnation from a gap between model-report mentions and score-entry dates. Researchers must first establish dates and comparable evaluation settings for the relevant source records.
+
+A small gap to a metric ceiling can describe a reported setup. It does not show that a benchmark has exhausted its ability to distinguish models across versions and settings. Catalog-wide headroom or recency estimates require the eligible measurement coverage alongside the statistic.
+
+Figure~\ref{fig:leaderboard-frontier} puts these coverage distinctions into a browsing view: readers can locate a benchmark by date, reported score, and the number of scored models, then inspect its source record.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\href{https://benchmark-radar.org/leaderboard/}{\includegraphics[width=\textwidth]{leaderboard-frontier.png}}
+\captionof{figure}{Benchmark Frontier on the Leaderboard page. The view combines reported scores, scored-model counts, and benchmark release dates or first-score date proxies. Gold rings mark the interface's Pareto candidates; hollow marks flag unverified scales or counts, and dotted outlines flag model-release date proxies. This filtered, scored view supports candidate inspection; it does not replace the full-catalog census or establish equivalent evaluation settings. Click the image to explore the view.}
+\label{fig:leaderboard-frontier}
+\end{minipage}
+\end{center}
+
+\subsection{Discovery Coverage Alongside the Catalog}
+
+The daily discovery collection contains \ReportNumber{\ReportObservationCount} observations and \ReportNumber{\ReportArtifactCount} artifacts linked by exact identifiers across \ReportSnapshotCount{} snapshots. Four snapshots are simulated historical backfills; their dates describe reconstructed collection windows. These discovery units remain separate from benchmark records.
+
+Five discovery source labels account for 9,743 of \ReportNumber{\ReportObservationCount} observations (88.0\%). Figure~\ref{fig:source-composition} includes the remaining labels in one aggregate bar. Source caps and collection failures can affect this mix, so it does not estimate the distribution of benchmark research. Fifty-nine of \ReportNumber{\ReportArtifactCount} artifacts have observations from multiple sources; missing or inconsistent identifiers can leave further relationships unresolved.
+
+\begin{center}
+\begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=0.92\textwidth]{source-composition.pdf}
-\caption{Discovery observations by source through \datacutoff{}. The bars count collected observations, including repeat sightings, rather than distinct benchmarks.}
+\captionof{figure}{Discovery observations by source through \datacutoff{}. Repeat sightings count as observations; these bars do not count benchmark records.}
 \label{fig:source-composition}
+\end{minipage}
+\end{center}
+
+
+Figure~\ref{fig:discovery-trends} complements source coverage with the daily reading view. Its category cards separate new releases from updates, while the chart exposes changes in surfaced evidence and attention alongside collection failures.
+
+\begin{figure}[tp]
+\centering
+\href{https://benchmark-radar.org/trends/}{\includegraphics[width=\textwidth]{discovery-trends.png}}
+\caption{Discovery trends through September 7, 2026. Category cards show newly surfaced releases and track updates separately; the bars show daily evidence and attention volume. Category tags overlap, so these counts cannot be added into a total of unique benchmarks. The visible coverage notice reports failed sources. This is a view of collected activity, not research quality or benchmark performance. Click the image to open Trends.}
+\label{fig:discovery-trends}
 \end{figure}
 
-Fifty-nine of \ReportNumber{\ReportArtifactCount} artifacts were linked across more than one source, or 0.94\% of the artifact set. Matching exact identifiers reduces false joins; links between papers, code, and datasets still require review when identifiers are missing or inconsistent.
+\subsection{Benchmark Mentions in Model Reports}
 
-\subsection{Relationship to Existing Catalogs}
+The catalog includes \ExampleReportDocuments{} model reports from \ExampleReportOrganizations{} organizations. Within that document collection, \ExampleAdoptionCount{} benchmark records are mentioned by at least six organizations (Table~\ref{tab:report-mentions}). GPQA Diamond appears in 27 of the 37 documents from 11 organizations. The frequently mentioned records span scientific reasoning, coding, agents, mathematics, and multilingual or multimodal tasks. This describes reporting choices in the collected documents; it does not measure field-wide adoption or establish that different versions of a named benchmark are equivalent.
 
-Benchmark Radar imports records from three benchmark registries: LLM Stats, OpenCompass Hub, and Artificial Analysis. These projects have different goals. LLM Stats publishes live benchmark rankings and benchmark-family pages \citep{llmstats2026benchmarks}; OpenCompass is primarily an evaluation platform with a searchable dataset-statistics page \citep{opencompass2026datasetstatistics}; and Artificial Analysis publishes model evaluations and a documented intelligence-benchmarking methodology \citep{artificialanalysis2026methodology}.
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Benchmark record} & \textbf{Documents} & \textbf{Organizations}\\
+\midrule
+\ExampleAdoptionRows
+\bottomrule
+\end{tabular}
+\captionof{table}{Every model-report benchmark record mentioned by at least six organizations. Counts deduplicate document IDs and organization names within each record. This scoped analysis starts from the full catalog; its report evidence covers 105 of the 110 Model reports records. The accompanying audit lists each document and source URL.}
+\label{tab:report-mentions}
+\end{minipage}
+\end{center}
 
-The index contains \ReportLLMStatsCount{} records from LLM Stats, \ReportOpenCompassCount{} from OpenCompass Hub, \ReportArtificialAnalysisCount{} from Artificial Analysis, and \ReportModelReportCount{} from Model reports, yielding \ReportNumber{\ReportCatalogCount} searchable source records. Records without scores remain in this total; source membership does not establish a trust ranking. Direct comparisons of totals would be misleading because record definitions, update frequency, source coverage, and evaluation settings differ across systems. Benchmark Radar combines these catalog records with daily discovery, artifact links based on matching identifiers, mentions in model reports, and scores with documented evaluation settings.
+\subsection{Near-Ceiling Reported Scores}
+\label{sec:headroom}
 
-\subsection{Benchmark Adoption in Model Reports}
+Across the full catalog, \ExampleHeadroomEligible{} records declare a percentage scale, have higher-is-better direction, and contain numeric values within 0--100. Of these, \ExampleNearCount{} have a highest archived value within five points of 100. All eight qualifying records come from Model reports; 708 scored records on other or unverified scales and 493 unscored records remain in the census with unknown upper-ceiling headroom. Table~\ref{tab:reported-headroom} gives the model, metric, and recorded settings behind each example.
 
-In the model-report collection, eight benchmarks appeared in documents from at least six organizations: GPQA Diamond \citep{rein2023gpqa}, Humanity's Last Exam \citep{phan2025hle}, SWE-bench Verified \citep{jimenez2023swebench}, Terminal-Bench \citep{merrill2026terminalbench}, AIME \citep{maa2026aime}, LiveCodeBench \citep{jain2024livecodebench}, MMLU-Pro \citep{wang2024mmlupro}, and BrowseComp \citep{wei2025browsecomp}. GPQA Diamond appeared in 27 of 37 documents from 11 organizations, making it the most commonly mentioned benchmark in these reports. This concentration suggests that frontier-model reporting has partly converged on a common set of evaluations, even as researchers introduce benchmarks in other areas.
+Headroom is 100 minus the reported value for that setup. It describes the remaining range of its metric, without establishing benchmark saturation or comparing models across settings. The values are maxima within the archived source records, not necessarily the best results in the cited documents or the field. The examples cite the GLM-5.2, GLM-5, Qwen3, Kimi K3, Claude Opus 5, and Gemini 3.1 Pro reports \citep{zai2026glm52card,zai2026glm5card,qwen2025qwen3report,moonshot2026kimik3card,anthropic2026opus5card,google2026gemini31card}.
 
-A benchmark can be widely mentioned without providing comparable scores across dates. Comparing scores can be misleading when reasoning budget, tool access, attempts, evaluator, or date-based test split differs \citep{gebru2021datasheets,mitchell2019modelcards}. In the snapshot, eight bounded metrics had a raw best score within five points of their ceiling: AIME \citep{maa2026aime}, Arena-Hard \citep{li2024arenahard}, DeepSearchQA \citep{gupta2026deepsearchqa}, HMMT \citep{hmmt2026}, MATH-500 \citep{hendrycks2021math}, MathVision \citep{wang2024mathvision}, SWE-bench Verified \citep{jimenez2023swebench}, and tau2-bench \citep{tau2bench}. Headroom is the gap between a reported score and the metric's upper bound. Appendix~\ref{app:saturation-audit} separates these raw best scores from results with matching evaluation settings across dates. Six benchmarks gained model-card mentions after their last interpretable score, so newer adoption evidence did not always come with newer comparable scores.
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\small
+\begin{tabularx}{\textwidth}{L{0.17\textwidth}L{0.22\textwidth}rrY}
+\toprule
+\textbf{Benchmark} & \textbf{Model and source} & \textbf{Score} & \textbf{Gap} & \textbf{Metric and recorded settings}\\
+\midrule
+\ExampleNearRows
+\bottomrule
+\end{tabularx}
+\captionof{table}{Highest archived scores for the \ExampleNearCount{} near-ceiling source records. All qualifying records in the full-catalog scale audit are from Model reports. Scores use 0--100 scales; gaps are percentage points below 100. The metrics include accuracy, pass@1, F1, resolved-task rate, and win rate. Each row links to the reporting source registered in the frozen catalog.}
+\label{tab:reported-headroom}
+\end{minipage}
+\end{center}
+
+The test version and settings determine what each small gap means. AIME 2026 and AIME 2024 use different problem sets; the 99.2 result above and the archive's older AIME 2024 result of 79.8 describe different tests. Likewise, the tau2-bench value above concerns Telecom, and the MathVision value includes Python access. Benchmark Radar preserves these details so readers can select the relevant test and inspect the score in context. Comparisons require checking the source documents for matching versions, reasoning budgets, tools, attempts, and evaluators \citep{gebru2021datasheets,mitchell2019modelcards}.
+
+
+\subsection{Later Mentions Identify Gaps in Archived Scores}
+
+Six benchmark records have a later model-report mention at least 180 days after the document supplying their latest archived numeric score (Table~\ref{tab:score-coverage-gaps}). The gaps range from 343 to 775 days. These records give a reader newer reports to inspect for possible score extraction. Both endpoints are recorded document-publication dates, not evaluation dates; revised reports can also acquire mentions after first publication. The intervals describe the archive's document coverage and cannot establish a period without benchmark progress.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Benchmark} & \textbf{Score document} & \textbf{Mention document} & \textbf{Gap (days)}\\
+\midrule
+\ExampleGapRows
+\bottomrule
+\end{tabular}
+\captionof{table}{All six records meeting the 180-day archive-gap rule. Each date links to its source document. Dates and scores remain attached to the same source record; no similarly named aggregator record supplies a replacement score date.}
+\label{tab:score-coverage-gaps}
+\end{minipage}
+\end{center}
+
+
+\section{Worked Example: Checking Prior Art}
+\label{sec:worked-example}
+
+Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark RADAR client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Figure~\ref{fig:use-case-survey}.
+
+The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark RADAR retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. The session has no measured time or accuracy baseline and combines local retrieval with web search. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=0.92\textwidth]{survey-table.png}
+\captionof{figure}{Summary table of recent work on credit assignment in agentic training, assembled during the session.}
+\label{fig:use-case-survey}
+\end{minipage}
+\end{center}
+
+
 
 \section{Limitations and Future Work}
 \label{sec:caveat-future-work}
 
-Lexical search can miss paraphrased benchmark names, renamed tasks, or descriptions of related ideas. Optional semantic retrieval could find such records by meaning, while retaining the source, field, and word matches that let readers inspect each result \citep{reimers2019sentencebert}. Source coverage also depends on public endpoints, API credentials, and rate limits. Counts need units and a data cutoff so readers can distinguish changes in collection from changes in benchmark activity.
+The census describes this catalog at its recorded cutoff. Collection limits, failed requests, missing identifiers, and different snapshot dates affect its coverage. Source records are not a count of distinct underlying tests. Artifact links provide routes for inspection but do not verify present availability or licensing. Broader coverage requires additional source collection and review of the evidence already present.
 
-Exact identifiers reduce false joins but leave possible links between papers, code, and datasets unresolved when identifiers are absent. Further identity review should link repositories to papers and document the evidence for each decision. In the snapshot, 12,594 scores from benchmark registries remain outside the model-report score histories because they lack protocol fields such as prompt examples, tool access, attempts, evaluator, date-based test splits, or evaluation software. Recording these settings would allow more scores to be compared.
+The study does not measure retrieval precision, task suitability, or time saved. The worked example combines local queries with web search and has no controlled baseline. Lexical matching can miss paraphrases and renamed tasks. Evaluating semantic retrieval \citep{reimers2019sentencebert} will require reviewed relevance judgments across queries and candidate records, including less familiar benchmark families.
 
-Task-level coverage is also incomplete. The capability-classification component, KW-Bench, has 5,661 tracks without complete task-capability labels at the cutoff. Here, a classification track is an artifact or a declared task within a benchmark suite, drawn from discovery observations; it is a different unit from a catalog record or a model-report score track. These missing labels limit conclusions about which abilities the collected tasks test. Completing them would help readers identify the capability a task requires. Counts in the dashboard and local outputs also need consistent labels for observations, artifacts, benchmark records, mentions, and scores.
+The scale and date audit identifies metadata gaps. The restored score and mention examples describe specific archived evidence, without establishing benchmark saturation or score stagnation. Establishing those outcomes requires source review for comparable test versions and settings, and dates tied to actual score reporting or evaluation. Matching archive labels cannot verify independent repeated runs.
+
+Task-capability classification also remains unvalidated in this rebuild. The deterministic null extractor used in CI assigns no capability levels to its \ReportNumber{\CensusUnclassified} discovery-derived tracks. Completing and evaluating those labels is a separate task from maintaining the benchmark catalog.
 
 \section{Conclusion}
 
-Benchmark Radar brings benchmark discovery, catalog search, model-report mentions, and score histories into one system while retaining the sources behind each record. The evaluated snapshot combines 37 public source routes, a \ReportNumber{\ReportCatalogCount}-record search index, and adoption evidence from 37 model documents.
+Benchmark RADAR brings daily benchmark discovery, catalog search, model-report mentions, and score histories into one living search engine. Readers can find candidate evaluations, locate task materials, inspect reporting choices, and follow the settings and citations behind a score. Shared benchmark IDs connect the web dashboard, downloadable catalog, and offline query clients.
 
-Readers can use this evidence to find candidate benchmarks and inspect their reporting history. Comparing scores still requires checking the benchmark version and evaluation settings. Missing identifiers leave some artifact relationships unresolved, and missing protocol details prevent many scores from supporting comparisons across dates.
+The frozen release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog census and scoped examples distinguish benchmark records, scored models, cited documents, and numeric observations. Further work should evaluate retrieval with reviewed relevance judgments, resolve missing artifact identities, and recover the protocol and date evidence needed for score comparisons.
+
+\section*{Author Contributions}
+\label{sec:author-contributions}
+
+Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed copyediting.
 
 \begingroup
 \small
@@ -244,6 +429,26 @@ Readers can use this evidence to find candidate benchmarks and inspect their rep
 \end{center}
 \vspace{0.75em}
 
+\section{Full-Catalog Census}
+\label{app:full-catalog}
+
+The score view in Figure~\ref{fig:hle-scores} selects one benchmark. This census retains all \ReportNumber{\CensusRecords} source records, including those without scores, so that the selected example does not obscure the catalog's discovery coverage.
+
+\begin{center}
+\resizebox{0.98\textwidth}{!}{\input{figures/corpus-evidence-body.tex}}
+\captionof{figure}{Discovery extends beyond scored records: \CensusNoScoreWithLinks{} unscored entries still provide artifact links. Each mark represents one source record and links to its detail page. All \ReportNumber{\CensusRecords} records appear, without a date or score filter.}
+\label{fig:corpus-evidence}
+\end{center}
+
+\section{Collection Settings and Display Filters}
+\label{app:operations}
+
+The \datacutoff{} snapshot records 1,003 fetched rows and 954 candidates after duplicate removal. Of these, 366 qualified for publication and 138 met the recommendation threshold. These are discovery-run counts, separate from the benchmark catalog census. Published evidence retains source URLs, retrieval times, parser versions, identifiers, and payload checksums. Raw responses and credentials remain outside the public artifact.
+
+Benchmark Frontier, on the Leaderboard tab, requires a numeric score and excludes known pre-2024 benchmarks. It retains scored records with unknown dates or counts through labelled marks, and keeps unverified scales outside Pareto calculations. Its initial score cutoff is 70. The linked score ranking retains its date and numeric-score requirements independently of that cutoff. General catalog search and exports retain the full population. The census in this paper applies none of these display filters.
+
+A separate priority score for daily recommendations combines relevance (35\%), evidence (20\%), recency (20\%), and adoption (25\%) on a 0--100 scale. These weights describe reading priority for discovery observations. An agent assessing benchmark suitability can try focused query variants, inspect record details, and read the cited sources; that judgment occurs after candidate retrieval.
+
 \section{Source Inventory and Health}
 \label{app:source-inventory}
 
@@ -257,16 +462,17 @@ Table~\ref{tab:healthy-connectors} lists source connectors that completed succes
 \toprule
 \textbf{Connector} & \textbf{Role} & \textbf{Cutoff status} & \textbf{Core}\\
 \midrule
-arXiv & Primary papers via selected AI, language, vision, and software categories & Healthy; 0 rows & Yes\\
-Hugging Face Hub & Datasets and Spaces connected to benchmark artifacts & Healthy; 92 rows & Yes\\
+arXiv & Primary papers via selected AI, language, vision, and software categories & Healthy; 46 rows & Yes\\
+Hugging Face Hub & Datasets and Spaces connected to benchmark artifacts & Healthy; 101 rows & Yes\\
 GitHub Search & Code repositories and benchmark artifacts & Healthy; 300 rows; at cap & Yes\\
-GitHub Organizations & Reviewed organization repositories & Healthy; 4 rows & No\\
-Hugging Face Papers & Community-surfaced papers & Healthy; 0 rows & No\\
-Kaggle Datasets & Public benchmark datasets & Healthy; 32 rows & No\\
-Zenodo & DOI-bearing research artifacts & Healthy; 57 rows & No\\
+GitHub Organizations & Reviewed organization repositories & Healthy; 6 rows & No\\
+Hugging Face Papers & Community-surfaced papers & Healthy; 26 rows & No\\
+Kaggle Datasets & Public benchmark datasets & Healthy; 30 rows & No\\
+Zenodo & DOI-bearing research artifacts & Healthy; 65 rows & No\\
+Crossref & DOI metadata & Healthy; 180 rows & No\\
 OpenReview & Conference submissions & Healthy; no eligible rows & No\\
-GitHub Releases & Curated first-party releases & Healthy; 6 rows & No\\
-OpenAlex & Scholarly discovery metadata & Healthy; 200 rows & No\\
+GitHub Releases & First-party releases & Healthy; 1 row & No\\
+OpenAlex & Scholarly discovery metadata & Healthy; 248 rows & No\\
 \bottomrule
 \end{tabularx}
 \captionof{table}{Healthy direct discovery connectors at the current cutoff.}
@@ -274,7 +480,7 @@ OpenAlex & Scholarly discovery metadata & Healthy; 200 rows & No\\
 \end{minipage}
 \end{center}
 
-Table~\ref{tab:first-party-feeds} lists research and engineering feeds operated by the institutions being monitored. They can surface benchmark papers, datasets, model announcements, and engineering posts. The feed collector yielded one relevant record at the cutoff. Some healthy feeds produced zero matches after relevance filtering. Searches restricted to an organization's website cover institutions that lack a verified feed.
+Table~\ref{tab:first-party-feeds} lists research and engineering feeds operated by the institutions being monitored. They can surface benchmark papers, datasets, model announcements, and engineering posts. The feed collector returned no records at the cutoff. Semantic Scholar returned a malformed payload, and Brave Search lacked an API key. These optional-route failures remain recorded in the snapshot. Searches restricted to an organization's website cover institutions that lack a verified feed.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -303,92 +509,10 @@ Meta Research & LangChain\\
 \end{minipage}
 \end{center}
 
-\section{Protocol-Controlled Saturation Audit}
-\label{app:saturation-audit}
-
-The eight metrics identified in Section~\ref{sec:results} have raw best scores within five points of their upper bound. This appendix examines whether the archive also contains scores obtained under matching evaluation settings on at least two dates.
-
-Every metric in this appendix has a percentage scale with an upper bound of 100. \emph{Raw headroom} is 100 minus the highest reported score, regardless of setup. \emph{Repeat-controlled headroom} is 100 minus the highest score among setups observed on at least two dates with identical instruments and protocols. A setup specifies the benchmark version, metric, and evaluation settings. Differences in attempts, tool access, reasoning budget, judge, or date-based test split keep scores in separate groups. Two dates support a paired comparison within that setup; they do not establish a trend across the field.
-
-All eight raw best readings come from a setup that appears on a single date. Four of the eight benchmarks have a different setup repeated across dates, and each of those repeated setups is a two-date, single-organization pair. The remaining four have no repeated setup at all, so their headroom cannot be assessed under repeat control.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.18\textwidth}rrrL{0.14\textwidth}Y}
-\toprule
-\textbf{Benchmark} & \textbf{Raw best} & \textbf{Raw gap} & \textbf{Repeat gap} & \textbf{Repeated setup} & \textbf{Repeated gap $\leq$5?}\\
-\midrule
-AIME & 99.2 & 0.8 & 20.2 & 2 dates, 1 org & No\\
-Arena-Hard & 95.6 & 4.4 & 7.7 & 2 dates, 1 org & No\\
-DeepSearchQA & 95 & 5 & n/a & none & Unknown\\
-HMMT & 96.9 & 3.1 & 4.8 & 2 dates, 1 org & Yes\\
-MATH-500 & 98 & 2 & n/a & none & Unknown\\
-MathVision & 97.8 & 2.2 & n/a & none & Unknown\\
-SWE-bench Verified & 96 & 4 & 19.4 & 2 dates, 1 org & No\\
-tau2-bench & 99.3 & 0.7 & n/a & none & Unknown\\
-\bottomrule
-\end{tabularx}
-\captionof{table}{Raw and repeat-controlled headroom, in percentage points. Each repeated setup spans two dates from one organization. Only HMMT has a repeated-setup gap within five points; four benchmarks have no repeated setup. All raw-best setups occur on a single date.}
-\label{tab:saturation-audit}
-\end{minipage}
-\end{center}
-
-Table~\ref{tab:saturation-sensitivity} counts how many raw readings and repeated setups fall within each headroom threshold. Only four benchmarks have a repeated setup, so the other four are unknown and excluded from that denominator.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\small
-\begin{tabular}{lll}
-\toprule
-\textbf{Threshold} & \textbf{Raw readings} & \textbf{Repeated setups}\\
-\midrule
-$\leq$5 & 8 / 8 & 1 / 4 (4 unknown)\\
-$\leq$3 & 4 / 8 & 0 / 4 (4 unknown)\\
-$\leq$2 & 3 / 8 & 0 / 4 (4 unknown)\\
-\bottomrule
-\end{tabular}
-\captionof{table}{Benchmarks within each headroom threshold, measured in percentage points. Fractions use the eight raw readings or the four benchmarks with repeated setups as their denominators.}
-\label{tab:saturation-sensitivity}
-\end{minipage}
-\end{center}
-
-None of the setups that produced the raw best scores was observed on a second date. Table~\ref{tab:saturation-wording} gives the evaluation settings and the evidence available for each benchmark.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{L{0.15\textwidth}Y}
-\toprule
-\textbf{Benchmark} & \textbf{Score, evaluation setup, and evidence limits}\\
-\midrule
-AIME & AIME's 99.2 raw best leaves 0.8 points of headroom under the AIME 2026, temp 1.0, top\_p 0.95, max gen 163840 tokens, GPT-5.5 (medium) judge setup, but that setup appears on one date. The closest repeated setup leaves 20.2 points, outside the five-point threshold.\\
-Arena-Hard & Arena-Hard's 95.6 raw best leaves 4.4 points of headroom under the thinking mode setup, but that setup appears on one date. The closest repeated setup leaves 7.7 points, outside the five-point threshold.\\
-DeepSearchQA & DeepSearchQA's 95 result leaves 5 points of headroom under the F1, reasoning=max setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-HMMT & HMMT's raw best is an isolated 96.9 result. A separate think max, pass@1 setup spans 2 dates from 1 organization and leaves 4.8 points of headroom. This supports a protocol-specific paired comparison.\\
-MATH-500 & MATH-500's 98 result leaves 2 points of headroom under the thinking mode setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-MathVision & MathVision's 97.8 result leaves 2.2 points of headroom under the reasoning=max, with Python setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-SWE-bench Verified & SWE-bench Verified's 96 raw best leaves 4 points of headroom under the adaptive thinking, max effort, averaged over 5 trials setup, but that setup appears on one date. The closest repeated setup leaves 19.4 points, outside the five-point threshold.\\
-tau2-bench & tau2-bench's 99.3 result leaves 0.7 points of headroom under the Thinking (High), Telecom setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-\bottomrule
-\end{tabularx}
-\captionof{table}{Evaluation settings and limits of the near-ceiling results. A small gap applies to the stated setup and does not establish that the benchmark is saturated across settings.}
-\label{tab:saturation-wording}
-\end{minipage}
-\end{center}
-
-The audit groups reported scores by instrument and protocol, checks the number of distinct dates in each group, and calculates the gaps summarized above. The reproduction command and score archive are listed in Appendix~\ref{app:reproducibility}.
-
-
 \section{Worked Use Case: Prior-Art Check for a New Evaluation}
 \label{app:use-case}
 
-This case describes one contributor's use of Benchmark Radar to check related work before designing an evaluation. It is a single workflow, with no measured timing or accuracy outcome.
-
-The contributor wanted to determine whether a proposed evaluation duplicated existing work. The session ran during August 2026 and surveyed recent work on credit assignment in agentic training, using small Qwen-series models as a requirement for reproducible baseline experiments. Comparing a candidate design against existing work normally requires manual searches, whose completeness is difficult to establish.
+The contributor wanted to determine whether a proposed evaluation duplicated existing work. They surveyed work published in August 2026 on credit assignment in agentic training, using small Qwen-series models as a requirement for reproducible baseline experiments. The search produced a focused comparison table that the contributor used to assess the proposed design.
 
 The contributor gave the task to a coding agent together with the public setup instructions for Benchmark Radar. The agent installed the command-line client and the Benchmark Radar Skill, a set of instructions for using the client. It then downloaded the local corpus and queried candidate records offline.
 
@@ -401,13 +525,13 @@ The contributor gave the task to a coding agent together with the public setup i
 \end{minipage}
 \end{center}
 
-The agent inspected which paper, repository, and dataset links were recorded for each candidate. Figures~\ref{fig:use-case-paper} and~\ref{fig:use-case-code} show records with a repository link and no dataset link. The paper-link field differs between them. A missing link describes the collected record; it does not establish that the artifact has not been released.
+The agent inspected paper, repository, and dataset links to decide which sources to open next. Figures~\ref{fig:use-case-paper} and~\ref{fig:use-case-code} show two retrieved discovery records: one has a repository link, and the other has both paper and repository links. Neither records a dataset link, leaving dataset availability for a follow-up check.
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=0.92\textwidth]{artifact-status-paper.png}
-\captionof{figure}{A retrieved record with a repository link, no dataset link, and a false paper-link field. These fields describe the links recorded by the client.}
+\captionof{figure}{A retrieved discovery record with a repository link for inspecting the implementation. Paper and dataset links are missing from the record.}
 \label{fig:use-case-paper}
 \end{minipage}
 \end{center}
@@ -416,12 +540,12 @@ The agent inspected which paper, repository, and dataset links were recorded for
 \begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=0.92\textwidth]{artifact-status-code.png}
-\captionof{figure}{A second retrieved record with paper and repository links but no dataset link. The missing dataset link does not establish its release status.}
+\captionof{figure}{A second discovery record provides both paper and repository links. Its dataset link needs a follow-up check.}
 \label{fig:use-case-code}
 \end{minipage}
 \end{center}
 
-Benchmark Radar search matches words and phrases, so the agent also ran its own web search and cross-checked the two candidate sets before accepting a record. The additional search checked for related work described in different terms. The agent still had to judge whether each retrieved record was relevant to the proposed evaluation.
+The agent supplemented local queries with web search to find related work described in different terms. It cross-checked the candidate sets and inspected the source evidence before selecting records for the comparison. Figure~\ref{fig:use-case-cross} shows the word matches and score components available for inspecting one retrieved candidate.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -432,16 +556,7 @@ Benchmark Radar search matches words and phrases, so the agent also ran its own 
 \end{minipage}
 \end{center}
 
-The session ended with a focused summary table of related work that the contributor judged complete enough to act on.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{survey-table.png}
-\captionof{figure}{Summary table of recent work on credit assignment in agentic training, assembled during the session.}
-\label{fig:use-case-survey}
-\end{minipage}
-\end{center}
+The resulting related-work table appears in Figure~\ref{fig:use-case-survey} in the main text.
 
 Figure~\ref{fig:use-case-manual-table} shows a comparison table from an earlier benchmark-design effort by one contributor. It covers ten related benchmarks across six design dimensions, with each cell read from a source paper. The contributor reported that assembling it took more effort than any part of that project except producing the benchmark data. Benchmark Radar retrieves candidates for this kind of comparison and exposes the matching words and fields for inspection; the comparison itself requires reading the source evidence.
 
@@ -454,19 +569,18 @@ Figure~\ref{fig:use-case-manual-table} shows a comparison table from an earlier 
 \end{minipage}
 \end{center}
 
-Query wording can change the candidate set because search matches words rather than meaning. The session combined Benchmark Radar with the agent's web search, so it does not isolate either tool's contribution. Repository and dataset availability can also change after retrieval. The summary table and screenshots document one workflow, without a controlled comparison. Additional session evidence is available in the project's public \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
+This case records one workflow combining Benchmark Radar with web search; it has no measured time or accuracy comparison.
 
-\section{Contributor Credit}
-\label{app:contributor-credit}
-
-Junjie Zhou prepared the protocol-controlled saturation audit in Appendix~\ref{app:saturation-audit}, its machine-readable table, and the corresponding report revision, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}. Jiayu Wang contributed the worked use case in Appendix~\ref{app:use-case} and its supporting evidence, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
-
+\clearpage
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
-This paper evaluates Benchmark Radar \reportversion{} at Git commit \gitcommit{} with a data cutoff of \datacutoff{}. The data build combines dated collection snapshots, benchmark registry records, and model reports, then classifies tracks and packages the results with checksums. Installed clients validate the checksum and record format before activating an update. The evaluation used a clean data rebuild with linting, formatting checks, catalog normalization, classification, release construction, and the full test suite; all 1,236 tests passed. The manuscript is authored in LaTeX, separately from the data generators. The project provides a DOI and a Citation File Format record for citation \citep{smith2016,katz2021,cff}.
+This revision uses the frozen \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. All 1,314 tests passed. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
 
-\begin{table}[htbp]
+The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff}.
+
+\begin{center}
+\begin{minipage}{\textwidth}
 \centering
 \small
 \begin{tabularx}{\textwidth}{L{0.28\textwidth}Y}
@@ -474,6 +588,7 @@ This paper evaluates Benchmark Radar \reportversion{} at Git commit \gitcommit{}
 \textbf{Artifact} & \textbf{Canonical or permanent location}\\
 \midrule
 Archived paper (v0.9.0) & \url{https://doi.org/10.5281/zenodo.22167102}\\
+Frozen data (v0.11.0) & \url{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}\\
 Source code & \url{https://github.com/ktwu01/benchmark-radar}\\
 Dashboard & \url{https://benchmark-radar.org/}\\
 Discovery observations (JSON) & \url{https://benchmark-radar.org/data/radar.json}\\
@@ -482,15 +597,16 @@ RSS & \url{https://benchmark-radar.org/feed.xml}\\
 Citation metadata & \url{https://github.com/ktwu01/benchmark-radar/blob/main/CITATION.cff}\\
 \bottomrule
 \end{tabularx}
-\caption{Access and citation artifacts for Benchmark Radar.}
+\captionof{table}{Access and citation artifacts for Benchmark Radar.}
 \label{tab:access-artifacts}
-\end{table}
+\end{minipage}
+\end{center}
 
-The reported counts were computed from the cumulative discovery data, benchmark catalog, model registry, model-report and score archives, normalized catalog records, and collection configuration. Their repository locations are \texttt{site/data/radar.json}, \texttt{site/data/benchmark-index.json}, \texttt{site/data/models.json}, \texttt{data/model\_cards.yml}, \texttt{data/benchmark\_scores.yml}, \texttt{data/catalog/}, and \texttt{config.yml}. The dated numerical inputs used by the manuscript and figures are stored in \texttt{figure-data.tex} beside the LaTeX source.
+The census reads \texttt{site/data/benchmark-index.json}, the detail shards under \texttt{site/data/benchmarks/}, and the shared document and model registries. Discovery counts come from the rebuilt \texttt{site/data/radar.json} and dated snapshots. Model reports and score YAML files are normalization inputs, not a separate population for the paper's findings.
 
-To reproduce the data build from a clean checkout, install the project and run \texttt{benchmark-radar normalize-catalog}, \texttt{benchmark-radar classify}, and \texttt{benchmark-radar build-data-release}, in that order. The command \texttt{python -m benchmark\_radar.saturation\_audit} regenerates the protocol audit from the score and model-report archives, including the score identifiers, evaluation groups, and exclusions behind the appendix tables. Run \texttt{make} in \texttt{docs/technical-report/latex/} to build this manuscript from its dated numerical inputs. Rebuilding the data at a later revision does not update those inputs automatically.
+The paper repository contains \texttt{scripts/audit\_catalog.py}, which validates IDs and counts, computes the census, and exports \texttt{catalog-data.tex} plus \texttt{evidence/catalog-audit.json}. The JSON includes every source-record key, measurement state, per-record model and document counts, citation IDs, and SHA-256 hashes of the inputs. The script checks score-observation uniqueness, record-to-shard identity, document-registry coverage, and reconciliation of scored and unscored records. Its \texttt{--check} mode compares a fresh calculation against the committed outputs. Figure~\ref{fig:corpus-evidence} draws one linked dot per census record in source-key order.
 
-The DOI in Table~\ref{tab:access-artifacts} identifies the archived v0.9.0 paper. This manuscript describes \reportversion{} at the cutoff above. The dashboard continues to change; citations of its live counts need a retrieval date.
+Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_examples.py} take the rebuilt software path. The example audit writes \texttt{example-data.tex} and \texttt{evidence/restored-examples.json}, recording every record's headroom eligibility, tied maximum-score observations and settings, mention documents and organizations, and the citations behind date gaps. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains a frozen earlier deposit; live dashboard counts require a retrieval date.
 
 % \section{Licensing}
 % Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
