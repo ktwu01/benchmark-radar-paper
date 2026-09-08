@@ -1,5 +1,11 @@
 # Paper repository instructions
 
+- Keep paper-only edits and PRs in this repository by default. Update the parent
+  Benchmark Radar repository, including its submodule pointer, only when the user
+  explicitly requests it.
+- Keep work on the task branch. Update local or remote `main`, or merge a pull
+  request, only when the user explicitly requests it. Creating or updating a PR
+  does not authorize a merge.
 - Follow the README's v0.11.0 data cutoff rule: software commit
   `8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0`, discovery through 2026-09-07,
   and the recorded input hashes. Preserve these released inputs during routine
@@ -21,9 +27,10 @@
 - The v0.9.0 Zenodo deposit remains frozen in the software repository.
 - Preserve author contribution statements, final approval, and accountability.
   Overleaf's Git commit author does not represent all coauthors' contributions.
-- Read the README for Overleaf sync and submodule updates. Push the paper commit
-  before advancing the software repository's pointer. Do not add submodules or
-  symlinks here: this repository must be importable by Overleaf.
+- Read the README for Overleaf sync and submodule updates. When a parent pointer
+  update is requested, push the paper commit before advancing that pointer.
+  Do not add submodules or symlinks here: this repository must be importable by
+  Overleaf.
 - Merge pull requests with a merge commit; never squash-merge.
 
 ## Full-catalog findings
