@@ -1,5 +1,10 @@
 # Paper repository instructions
 
+- Follow the README's v0.11.0 data cutoff rule: software commit
+  `8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0`, discovery through 2026-09-07,
+  and the recorded input hashes. Preserve these released inputs during routine
+  edits. Publishing unchanged audited inputs does not require a new audit; a
+  changed cutoff requires an explicitly agreed new paper version.
 - Edit `main.tex` directly; it is the single source of manuscript prose.
 - Keep `references.bib`, all required images, native figure sources, and dated
   `figure-data.tex` in this repository so it builds without the software checkout.

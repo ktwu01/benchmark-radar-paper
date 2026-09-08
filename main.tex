@@ -417,7 +417,7 @@ This case records one workflow combining Benchmark Radar with web search; it has
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
-This revision audits software commit \gitcommit{} with a data cutoff of \datacutoff{}. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. All 1,314 tests passed. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
+This revision uses the frozen \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. All 1,314 tests passed. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
 
 The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff}.
 
@@ -429,6 +429,7 @@ The data build normalizes the registry and model-report inputs into the shared c
 \textbf{Artifact} & \textbf{Canonical or permanent location}\\
 \midrule
 Archived paper (v0.9.0) & \url{https://doi.org/10.5281/zenodo.22167102}\\
+Frozen data (v0.11.0) & \url{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}\\
 Source code & \url{https://github.com/ktwu01/benchmark-radar}\\
 Dashboard & \url{https://benchmark-radar.org/}\\
 Discovery observations (JSON) & \url{https://benchmark-radar.org/data/radar.json}\\
@@ -445,9 +446,9 @@ The census reads \texttt{site/data/benchmark-index.json}, the detail shards unde
 
 The paper repository contains \texttt{scripts/audit\_catalog.py}, which validates IDs and counts, computes the census, and exports \texttt{catalog-data.tex} plus \texttt{evidence/catalog-audit.json}. The JSON includes every source-record key, measurement state, per-record model and document counts, citation IDs, and SHA-256 hashes of the inputs. The script checks score-observation uniqueness, record-to-shard identity, document-registry coverage, and reconciliation of scored and unscored records. Its \texttt{--check} mode compares a fresh calculation against the committed outputs. Figure~\ref{fig:abstract} draws one linked dot per census record in source-key order.
 
-To reproduce, check out software commit \gitcommit{}, install its development dependencies, and run the six-step CI sequence. Run the software's \texttt{scripts/export\_report\_figure\_data.py} and its \texttt{--check} mode to refresh \texttt{figure-data.tex}. From the paper checkout, run \texttt{python scripts/audit\_catalog.py /path/to/software}, then repeat with \texttt{--check}. The README records the commands. Finally, run \texttt{make arxiv}, compile the extracted package, and inspect the rebuilt PDF. Normal paper builds use the committed data and do not refresh the evidence.
+The v0.11.0 release includes a frozen data archive and checksums matching the recorded audit inputs. To reproduce from source, check out software commit \gitcommit{}, install its development dependencies, and run the six-step CI sequence. Run the software's \texttt{scripts/export\_report\_figure\_data.py} and its \texttt{--check} mode to refresh \texttt{figure-data.tex}. From the paper checkout, run \texttt{python scripts/audit\_catalog.py /path/to/software}, then repeat with \texttt{--check}. The README records the commands. Finally, run \texttt{make arxiv}, compile the extracted package, and inspect the rebuilt PDF. Normal paper builds use the committed data and do not refresh the evidence.
 
-The DOI in Table~\ref{tab:access-artifacts} identifies the archived v0.9.0 paper. This manuscript describes software commit \gitcommit{} at the cutoff above. The dashboard continues to change; citations of its live counts need a retrieval date.
+The DOI in Table~\ref{tab:access-artifacts} identifies the archived v0.9.0 paper. This manuscript describes the v0.11.0 release at software commit \gitcommit{} and the cutoff above. The dashboard continues to change; citations of its live counts need a retrieval date.
 
 % \section{Licensing}
 % Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
