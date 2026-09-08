@@ -14,10 +14,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Install TeX
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ktwu01/benchmark-radar
+          ref: 8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0
+          path: frozen-software
+      - name: Verify findings against the frozen v0.11.0 release
+        run: |
+          python -m pip install pytest
+          python scripts/verify_frozen_findings.py frozen-software
+          python -m pytest -q tests
+      - name: Install TeX and PDF number scanning tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures poppler-utils tesseract-ocr
       - name: Build paper and standalone arXiv package
         run: |
           make arxiv
@@ -32,4 +45,5 @@ jobs:
           path: |
             main.pdf
             arxiv.tar.gz
+            build/small-number-warnings.json
           if-no-files-found: error

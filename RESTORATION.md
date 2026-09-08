@@ -1,4 +1,8 @@
-# Paper restoration review
+# Historical paper restoration review
+
+This records the earlier restoration. Its report-subset tables are superseded by
+the full-catalog findings described in the README; the historical counts below
+are not the current manuscript analysis.
 
 The paper again presents **Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research**. Daily discovery, benchmark retrieval, task materials, and reporting evidence lead the narrative; the full-catalog audit supports it.
 

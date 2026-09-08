@@ -47,3 +47,18 @@
   units. Preserve source-record identities; do not sum similarly named records.
 - Keep one mark per source record in the corpus overview and preserve its detail
   link when building the manuscript. Check the links against the census IDs.
+- Main document, score, and date analyses use `scripts/audit_findings.py` and
+  `findings-data.tex`. Each retains the exact full frozen catalog ID set; a
+  measurement eligibility filter must not become a population filter.
+- Run `audit_findings.py /path/to/frozen-software --check` and the paper's
+  regression tests before building. Never reinstate model-report-only main
+  findings or substitute document counts for benchmark-record coverage.
+- Every number below 100 appearing in the rendered paper must produce this
+  warning: `less than 100 is abnormal, ref to https://github.com/ktwu01/benchmark-radar/blob/main/principle.md`.
+  Apply it without exemptions for page numbers, citations, dates, model versions,
+  percentages, or source-specific counts. `make` and `make arxiv` run the check
+  on PDF text and OCR of rendered pages. Review the page/context warnings;
+  do not change frozen evidence merely to silence them.
+- Do not restore `example-data.tex`, `scripts/audit_examples.py`, or
+  `evidence/restored-examples.json`. Git history preserves the removed subset;
+  `findings-data.tex` and the full-catalog exports are the current analysis.
