@@ -104,6 +104,28 @@ Model cards and datasheets motivate documenting evaluation conditions and datase
 
 Benchmark Radar adapts BuilderPulse's daily public-source collection approach \citep{builderpulse}. Figure~\ref{fig:pipeline} separates the benchmark catalog from discovery history. Model reports include model cards, technical reports, system cards, and release posts; they contribute through the same record structure as benchmark registries.
 
+Table~\ref{tab:catalog-sources} summarizes the four catalog sources and their primary uses in the frozen release.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabularx}{\textwidth}{L{0.23\textwidth}r Y}
+\toprule
+\textbf{Catalog source} & \textbf{Rows} & \textbf{Primary use}\\
+\midrule
+LLM Stats & \ReportLLMStatsCount{} & Benchmark names and descriptions with source provenance.\\
+OpenCompass Hub & \ReportOpenCompassCount{} & Paper, repository, release, and dataset links with source-specific identity fields.\\
+Artificial Analysis & \ReportArtificialAnalysisCount{} & Current commercial evaluation catalog entries.\\
+Model reports & \ReportModelReportCount{} & Benchmarks mentioned in model reports, including records without scores.\\
+\midrule
+Total & \ReportNumber{\ReportCatalogCount} & All four sources, retaining each record's source label.\\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Catalog sources in the frozen v0.11.0 release. Rows count source-specific benchmark records, including records without scores.}
+\label{tab:catalog-sources}
+\end{minipage}
+\end{center}
+
 \subsection{Discovery Collection}
 
 Daily discovery observations describe mentions, releases, and updates found across public sources. An observation is one collected record; an artifact is a paper, repository, dataset, release, or page linked by exact identifiers. These objects differ from source-specific benchmark records. We retain their histories alongside the catalog without adding discovery observations to the benchmark total.

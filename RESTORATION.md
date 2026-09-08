@@ -38,3 +38,5 @@ The main Results section also includes the supplied Leaderboard and Trends snaps
 ## Author-credit correction
 
 Commit `557393e` removed the dedicated Contributor Credit section and distributed credit across an author note and two footnotes. The subsequent restoration retained that fragmented arrangement: the author note named only Koutian Wu, Ergan Shang, and Pengqian Han, while Junjie Zhou and Jiayu Wang were credited elsewhere. The manuscript now has one formal Author Contributions section naming all five authors and their previously recorded roles. Informal issue references have been removed from the manuscript; the worked example, screenshots, and scholarly citations remain.
+
+The System and Methods section now includes the requested Catalog source / Rows / Primary use table, using the frozen count macros: 687 LLM Stats, 461 OpenCompass Hub, 25 Artificial Analysis, and 110 Model reports rows, totaling 1,283 source records. The source descriptions are preserved as supplied.
