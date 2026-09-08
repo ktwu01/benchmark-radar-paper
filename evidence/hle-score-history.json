@@ -1,0 +1,39 @@
+{
+  "asset": "figures/hle-score-history.png",
+  "sha256": "365f852bb7da194ebf06b343835cb7b11c1f95e1db8faabe1496471b5df6d0a2",
+  "origin": "User-supplied interface screenshot; capture timestamp not supplied",
+  "interactive_url": "https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam",
+  "software_commit": "8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0",
+  "record_key": "artificial-analysis:humanitys-last-exam",
+  "score_count": 577,
+  "date_basis": "model_announcement",
+  "display_multiplier": 100,
+  "displayed_best": 55.47,
+  "maximum_observation": {
+    "comparable_group": null,
+    "crawled_at": "2026-08-25T10:41:06Z",
+    "date_precision": "model_announcement",
+    "document_id": "artificial_analysis:https://artificialanalysis.ai/evaluations/humanitys-last-exam",
+    "key": "artificial-analysis:humanitys-last-exam",
+    "measured_by": "Artificial Analysis",
+    "model_id": "cd55210d-358e-4df1-ba9c-9acb5f186cc9",
+    "model_name": "Claude Fable 5 (Adaptive Reasoning, Max Effort, Opus 4.8 Fallback)",
+    "obs_id": "artificial_analysis:humanitys-last-exam:cd55210d-358e-4df1-ba9c-9acb5f186cc9",
+    "organization": "Anthropic",
+    "rank_in_source_response": 1,
+    "raw_value": "0.554680259499537",
+    "reported_by": "third_party",
+    "reported_date": "2026-06-09",
+    "series_id": "artificial_analysis:humanitys-last-exam:default",
+    "source": "artificial_analysis",
+    "source_url": "https://artificialanalysis.ai/evaluations/humanitys-last-exam",
+    "value": 0.554680259499537,
+    "value_kind": "number"
+  },
+  "limitations": [
+    "Model release dates are not evaluation dates.",
+    "The display multiplier does not establish percentage-scale eligibility.",
+    "The screenshot does not establish matched evaluation settings.",
+    "The live linked view may change after this snapshot."
+  ]
+}

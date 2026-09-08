@@ -151,7 +151,7 @@ apply to paper tables and figures as well as the website.
 
 The frozen evidence supports 16 benchmark records mentioned by at least six organizations in the 37-report collection; eight near-ceiling records among 82 with eligible declared percentage scales; and six report-publication gaps of at least 180 days. The other 708 scored records and 493 unscored records remain accounted for. All eight near-ceiling records happen to come from Model reports after applying the same eligibility rule to the full catalog. These observations describe the archive, without establishing saturation, repeated-run controls, or field-wide adoption.
 
-The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. The full linked census appears in Results. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
+The paper's opening illustration is schematic: its bars and connections are illustrative, ordinal labels have been removed, and its count uses the frozen release. Figure 3 uses the supplied Humanity’s Last Exam interface snapshot, linked to its interactive view. The full linked census appears in the appendix. A restoration review is recorded in [RESTORATION.md](RESTORATION.md).
 
 ## Updating the paper used by Benchmark Radar
 
@@ -186,3 +186,5 @@ were copied unchanged from its `assets/use-case-492/` directory.
 
 The paper and original editorial content use [CC BY-NC 4.0](LICENSE-CONTENT.md).
 Third-party material retains its original terms.
+
+The image `figures/hle-score-history.png` is the supplied screenshot, preserved byte-for-byte. Its provenance and comparison with the frozen HLE record are recorded in `evidence/hle-score-history.json`. Its 577 scores and displayed maximum of 55.47 agree with the frozen release. The horizontal axis uses model announcement dates, not evaluation dates; the chart does not establish matched protocols or percentage-scale eligibility. The interactive link may show later updates.

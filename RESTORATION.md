@@ -5,7 +5,7 @@ The paper again presents **Benchmark RADAR: Living Search Engine for Retrieval a
 ## Restored
 
 - The exact original title in the manuscript and PDF metadata, and the broad introduction covering evaluation, scientific and industrial applications, benchmark families, fragmented discovery, and the system's contribution. All 36 citation keys from the original introduction remain cited. ASI-Bench, ESM-BENCH, and ResearchClawBench now accompany descriptions of their own tasks.
-- The original overview illustration on page one, with the frozen count corrected to 1,283 source records across four sources. Illustrative ordinal labels are removed; bars and connections are labelled schematic. The complete linked census is in Results.
+- The original overview illustration on page one, with the frozen count corrected to 1,283 source records across four sources. Illustrative ordinal labels are removed; bars and connections are labelled schematic. Figure 3 shows the supplied Humanity’s Last Exam score-inspection snapshot; the complete linked census is in the appendix.
 - Main-text collection and reader interfaces, discovery coverage and source concentration, a prior-art workflow with its outcome table, and concrete reporting examples. Detailed settings, source inventories, and session screenshots remain in the appendix.
 - Generated tables for all 16 benchmark records mentioned by at least six organizations, all eight near-ceiling records among the 82 eligible percentage-scale records, and all six report-publication gaps of at least 180 days. The new example audit records source keys, score IDs, settings, document IDs, eligibility, and input hashes.
 
@@ -29,4 +29,6 @@ The paper again presents **Benchmark RADAR: Living Search Engine for Retrieval a
 
 The six software CI steps passed in a fresh detached checkout of the frozen release, including all 1,314 tests. The census and software figure exporter match the committed frozen inputs. The example generator passes its `--check` mode. Negative checks reject a truncated index, duplicate benchmark ID, missing detail shard, duplicate score observation, and changed date basis.
 
-The rebuilt 21-page manuscript and extracted arXiv package compile without undefined references or overfull boxes, and their extracted text matches on every page. All 21 manuscript pages were visually reviewed. The manuscript retains exactly 1,283 census hyperlinks, each appearing once and matching the frozen record IDs.
+The rebuilt 22-page manuscript and extracted arXiv package compile without undefined references or overfull boxes, and their extracted text matches on every page. All 22 manuscript pages were visually reviewed. The manuscript retains exactly 1,283 census hyperlinks, each appearing once and matching the frozen record IDs.
+
+Figure 3 preserves the supplied HLE screenshot byte-for-byte and links to the requested interactive view. The frozen record verifies its 577 observations and displayed best score of 55.47. `evidence/hle-score-history.json` records the image hash, source record, maximum observation, display scaling, and model-announcement date basis. The caption distinguishes model release dates from evaluation dates; the live link may later change. The complete linked census remains as Figure 6 in Appendix A.

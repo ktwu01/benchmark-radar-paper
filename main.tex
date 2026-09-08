@@ -166,12 +166,14 @@ Date coverage counts valid recorded benchmark release dates. Score entries retai
 \section{Results}
 \label{sec:results}
 
-\begin{center}
-\resizebox{0.98\textwidth}{!}{\input{figures/corpus-evidence-body.tex}}
-\captionof{figure}{Discovery extends beyond scored records: \CensusNoScoreWithLinks{} unscored entries still provide artifact links. Each mark represents one source record and links to its detail page. All \ReportNumber{\CensusRecords} records appear, without a date or score filter.}
-\label{fig:corpus-evidence}
-\end{center}
+Figure~\ref{fig:hle-scores} shows how a retrieved benchmark opens into reported model scores. The full-population results below retain every source record; Appendix~\ref{app:full-catalog} provides the complete linked census.
 
+\begin{figure}[tp]
+\centering
+\href{https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}{\includegraphics[width=\textwidth]{hle-score-history.png}}
+\caption{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains 577 reported scores; the highest displayed score is 55.47. Marks identify model organizations, and the line connects successive best scores ordered by model release date. These are not evaluation dates: older models can be tested after a benchmark's release. The snapshot illustrates score inspection, without establishing matched evaluation settings or a validated percentage ceiling. Click the image to open the interactive view.}
+\label{fig:hle-scores}
+\end{figure}
 
 \subsection{Unscored Records Still Provide Routes to Prior Work}
 
@@ -382,6 +384,17 @@ The frozen release makes \ReportNumber{\CensusRecords} source records searchable
 {\LARGE\bfseries Appendix}
 \end{center}
 \vspace{0.75em}
+
+\section{Full-Catalog Census}
+\label{app:full-catalog}
+
+The score view in Figure~\ref{fig:hle-scores} selects one benchmark. This census retains all \ReportNumber{\CensusRecords} source records, including those without scores, so that the selected example does not obscure the catalog's discovery coverage.
+
+\begin{center}
+\resizebox{0.98\textwidth}{!}{\input{figures/corpus-evidence-body.tex}}
+\captionof{figure}{Discovery extends beyond scored records: \CensusNoScoreWithLinks{} unscored entries still provide artifact links. Each mark represents one source record and links to its detail page. All \ReportNumber{\CensusRecords} records appear, without a date or score filter.}
+\label{fig:corpus-evidence}
+\end{center}
 
 \section{Collection Settings and Display Filters}
 \label{app:operations}
