@@ -1,0 +1,95 @@
+# Benchmark Radar paper
+
+[Read the paper](main.pdf) · [Edit the LaTeX](main.tex) · [Benchmark Radar](https://github.com/ktwu01/benchmark-radar)
+
+This repository contains the manuscript, bibliography, dated figure inputs, and
+all images needed to build the Benchmark Radar technical report. The software
+repository includes a reviewed commit of this repository as a Git submodule at
+`docs/technical-report/latex`.
+
+## Write together in Overleaf
+
+The project owner links their GitHub account in Overleaf account settings, then
+chooses **New project → GitHub repo → ktwu01/benchmark-radar-paper**. Set
+`main.tex` as the main document and use pdfLaTeX. Invite coauthors through Share.
+UT Austin's eligible institutional premium accounts include GitHub integration.
+
+Use **Integrations → GitHub** to pull accepted GitHub changes before a writing
+session and push completed revisions afterward. This is manual synchronization;
+saving in Overleaf does not push to GitHub. GitHub sync uses the default branch,
+so review the manuscript in Overleaf before pushing. It does not open a PR.
+
+Finish active comment and tracked-change review before pulling GitHub edits:
+Git synchronization can displace those annotations. Overleaf may bundle several
+authors' changes into a commit under the connected account; retain contribution
+statements and review records for author credit.
+
+After syncing, rebuild and inspect `main.pdf`, commit it here, and update the
+submodule pointer in Benchmark Radar through a normal PR. A paper push alone
+does not change the version pinned by the software repository.
+
+See [Overleaf's GitHub sync documentation](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization).
+
+## Build locally
+
+Install a TeX distribution with `latexmk`, pdfLaTeX, TikZ, and the manuscript's
+LaTeX packages (TeX Live or TinyTeX). From this repository's root:
+
+```bash
+make
+make arxiv
+```
+
+`make` builds the native TikZ figures and `main.pdf`. Commit the rebuilt PDF with
+manuscript edits. Inspect the cover, changed pages, figures, and references before
+committing. Overleaf compiles the manuscript using the checked-in figure PDFs;
+after editing a figure's `.tex` source, rebuild it locally and sync its PDF too.
+
+`make arxiv` writes `arxiv.tar.gz`, including `main.bbl` and all figure inputs.
+Unpack and compile that archive independently before submitting it. The archive
+is a submission package, not evidence of an arXiv publication.
+
+CI builds the manuscript and submission package and uploads them as artifacts.
+Those artifacts do not update the checked-in `main.pdf` automatically.
+
+## Updating the paper used by Benchmark Radar
+
+Push the reviewed paper commit to this repository first. From a clean Benchmark
+Radar checkout, on a new branch:
+
+```bash
+git submodule update --init --recursive
+git -C docs/technical-report/latex fetch origin
+git -C docs/technical-report/latex checkout <reviewed-paper-commit>
+git add docs/technical-report/latex
+git commit -m "Update reviewed paper version"
+```
+
+Run Benchmark Radar's required clean-checkout CI sequence before opening the PR.
+Merge PRs with a merge commit, never squash. New clones should use
+`git clone --recurse-submodules`; existing clones use
+`git submodule update --init --recursive` after pulling.
+
+## Evidence and publication
+
+`main.tex` is the only manuscript source. `figure-data.tex` is a dated export;
+normal paper builds do not fetch or regenerate benchmark data. To change a
+quantitative claim, first rebuild and audit the software corpus following its
+[report instructions](https://github.com/ktwu01/benchmark-radar/blob/main/docs/technical-report/README.md).
+Run its `scripts/export_report_figure_data.py` from the software checkout to
+refresh the file in the submodule, then review the data, prose, figures, and PDF
+together. Record the software commit and data cutoff in the paper change.
+
+The published [v0.9.0 Zenodo deposit](https://doi.org/10.5281/zenodo.22167102)
+remains frozen in the software repository. A new deposit requires a separately
+reviewed version; this migration does not change that deposit or its metadata.
+
+## History and license
+
+The LaTeX directory's commit history was extracted from Benchmark Radar at
+`7e8ed74`; extraction preserves authors, dates, and messages but changes commit
+IDs. The original history remains in the software repository. Use-case images
+were copied unchanged from its `assets/use-case-492/` directory.
+
+The paper and original editorial content use [CC BY-NC 4.0](LICENSE-CONTENT.md).
+Third-party material retains its original terms.
