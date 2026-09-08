@@ -213,7 +213,7 @@ The index contains \ReportLLMStatsCount{} records from LLM Stats, \ReportOpenCom
 
 In the model-report collection, eight benchmarks appeared in documents from at least six organizations: GPQA Diamond \citep{rein2023gpqa}, Humanity's Last Exam \citep{phan2025hle}, SWE-bench Verified \citep{jimenez2023swebench}, Terminal-Bench \citep{merrill2026terminalbench}, AIME \citep{maa2026aime}, LiveCodeBench \citep{jain2024livecodebench}, MMLU-Pro \citep{wang2024mmlupro}, and BrowseComp \citep{wei2025browsecomp}. GPQA Diamond appeared in 27 of 37 documents from 11 organizations, making it the most commonly mentioned benchmark in these reports. This concentration suggests that frontier-model reporting has partly converged on a common set of evaluations, even as researchers introduce benchmarks in other areas.
 
-A benchmark can be widely mentioned without providing comparable scores across dates. Comparing scores can be misleading when reasoning budget, tool access, attempts, evaluator, or date-based test split differs \citep{gebru2021datasheets,mitchell2019modelcards}. In the snapshot, eight bounded metrics had a raw best score within five points of their ceiling: AIME \citep{maa2026aime}, Arena-Hard \citep{li2024arenahard}, DeepSearchQA \citep{gupta2026deepsearchqa}, HMMT \citep{hmmt2026}, MATH-500 \citep{hendrycks2021math}, MathVision \citep{wang2024mathvision}, SWE-bench Verified \citep{jimenez2023swebench}, and tau2-bench \citep{tau2bench}. Headroom is the gap between a reported score and the metric's upper bound. Appendix~\ref{app:saturation-audit} separates these raw best scores from results with matching evaluation settings across dates. Six benchmarks gained model-card mentions after their last interpretable score, so newer adoption evidence did not always come with newer comparable scores.
+A benchmark can be widely mentioned without providing comparable scores across dates. Comparing scores can be misleading when reasoning budget, tool access, attempts, evaluator, or date-based test split differs \citep{gebru2021datasheets,mitchell2019modelcards}. A near-ceiling result applies to the reported evaluation setup; it does not by itself establish benchmark saturation.
 
 \section{Limitations and Future Work}
 \label{sec:caveat-future-work}
@@ -303,86 +303,6 @@ Meta Research & LangChain\\
 \end{minipage}
 \end{center}
 
-\section{Protocol-Controlled Saturation Audit}
-\label{app:saturation-audit}
-
-The eight metrics identified in Section~\ref{sec:results} have raw best scores within five points of their upper bound. This appendix examines whether the archive also contains scores obtained under matching evaluation settings on at least two dates.
-
-Every metric in this appendix has a percentage scale with an upper bound of 100. \emph{Raw headroom} is 100 minus the highest reported score, regardless of setup. \emph{Repeat-controlled headroom} is 100 minus the highest score among setups observed on at least two dates with identical instruments and protocols. A setup specifies the benchmark version, metric, and evaluation settings. Differences in attempts, tool access, reasoning budget, judge, or date-based test split keep scores in separate groups. Two dates support a paired comparison within that setup; they do not establish a trend across the field.
-
-All eight raw best readings come from a setup that appears on a single date. Four of the eight benchmarks have a different setup repeated across dates, and each of those repeated setups is a two-date, single-organization pair. The remaining four have no repeated setup at all, so their headroom cannot be assessed under repeat control.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\small
-\begin{tabularx}{\textwidth}{L{0.18\textwidth}rrrL{0.14\textwidth}Y}
-\toprule
-\textbf{Benchmark} & \textbf{Raw best} & \textbf{Raw gap} & \textbf{Repeat gap} & \textbf{Repeated setup} & \textbf{Repeated gap $\leq$5?}\\
-\midrule
-AIME & 99.2 & 0.8 & 20.2 & 2 dates, 1 org & No\\
-Arena-Hard & 95.6 & 4.4 & 7.7 & 2 dates, 1 org & No\\
-DeepSearchQA & 95 & 5 & n/a & none & Unknown\\
-HMMT & 96.9 & 3.1 & 4.8 & 2 dates, 1 org & Yes\\
-MATH-500 & 98 & 2 & n/a & none & Unknown\\
-MathVision & 97.8 & 2.2 & n/a & none & Unknown\\
-SWE-bench Verified & 96 & 4 & 19.4 & 2 dates, 1 org & No\\
-tau2-bench & 99.3 & 0.7 & n/a & none & Unknown\\
-\bottomrule
-\end{tabularx}
-\captionof{table}{Raw and repeat-controlled headroom, in percentage points. Each repeated setup spans two dates from one organization. Only HMMT has a repeated-setup gap within five points; four benchmarks have no repeated setup. All raw-best setups occur on a single date.}
-\label{tab:saturation-audit}
-\end{minipage}
-\end{center}
-
-Table~\ref{tab:saturation-sensitivity} counts how many raw readings and repeated setups fall within each headroom threshold. Only four benchmarks have a repeated setup, so the other four are unknown and excluded from that denominator.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\small
-\begin{tabular}{lll}
-\toprule
-\textbf{Threshold} & \textbf{Raw readings} & \textbf{Repeated setups}\\
-\midrule
-$\leq$5 & 8 / 8 & 1 / 4 (4 unknown)\\
-$\leq$3 & 4 / 8 & 0 / 4 (4 unknown)\\
-$\leq$2 & 3 / 8 & 0 / 4 (4 unknown)\\
-\bottomrule
-\end{tabular}
-\captionof{table}{Benchmarks within each headroom threshold, measured in percentage points. Fractions use the eight raw readings or the four benchmarks with repeated setups as their denominators.}
-\label{tab:saturation-sensitivity}
-\end{minipage}
-\end{center}
-
-None of the setups that produced the raw best scores was observed on a second date. Table~\ref{tab:saturation-wording} gives the evaluation settings and the evidence available for each benchmark.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{L{0.15\textwidth}Y}
-\toprule
-\textbf{Benchmark} & \textbf{Score, evaluation setup, and evidence limits}\\
-\midrule
-AIME & AIME's 99.2 raw best leaves 0.8 points of headroom under the AIME 2026, temp 1.0, top\_p 0.95, max gen 163840 tokens, GPT-5.5 (medium) judge setup, but that setup appears on one date. The closest repeated setup leaves 20.2 points, outside the five-point threshold.\\
-Arena-Hard & Arena-Hard's 95.6 raw best leaves 4.4 points of headroom under the thinking mode setup, but that setup appears on one date. The closest repeated setup leaves 7.7 points, outside the five-point threshold.\\
-DeepSearchQA & DeepSearchQA's 95 result leaves 5 points of headroom under the F1, reasoning=max setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-HMMT & HMMT's raw best is an isolated 96.9 result. A separate think max, pass@1 setup spans 2 dates from 1 organization and leaves 4.8 points of headroom. This supports a protocol-specific paired comparison.\\
-MATH-500 & MATH-500's 98 result leaves 2 points of headroom under the thinking mode setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-MathVision & MathVision's 97.8 result leaves 2.2 points of headroom under the reasoning=max, with Python setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-SWE-bench Verified & SWE-bench Verified's 96 raw best leaves 4 points of headroom under the adaptive thinking, max effort, averaged over 5 trials setup, but that setup appears on one date. The closest repeated setup leaves 19.4 points, outside the five-point threshold.\\
-tau2-bench & tau2-bench's 99.3 result leaves 0.7 points of headroom under the Thinking (High), Telecom setup. No setup spans two dates, so the archive supports only this protocol-specific reading.\\
-\bottomrule
-\end{tabularx}
-\captionof{table}{Evaluation settings and limits of the near-ceiling results. A small gap applies to the stated setup and does not establish that the benchmark is saturated across settings.}
-\label{tab:saturation-wording}
-\end{minipage}
-\end{center}
-
-The audit groups reported scores by instrument and protocol, checks the number of distinct dates in each group, and calculates the gaps summarized above. The reproduction command and score archive are listed in Appendix~\ref{app:reproducibility}.
-
-
 \section{Worked Use Case: Prior-Art Check for a New Evaluation}
 \label{app:use-case}
 
@@ -459,7 +379,7 @@ Query wording can change the candidate set because search matches words rather t
 \section{Contributor Credit}
 \label{app:contributor-credit}
 
-Junjie Zhou prepared the protocol-controlled saturation audit in Appendix~\ref{app:saturation-audit}, its machine-readable table, and the corresponding report revision, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}. Jiayu Wang contributed the worked use case in Appendix~\ref{app:use-case} and its supporting evidence, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
+Junjie Zhou contributed a score-archive audit and earlier report revisions, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}. Jiayu Wang contributed the worked use case in Appendix~\ref{app:use-case} and its supporting evidence, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
 
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
@@ -488,7 +408,7 @@ Citation metadata & \url{https://github.com/ktwu01/benchmark-radar/blob/main/CIT
 
 The reported counts were computed from the cumulative discovery data, benchmark catalog, model registry, model-report and score archives, normalized catalog records, and collection configuration. Their repository locations are \texttt{site/data/radar.json}, \texttt{site/data/benchmark-index.json}, \texttt{site/data/models.json}, \texttt{data/model\_cards.yml}, \texttt{data/benchmark\_scores.yml}, \texttt{data/catalog/}, and \texttt{config.yml}. The dated numerical inputs used by the manuscript and figures are stored in \texttt{figure-data.tex} beside the LaTeX source.
 
-To reproduce the data build from a clean checkout, install the project and run \texttt{benchmark-radar normalize-catalog}, \texttt{benchmark-radar classify}, and \texttt{benchmark-radar build-data-release}, in that order. The command \texttt{python -m benchmark\_radar.saturation\_audit} regenerates the protocol audit from the score and model-report archives, including the score identifiers, evaluation groups, and exclusions behind the appendix tables. Run \texttt{make} in \texttt{docs/technical-report/latex/} to build this manuscript from its dated numerical inputs. Rebuilding the data at a later revision does not update those inputs automatically.
+To reproduce the data build from a clean checkout, install the project and run \texttt{benchmark-radar normalize-catalog}, \texttt{benchmark-radar classify}, and \texttt{benchmark-radar build-data-release}, in that order. Run \texttt{make} in \texttt{docs/technical-report/latex/} to build this manuscript from its dated numerical inputs. Rebuilding the data at a later revision does not update those inputs automatically.
 
 The DOI in Table~\ref{tab:access-artifacts} identifies the archived v0.9.0 paper. This manuscript describes \reportversion{} at the cutoff above. The dashboard continues to change; citations of its live counts need a retrieval date.
 
