@@ -25,11 +25,7 @@ LABELS = {
 
 
 def numeric(value):
-    return (
-        isinstance(value, (int, float))
-        and not isinstance(value, bool)
-        and math.isfinite(value)
-    )
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
 def valid_date(value):
@@ -51,54 +47,36 @@ def audit(root):
     radar = read("site/data/radar.json")
     models = read("site/data/models.json")
     assert (
-        models["model_count"]
-        == len(models["models"])
-        == len({m["key"] for m in models["models"]})
+        models["model_count"] == len(models["models"]) == len({m["key"] for m in models["models"]})
     )
     catalog = index["benchmarks"]
     assert index["count"] == len(catalog) == len({b["key"] for b in catalog})
     assert len(catalog) >= 1259 and len({b["source"] for b in catalog}) >= 4
-    assert {b["source"] for b in catalog} <= LABELS.keys(), (
-        "Name new sources explicitly"
-    )
+    assert {b["source"] for b in catalog} <= LABELS.keys(), "Name new sources explicitly"
     documents = index["document_registry"]["documents"]
     document_ids = {d["id"] for d in documents}
-    assert (
-        len(document_ids)
-        == len(documents)
-        == index["document_registry"]["document_count"]
-    )
+    assert len(document_ids) == len(documents) == index["document_registry"]["document_count"]
     sources = {source: Counter() for source in LABELS}
     rows = []
     observation_ids = set()
     cited_document_ids = set()
     date_precision = Counter()
-    for entry in sorted(
-        catalog, key=lambda b: (list(LABELS).index(b["source"]), b["key"])
-    ):
+    for entry in sorted(catalog, key=lambda b: (list(LABELS).index(b["source"]), b["key"])):
         detail = read(f"site/data/benchmarks/{entry['slug']}.json")
         record = detail["record"]
         assert record["key"] == entry["key"] and record["source"] == entry["source"]
         observations = []
         for source, payload in detail["scores_by_source"].items():
-            assert source == entry["source"], (
-                "Do not transfer measurements between sources"
-            )
+            assert source == entry["source"], "Do not transfer measurements between sources"
             for obs in payload["rows"]:
                 assert obs["key"] == entry["key"] and obs["source"] == source
-                assert obs["obs_id"] not in observation_ids, (
-                    "Duplicate score observation"
-                )
+                assert obs["obs_id"] not in observation_ids, "Duplicate score observation"
                 observation_ids.add(obs["obs_id"])
-                assert obs["document_id"] in document_ids, (
-                    "Score citation missing from registry"
-                )
+                assert obs["document_id"] in document_ids, "Score citation missing from registry"
                 if numeric(obs["value"]):
                     observations.append(obs)
                     date_precision[obs.get("date_precision") or "unknown"] += 1
-        assert len(observations) == (entry.get("score_summary") or {}).get(
-            "numeric_count", 0
-        )
+        assert len(observations) == (entry.get("score_summary") or {}).get("numeric_count", 0)
         assert entry["score_count"] == sum(
             len(p["rows"]) for p in detail["scores_by_source"].values()
         )
@@ -133,9 +111,7 @@ def audit(root):
             "model_count": model_count,
             "document_count": document_count,
             "document_ids": sorted(ids),
-            "release_date": entry.get("released")
-            if valid_date(entry.get("released"))
-            else None,
+            "release_date": entry.get("released") if valid_date(entry.get("released")) else None,
             "has_paper": entry["has_paper"],
             "has_repo": entry["has_repo"],
             "has_dataset": entry["has_dataset"],
@@ -158,16 +134,13 @@ def audit(root):
             no_score_with_links=not values
             and any(row[k] for k in ["has_paper", "has_repo", "has_dataset"]),
         )
-    assert cited_document_ids == document_ids, (
-        "Document registry does not reconcile with records"
-    )
+    assert cited_document_ids == document_ids, "Document registry does not reconcile with records"
     totals = sum(sources.values(), Counter())
     assert totals["records"] == totals["scored"] + totals["unscored"]
     assert totals["scored"] == totals["percent"] + totals["other_numeric"]
     assert totals["numeric_scores"] == sum(date_precision.values())
     snapshots = [
-        read(str(p.relative_to(root)))
-        for p in sorted((root / "data/snapshots").glob("*.json"))
+        read(str(p.relative_to(root))) for p in sorted((root / "data/snapshots").glob("*.json"))
     ]
     latest = next(s for s in snapshots if s["date"] == radar["latest_date"])
     assert len(snapshots) == radar["snapshot_count"]
@@ -177,9 +150,7 @@ def audit(root):
         documents=len(documents),
         models=models["model_count"],
         snapshots=len(snapshots),
-        simulated_snapshots=sum(
-            bool(s.get("selection", {}).get("simulated")) for s in snapshots
-        ),
+        simulated_snapshots=sum(bool(s.get("selection", {}).get("simulated")) for s in snapshots),
         observations=radar["corpus"]["observation_count"],
         artifacts=len(artifacts),
         multisource_artifacts=sum(len(e["sources"]) > 1 for e in artifacts),
@@ -193,16 +164,44 @@ def audit(root):
         ).strip(),
         "cutoff": radar["latest_date"],
         "definitions": {
-            "population": "One row per source record from the complete benchmark-index.json; no name-based merging or surface filters.",
-            "numeric_scores": "Finite numeric observations from each record's own detail shard, unique by obs_id; retained with citation IDs.",
-            "model_count": "Distinct source model_id among numeric observations on this source record; incomplete IDs or no numeric observations yield null.",
-            "document_count": "Distinct cited document IDs per source record; no citations yields null, not zero adoption.",
-            "percent": "Numeric record with explicit percent unit, known score direction and all values in [0,100]; this does not establish matching protocols.",
-            "other_numeric": "Numeric scores on other or unverified scales, retained in the census.",
-            "release_known": "Valid benchmark release date in the catalog; no model-date or crawl-date substitution.",
-            "links": "Catalog presence flags for paper/repo/dataset links, not verified current availability or license grants.",
-            "dates": "Counts by recorded score-date precision, not inferred evaluation or release dates.",
-            "figure_order": "Source order in sources, then exact source key; each record occupies one linked dot, without score or date filtering.",
+            "population": (
+                "One row per source record from the complete benchmark-index.json; no "
+                "name-based merging or surface filters."
+            ),
+            "numeric_scores": (
+                "Finite numeric observations from each record's own detail shard, "
+                "unique by obs_id; retained with citation IDs."
+            ),
+            "model_count": (
+                "Distinct source model_id among numeric observations on this source "
+                "record; incomplete IDs or no numeric observations yield null."
+            ),
+            "document_count": (
+                "Distinct cited document IDs per source record; no citations yields "
+                "null, not zero adoption."
+            ),
+            "percent": (
+                "Numeric record with explicit percent unit, known score direction and "
+                "all values in [0,100]; this does not establish matching protocols."
+            ),
+            "other_numeric": (
+                "Numeric scores on other or unverified scales, retained in the census."
+            ),
+            "release_known": (
+                "Valid benchmark release date in the catalog; no model-date or "
+                "crawl-date substitution."
+            ),
+            "links": (
+                "Catalog presence flags for paper/repo/dataset links, not verified "
+                "current availability or license grants."
+            ),
+            "dates": (
+                "Counts by recorded score-date precision, not inferred evaluation or release dates."
+            ),
+            "figure_order": (
+                "Source order in sources, then exact source key; each record occupies "
+                "one linked dot, without score or date filtering."
+            ),
         },
         "totals": dict(totals),
         "sources": {s: dict(c) for s, c in sources.items()},
@@ -217,17 +216,14 @@ def audit(root):
 
 
 def tex_data(data):
-    lines = [
-        "% Generated by scripts/audit_catalog.py from the complete catalog; do not hand-edit."
-    ]
+    lines = ["% Generated by scripts/audit_catalog.py from the complete catalog; do not hand-edit."]
     for key, value in data["totals"].items():
         name = "Census" + "".join(part.title() for part in key.split("_"))
         lines.append(rf"\newcommand{{\{name}}}{{{value}}}")
     lines.append(r"\newcommand{\CensusSourceRows}{%")
     for source, counts in data["sources"].items():
         values = [LABELS[source]] + [
-            f"{counts[k]:,}"
-            for k in ["records", "scored", "unscored", "numeric_scores"]
+            f"{counts[k]:,}" for k in ["records", "scored", "unscored", "numeric_scores"]
         ]
         lines.append(" & ".join(values) + r"\\")
     lines.append("}")
@@ -242,7 +238,8 @@ def tex_data(data):
             }[record["status"]]
             # Four equal-width columns, sorted source keys. 20 dots per row.
             lines.append(
-                rf"\CensusDot{{{group}}}{{{offset % 20}}}{{{offset // 20}}}{{{color}}}{{{record['slug']}}}%"
+                rf"\CensusDot{{{group}}}{{{offset % 20}}}{{{offset // 20}}}"
+                rf"{{{color}}}{{{record['slug']}}}%"
             )
     lines.append("}")
     return "\n".join(lines) + "\n"
@@ -259,9 +256,7 @@ def main():
     args = parser.parse_args()
     data = audit(args.software.resolve())
     outputs = {
-        PAPER / "evidence/catalog-audit.json": json.dumps(
-            data, indent=2, ensure_ascii=False
-        )
+        PAPER / "evidence/catalog-audit.json": json.dumps(data, indent=2, ensure_ascii=False)
         + "\n",
         PAPER / "catalog-data.tex": tex_data(data),
     }
