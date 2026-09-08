@@ -3,9 +3,9 @@
 \input{figure-style.tex}
 \foreach \i/\title/\caption in {
   0/DISCOVER/{public sources},
-  1/VALIDATE/{health + schema},
+  1/VALIDATE/{source health + format},
   2/RESOLVE/{exact identifiers},
-  3/INTERPRET/{taxonomy + rubric},
+  3/INTERPRET/{classify + prioritize},
   4/PUBLISH/{web, RSS, JSON},
   5/QUERY/{offline CLI + HTTP}} {
   \pgfmathsetmacro{\left}{1+83*\i}
@@ -21,6 +21,6 @@
   \fi
 }
 \node[text=RadarMuted,font=\sffamily\itshape\fontsize{6.9}{9}\selectfont] at (246,10)
-  {The same snapshots and code produce the same derived files.};
+  {Dated source records and fixed collection settings make the results reproducible.};
 \end{tikzpicture}
 \end{document}
