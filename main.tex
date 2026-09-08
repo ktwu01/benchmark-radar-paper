@@ -310,7 +310,7 @@ The catalog includes \ExampleReportDocuments{} model reports from \ExampleReport
 \subsection{Near-Ceiling Reported Scores}
 \label{sec:headroom}
 
-Across the full catalog, \ExampleHeadroomEligible{} records declare a percentage scale, have higher-is-better direction, and contain numeric values within 0--100. Of these, \ExampleNearCount{} have a highest archived value within five points of 100. All eight qualifying records come from Model reports; 708 scored records on other or unverified scales and 493 unscored records remain in the census with unknown upper-ceiling headroom. Table~\ref{tab:reported-headroom} gives the model, metric, and recorded settings behind each example.\footnote{Junjie Zhou prepared the earlier score-archive audit and report revisions, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/457}{issue~\#457}. This revision rechecks the examples against the frozen shared catalog.}
+Across the full catalog, \ExampleHeadroomEligible{} records declare a percentage scale, have higher-is-better direction, and contain numeric values within 0--100. Of these, \ExampleNearCount{} have a highest archived value within five points of 100. All eight qualifying records come from Model reports; 708 scored records on other or unverified scales and 493 unscored records remain in the census with unknown upper-ceiling headroom. Table~\ref{tab:reported-headroom} gives the model, metric, and recorded settings behind each example.
 
 Headroom is 100 minus the reported value for that setup. It describes the remaining range of its metric, without establishing benchmark saturation or comparing models across settings. The values are maxima within the archived source records, not necessarily the best results in the cited documents or the field. The examples cite the GLM-5.2, GLM-5, Qwen3, Kimi K3, Claude Opus 5, and Gemini 3.1 Pro reports \citep{zai2026glm52card,zai2026glm5card,qwen2025qwen3report,moonshot2026kimik3card,anthropic2026opus5card,google2026gemini31card}.
 
@@ -358,7 +358,7 @@ Six benchmark records have a later model-report mention at least 180 days after 
 
 Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark RADAR client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Figure~\ref{fig:use-case-survey}.
 
-The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark RADAR retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. The session has no measured time or accuracy baseline and combines local retrieval with web search. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.\footnote{Jiayu Wang contributed this worked use case and its supporting evidence, documented in \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.}
+The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark RADAR retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. The session has no measured time or accuracy baseline and combines local retrieval with web search. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -388,8 +388,10 @@ Benchmark RADAR brings daily benchmark discovery, catalog search, model-report m
 
 The frozen release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog census and scoped examples distinguish benchmark records, scored models, cited documents, and numeric observations. Further work should evaluate retrieval with reviewed relevance judgments, resolve missing artifact identities, and recover the protocol and date evidence needed for score comparisons.
 
-\medskip
-\noindent\textit{Author note.} Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Ergan Shang prepared figures and contributed copyediting. Pengqian Han contributed copyediting.
+\section*{Author Contributions}
+\label{sec:author-contributions}
+
+Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed copyediting.
 
 \begingroup
 \small
@@ -545,8 +547,9 @@ Figure~\ref{fig:use-case-manual-table} shows a comparison table from an earlier 
 \end{minipage}
 \end{center}
 
-This case records one workflow combining Benchmark Radar with web search; it has no measured time or accuracy comparison. The summary table and session evidence are available in the project's public \href{https://github.com/ktwu01/benchmark-radar/issues/492}{issue~\#492}.
+This case records one workflow combining Benchmark Radar with web search; it has no measured time or accuracy comparison.
 
+\clearpage
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
