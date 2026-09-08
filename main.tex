@@ -252,6 +252,17 @@ The catalog records benchmark release dates for \CensusReleaseKnown{} records, l
 
 A small gap to a metric ceiling can describe a reported setup. It does not show that a benchmark has exhausted its ability to distinguish models across versions and settings. Catalog-wide headroom or recency estimates require the eligible measurement coverage alongside the statistic.
 
+Figure~\ref{fig:leaderboard-frontier} puts these coverage distinctions into a browsing view: readers can locate a benchmark by date, reported score, and the number of scored models, then inspect its source record.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\href{https://benchmark-radar.org/leaderboard/}{\includegraphics[width=\textwidth]{leaderboard-frontier.png}}
+\captionof{figure}{Benchmark Frontier on the Leaderboard page. The view combines reported scores, scored-model counts, and benchmark release dates or first-score date proxies. Gold rings mark the interface's Pareto candidates; hollow marks flag unverified scales or counts, and dotted outlines flag model-release date proxies. This filtered, scored view supports candidate inspection; it does not replace the full-catalog census or establish equivalent evaluation settings. Click the image to explore the view.}
+\label{fig:leaderboard-frontier}
+\end{minipage}
+\end{center}
+
 \subsection{Discovery Coverage Alongside the Catalog}
 
 The daily discovery collection contains \ReportNumber{\ReportObservationCount} observations and \ReportNumber{\ReportArtifactCount} artifacts linked by exact identifiers across \ReportSnapshotCount{} snapshots. Four snapshots are simulated historical backfills; their dates describe reconstructed collection windows. These discovery units remain separate from benchmark records.
@@ -267,6 +278,15 @@ Five discovery source labels account for 9,743 of \ReportNumber{\ReportObservati
 \end{minipage}
 \end{center}
 
+
+Figure~\ref{fig:discovery-trends} complements source coverage with the daily reading view. Its category cards separate new releases from updates, while the chart exposes changes in surfaced evidence and attention alongside collection failures.
+
+\begin{figure}[tp]
+\centering
+\href{https://benchmark-radar.org/trends/}{\includegraphics[width=\textwidth]{discovery-trends.png}}
+\caption{Discovery trends through September 7, 2026. Category cards show newly surfaced releases and track updates separately; the bars show daily evidence and attention volume. Category tags overlap, so these counts cannot be added into a total of unique benchmarks. The visible coverage notice reports failed sources. This is a view of collected activity, not research quality or benchmark performance. Click the image to open Trends.}
+\label{fig:discovery-trends}
+\end{figure}
 
 \subsection{Benchmark Mentions in Model Reports}
 

@@ -188,3 +188,5 @@ The paper and original editorial content use [CC BY-NC 4.0](LICENSE-CONTENT.md).
 Third-party material retains its original terms.
 
 The image `figures/hle-score-history.png` is the supplied screenshot, preserved byte-for-byte. Its provenance and comparison with the frozen HLE record are recorded in `evidence/hle-score-history.json`. Its 577 scores and displayed maximum of 55.47 agree with the frozen release. The horizontal axis uses model announcement dates, not evaluation dates; the chart does not establish matched protocols or percentage-scale eligibility. The interactive link may show later updates.
+
+The additional supplied `figures/leaderboard-frontier.png` and `figures/discovery-trends.png` snapshots appear in the main Results section and link to their respective interactive pages. `evidence/interface-snapshots.json` preserves both image hashes, scope notes, and the frozen September 7 category counts used to verify the Trends cards. Both original images are kept without cropping or retouching.

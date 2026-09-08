@@ -1,0 +1,82 @@
+{
+  "software_commit": "8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0",
+  "discovery_cutoff": "2026-09-07",
+  "snapshots": [
+    {
+      "asset": "figures/leaderboard-frontier.png",
+      "sha256": "74b3a1e0112dab39b67b9f321ff196ced8673f57487815b39972945c47287fb3",
+      "interactive_url": "https://benchmark-radar.org/leaderboard/",
+      "origin": "User-supplied screenshot; capture timestamp not supplied",
+      "scope": "Interface illustration of the scored, dated benchmark view; the full population remains in the main coverage tables and appendix census. Hollow markers indicate unverified scales or counts; dotted outlines indicate model-release date proxies. Image labels alone do not identify exact source records."
+    },
+    {
+      "asset": "figures/discovery-trends.png",
+      "sha256": "b8963bb0095462cc82063131de43264fcc8efb71c86ad14921cac844d3a2f308",
+      "interactive_url": "https://benchmark-radar.org/trends/",
+      "origin": "User-supplied screenshot; capture timestamp not supplied",
+      "displayed_day": "2026-09-07",
+      "verified_category_trends": {
+        "agentic": {
+          "baseline": 24.0,
+          "comparable": true,
+          "count": 21,
+          "cumulative": 966,
+          "delta": 9,
+          "momentum": -0.12,
+          "previous": 12,
+          "total_count": 50
+        },
+        "benchmark": {
+          "baseline": 113.67,
+          "comparable": true,
+          "count": 93,
+          "cumulative": 4309,
+          "delta": 32,
+          "momentum": -0.18,
+          "previous": 61,
+          "total_count": 212
+        },
+        "data_quality": {
+          "baseline": 2.33,
+          "comparable": true,
+          "count": 2,
+          "cumulative": 77,
+          "delta": 0,
+          "momentum": -0.14,
+          "previous": 2,
+          "total_count": 4
+        },
+        "dataset": {
+          "baseline": 80.33,
+          "comparable": true,
+          "count": 70,
+          "cumulative": 2889,
+          "delta": 14,
+          "momentum": -0.13,
+          "previous": 56,
+          "total_count": 152
+        },
+        "evaluation": {
+          "baseline": 108.33,
+          "comparable": true,
+          "count": 121,
+          "cumulative": 3566,
+          "delta": 25,
+          "momentum": 0.12,
+          "previous": 96,
+          "total_count": 190
+        }
+      },
+      "coverage_gaps": [
+        "brave",
+        "semantic_scholar"
+      ]
+    }
+  ],
+  "limitations": [
+    "Live linked pages can change after capture.",
+    "Display filters do not define the full catalog population.",
+    "Shared display scales do not establish matched evaluation settings.",
+    "Discovery category tags overlap and do not count unique benchmark records."
+  ]
+}
