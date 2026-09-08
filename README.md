@@ -56,9 +56,10 @@ Git synchronization can displace those annotations. Overleaf may bundle several
 authors' changes into a commit under the connected account; retain contribution
 statements and review records for author credit.
 
-After syncing, rebuild and inspect `main.pdf`, commit it here, and update the
-submodule pointer in Benchmark Radar through a normal PR. A paper push alone
-does not change the version pinned by the software repository.
+After syncing, rebuild and inspect `main.pdf`, then commit and push it here.
+Keep paper-only work in this repository by default. Update Benchmark Radar's
+submodule pointer through a separate PR only when the user explicitly requests
+it. A paper push alone does not change the version pinned by the software repository.
 
 See [Overleaf's GitHub sync documentation](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization).
 
@@ -157,8 +158,8 @@ related benchmarks; they do not count distinct underlying tests.
 
 Keep the release cutoff fixed and review the prose, figures, and rendered PDF
 together. Commit the analysis outputs, figure sources and PDFs, and `main.pdf`
-together. Push the reviewed paper
-commit before updating the parent pointer below. The full-corpus rules in
+together. Push the reviewed paper commit. Update the parent pointer only when
+the user explicitly requests it, using the workflow below. The full-corpus rules in
 [principle.md](https://github.com/ktwu01/benchmark-radar/blob/main/principle.md)
 apply to paper tables and figures as well as the website.
 
@@ -174,8 +175,10 @@ The paper's opening illustration is schematic: its bars and connections are illu
 
 ## Updating the paper used by Benchmark Radar
 
-Push the reviewed paper commit to this repository first. From a clean Benchmark
-Radar checkout, on a new branch:
+Run this workflow only when the user explicitly requests an update to the parent
+Benchmark Radar repository or its pinned paper revision. Push the reviewed paper
+commit to this repository first. From a clean Benchmark Radar checkout, on a new
+branch:
 
 ```bash
 git submodule update --init --recursive
