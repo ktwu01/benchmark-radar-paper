@@ -21,6 +21,7 @@
 \usepackage{longtable}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage[hypcap=false]{caption}
+\usepackage[section]{placeins}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -52,6 +53,47 @@
 \newcommand{\datacutoff}{\ReportDataCutoff}
 \newcommand{\gitcommit}{8f46bbf}
 \graphicspath{{figures/}}
+
+% Keep figure sizing, captions, and placement consistent across the manuscript.
+% Section barriers prevent a figure from drifting into the next section while
+% normal floats let surrounding prose use space that a large image cannot fill.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.72}
+\setlength{\textfloatsep}{1.0em plus 0.2em minus 0.2em}
+\setlength{\floatsep}{0.9em plus 0.2em minus 0.2em}
+\makeatletter
+\setlength{\@fptop}{0pt plus 1fil}
+\setlength{\@fpsep}{1.0em plus 1fil}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+\newcommand{\RadarFigure}[4][\linewidth]{%
+  \begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=#1]{#2}
+    \caption{#3}
+    \label{#4}
+  \end{figure}%
+}
+\newcommand{\RadarLinkedFigure}[5][\linewidth]{%
+  \begin{figure}[!htbp]
+    \centering
+    \href{#2}{\includegraphics[width=#1]{#3}}
+    \caption{#4}
+    \label{#5}
+  \end{figure}%
+}
+\newcommand{\RadarInlineLinkedFigure}[5][\linewidth]{%
+  \begin{center}
+    \begin{minipage}{\linewidth}
+      \centering
+      \href{#2}{\includegraphics[width=#1]{#3}}
+      \captionof{figure}{#4}
+      \label{#5}
+    \end{minipage}
+  \end{center}%
+}
 
 \title{\textbf{Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research}}
 \author{Koutian Wu$^{1,2}$ \footnote{\small Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^3$ \quad Ergan Shang$^4$ \quad Jiayu Wang$^5$\\[-0.05em]
@@ -146,14 +188,10 @@ Daily discovery observations describe mentions, releases, and updates found acro
 
 Each collection run searches a 48-hour window, records counts and errors by source, removes future-dated rows, and requires healthy core sources before publication. At the cutoff, arXiv \citep{arxivapi}, Hugging Face Hub \citep{huggingfacehub}, and GitHub Search \citep{githubsearchdocs} were the core sources. Additional routes cover scholarly indexes, dataset hosts, repository releases, and institutional feeds. Appendix~\ref{app:source-inventory} records their cutoff status.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=\textwidth]{pipeline-evaluation.pdf}
-\captionof{figure}{Two input paths support publication: dated discovery snapshots preserve mention and release evidence, while benchmark registries and model reports populate the shared catalog. Clients use the catalog's stable source-record IDs.}
-\label{fig:pipeline}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {pipeline-evaluation.pdf}
+  {Two input paths support publication: dated discovery snapshots preserve mention and release evidence, while benchmark registries and model reports populate the shared catalog. Clients use the catalog's stable source-record IDs.}
+  {fig:pipeline}
 
 Table~\ref{tab:reader-questions} describes the interfaces. Search and exports retain the full catalog; display filters affect only the selected view.
 
@@ -209,6 +247,12 @@ Appendix~\ref{app:full-catalog} provides the complete linked census; Appendix~\r
 
 The rebuilt catalog contains \ReportNumber{\ReportCatalogCount} source records across \ReportCatalogSourceCount{} sources. We found \ReportNumber{\CensusNumericScores} numeric score observations on \CensusScored{} records, with \CensusUnscored{} records lacking numeric scores (Table~\ref{tab:catalog-coverage}). Two sources can describe a related benchmark, and we retain both source records.
 
+\RadarInlineLinkedFigure
+  {https://benchmark-radar.org/leaderboard/}
+  {leaderboard-frontier.png}
+  {Benchmark Frontier on the Leaderboard page. The view combines reported scores, scored-model counts, and benchmark release dates or first-score date proxies. Gold rings mark the interface's Pareto candidates; hollow marks flag unverified scales or counts, and dotted outlines flag model-release date proxies. Click the image to explore the view.}
+  {fig:leaderboard-frontier}
+
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering\small
@@ -226,27 +270,15 @@ The rebuilt catalog contains \ReportNumber{\ReportCatalogCount} source records a
 \end{minipage}
 \end{center}
 
+\RadarInlineLinkedFigure
+  {https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}
+  {hle-score-history.png}
+  {Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Click the image to open the interactive view.}
+  {fig:hle-scores}
+
 Of the \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} have at least one paper, repository, or dataset link. In the full catalog, \CensusPaperLinks{} records link to papers, \CensusRepoLinks{} to repositories, and \CensusDatasetLinks{} to datasets. A record can contain more than one type of link. For example, the OpenCompass Hub record for A-Bench links a paper, code repository, and dataset despite having no archived score.
 
 For scored records, Figure~\ref{fig:leaderboard-frontier} lets readers browse by date, reported score, and number of scored models. Figure~\ref{fig:hle-scores} shows the reported model scores within one source record.
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\href{https://benchmark-radar.org/leaderboard/}{\includegraphics[width=0.85\textwidth]{leaderboard-frontier.png}}
-\captionof{figure}{Benchmark Frontier on the Leaderboard page. The view combines reported scores, scored-model counts, and benchmark release dates or first-score date proxies. Gold rings mark the interface's Pareto candidates; hollow marks flag unverified scales or counts, and dotted outlines flag model-release date proxies. Click the image to explore the view.}
-\label{fig:leaderboard-frontier}
-\end{minipage}
-\end{center}
-
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\href{https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}{\includegraphics[width=0.70\textwidth]{hle-score-history.png}}
-\captionof{figure}{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Click the image to open the interactive view.}
-\label{fig:hle-scores}
-\end{minipage}
-\end{center}
 
 \subsection{Benchmark Taxonomy Across the Full Catalog}
 \label{sec:taxonomy}
@@ -257,25 +289,17 @@ Interaction paradigm and input modality are recorded as \emph{facets}: propertie
 
 The separation matters because a benchmark that resolves repository issues is a coding benchmark run as an agent, not an agent benchmark. Of the \TaxonomyAgentic{} agentic records, \TaxonomyAgenticPrimary{} take Agentic \& Tool Use as their Level~1 class and \TaxonomyAgenticCoding{} sit under Coding \& Software Engineering, with the rest spread across \TaxonomyAgenticOtherClasses{} further classes. A scheme with one axis has to choose, and choosing the domain hides those \TaxonomyAgenticCoding{} records from any count of agentic evaluation.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=\textwidth]{taxonomy-sankey.pdf}
-\captionof{figure}{Capability taxonomy over the full catalog. Ribbon height is one unit per source record, so both columns carry all \ReportNumber{\CensusRecords} records. Level~1 is one primary label per record; interaction paradigm and modality are recorded as separate facets and are not drawn here.}
-\label{fig:taxonomy-sankey}
-\end{minipage}
-\end{center}
+\RadarFigure[0.98\linewidth]
+  {taxonomy-sankey.pdf}
+  {Capability taxonomy over the full catalog. Ribbon height is one unit per source record, so both columns carry all \ReportNumber{\CensusRecords} records. Level~1 is one primary label per record; interaction paradigm and modality are recorded as separate facets and are not drawn here.}
+  {fig:taxonomy-sankey}
 
 Figure~\ref{fig:taxonomy-trends} places the \CensusReleaseKnown{} records that carry a benchmark release date on their release year. The \FindingsMissingRelease{} records without one keep their classification in a separate column rather than leaving the figure. A year's share is read only where the evidence supports one, which takes more than a sufficient count: the OpenCompass Hub crawl stops at the discovery cutoff, so the truncated final year is drawn mostly from model reports and its share would measure the change of catalog rather than a change in the field. We therefore also require a year's source mix to stay close to the pooled mix. Over the reported years that mix is stable, and reweighting each year to a common source composition moves the agentic share by at most \TaxonomyMixAdjustment{} percentage points, so the rise is not an artifact of which catalog supplied a given year's records.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=\textwidth]{taxonomy-trends.pdf}
-\captionof{figure}{Release-year composition of the classified catalog. Panel~A holds every record: \CensusReleaseKnown{} on the year axis and \FindingsMissingRelease{} in the undated column, which carries its own scale. Panel~B reports shares only for years with at least \TaxonomyMinYearRecords{} dated records and a source mix close to the pooled one; the excluded years hold \TaxonomyExcludedFromShares{} dated records between them and remain counted in Panel~A. Series marked \emph{facet} are cross-cutting properties rather than Level~1 classes, so the lines in Panel~B overlap and do not sum to 100\%.}
-\label{fig:taxonomy-trends}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {taxonomy-trends.pdf}
+  {Release-year composition of the classified catalog. Panel~A holds every record: \CensusReleaseKnown{} on the year axis and \FindingsMissingRelease{} in the undated column, which carries its own scale. Panel~B reports shares only for years with at least \TaxonomyMinYearRecords{} dated records and a source mix close to the pooled one; the excluded years hold \TaxonomyExcludedFromShares{} dated records between them and remain counted in Panel~A. Series marked \emph{facet} are cross-cutting properties rather than Level~1 classes, so the lines in Panel~B overlap and do not sum to 100\%.}
+  {fig:taxonomy-trends}
 
 \subsection{Discovery Coverage Alongside the Catalog}
 
@@ -283,28 +307,20 @@ The daily discovery collection contains \ReportNumber{\ReportObservationCount} o
 
 Five discovery source labels account for \ReportNumber{\FindingsTopFiveObservations} of \ReportNumber{\ReportObservationCount} observations (\FindingsTopFiveShare\%). Figure~\ref{fig:source-composition} includes the remaining labels in one aggregate bar. Source caps and collection failures can affect this mix. Of the \ReportNumber{\ReportArtifactCount} artifacts, \CensusMultisourceArtifacts{} have observations from multiple sources. Missing or inconsistent identifiers may prevent additional cross-source matches.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{source-composition.pdf}
-\captionof{figure}{Discovery observations by source through \datacutoff{}. Repeat sightings count as observations.}
-\label{fig:source-composition}
-\end{minipage}
-\end{center}
+\RadarFigure[0.92\linewidth]
+  {source-composition.pdf}
+  {Discovery observations by source through \datacutoff{}. Repeat sightings count as observations.}
+  {fig:source-composition}
 
 
 Figure~\ref{fig:discovery-trends} complements source coverage with the daily reading view. Its category cards separate new releases from updates, while the chart exposes changes in surfaced evidence and attention alongside collection failures.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\href{https://benchmark-radar.org/trends/}{\includegraphics[width=\textwidth]{discovery-trends.png}}
-\captionof{figure}{Discovery trends through September 7, 2026. Category cards show newly surfaced releases and track updates separately; the bars show daily evidence and attention volume. Category tags overlap. The visible coverage notice reports failed sources. Click the image to open Trends.}
-\label{fig:discovery-trends}
-\end{minipage}
-\end{center}
+\RadarLinkedFigure
+  {https://benchmark-radar.org/trends/}
+  {discovery-trends.png}
+  {Discovery trends through September 7, 2026. Category cards show newly surfaced releases and track updates separately; the bars show daily evidence and attention volume. Category tags overlap. The visible coverage notice reports failed sources. Click the image to open Trends.}
+  {fig:discovery-trends}
 
-\clearpage
 \section{Worked Example: Checking Prior Art}
 \label{sec:worked-example}
 
@@ -591,45 +607,31 @@ The contributor wanted to determine whether a proposed evaluation duplicated exi
 
 The contributor gave the task to a coding agent together with the public setup instructions for Benchmark Radar. The agent installed the command-line client and the Benchmark Radar Skill, a set of instructions for using the client. It then downloaded the local corpus and queried candidate records offline (Figure~\ref{fig:use-case-session}).
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{agent-session.png}
-\captionof{figure}{A coding agent installs the Benchmark Radar client and its usage instructions, then runs local queries.}
-\label{fig:use-case-session}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {agent-session.png}
+  {A coding agent installs the Benchmark Radar client and its usage instructions, then runs local queries.}
+  {fig:use-case-session}
 
 The agent inspected paper, repository, and dataset links to decide which sources to open next. Figures~\ref{fig:use-case-paper} and~\ref{fig:use-case-code} show two retrieved discovery records: one has a repository link, and the other has both paper and repository links. Neither records a dataset link, leaving dataset availability for a follow-up check.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{artifact-status-paper.png}
-\captionof{figure}{A retrieved discovery record with a repository link for inspecting the implementation. Paper and dataset links are missing from the record.}
-\label{fig:use-case-paper}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {artifact-status-paper.png}
+  {A retrieved discovery record with a repository link for inspecting the implementation. Paper and dataset links are missing from the record.}
+  {fig:use-case-paper}
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{artifact-status-code.png}
-\captionof{figure}{A second discovery record provides both paper and repository links. Its dataset link needs a follow-up check.}
-\label{fig:use-case-code}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {artifact-status-code.png}
+  {A second discovery record provides both paper and repository links. Its dataset link needs a follow-up check.}
+  {fig:use-case-code}
 
 The agent supplemented local queries with web search to find related work described in different terms. It cross-checked the candidate sets and inspected the source evidence before selecting records for the comparison. Figure~\ref{fig:use-case-cross} shows the word matches and score components available for inspecting one retrieved candidate.
 
-\begin{center}
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth]{cross-validation.png}
-\captionof{figure}{A candidate record with query-word matches and retrieval-score components for the agent to inspect when judging relevance.}
-\label{fig:use-case-cross}
-\end{minipage}
-\end{center}
+\RadarFigure
+  {cross-validation.png}
+  {A candidate record with query-word matches and retrieval-score components for the agent to inspect when judging relevance.}
+  {fig:use-case-cross}
+
+\FloatBarrier
 
 The resulting related-work table appears in Table~\ref{tab:use-case-survey} in the main text.
 
@@ -664,7 +666,6 @@ ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \
 \end{minipage}
 \end{center}
 
-\clearpage
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
