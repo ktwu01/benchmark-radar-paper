@@ -46,6 +46,8 @@
 \input{figure-data.tex}
 \input{catalog-data.tex}
 \input{findings-data.tex}
+\input{taxonomy-data.tex}
+\input{taxonomy-trend-data.tex}
 \newcommand{\ReportNumber}[1]{\pgfmathprintnumber[fixed,precision=0,1000 sep={,},assume math mode=true]{#1}}
 \newcommand{\datacutoff}{\ReportDataCutoff}
 \newcommand{\gitcommit}{8f46bbf}
@@ -243,6 +245,35 @@ For scored records, Figure~\ref{fig:leaderboard-frontier} lets readers browse by
 \href{https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}{\includegraphics[width=0.70\textwidth]{hle-score-history.png}}
 \captionof{figure}{Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Click the image to open the interactive view.}
 \label{fig:hle-scores}
+\end{minipage}
+\end{center}
+
+\subsection{Benchmark Taxonomy Across the Full Catalog}
+\label{sec:taxonomy}
+
+Every source record also carries a capability label. We classify all \ReportNumber{\CensusRecords} records into \TaxonomyLevelOneCount{} top-level domains and \TaxonomyLevelTwoCount{} sub-domains (Figure~\ref{fig:taxonomy-sankey}). Labels come from the publishers' own fields---OpenCompass Hub dimensions, LLM Stats categories, Artificial Analysis categories, and the model-report registry domains---so \ReportNumber{\TaxonomyLabelledFromTags} records carry a label that traces to a named source field. The remaining \TaxonomyUnclassified{} records are LLM Stats community rows whose crawl supplied no description, category, or modality; we record that reason rather than assigning a class from the title.
+
+Interaction paradigm and input modality are recorded as \emph{facets}: properties held beside a record's domain rather than inside it, so every record carries exactly one Level~1 class and, independently, any number of facet values. Facets therefore overlap each other and the Level~1 classes, and their counts do not sum to the population.
+
+The separation matters because a benchmark that resolves repository issues is a coding benchmark run as an agent, not an agent benchmark. Of the \TaxonomyAgentic{} agentic records, \TaxonomyAgenticPrimary{} take Agentic \& Tool Use as their Level~1 class and \TaxonomyAgenticCoding{} sit under Coding \& Software Engineering, with the rest spread across \TaxonomyAgenticOtherClasses{} further classes. A scheme with one axis has to choose, and choosing the domain hides those \TaxonomyAgenticCoding{} records from any count of agentic evaluation.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=\textwidth]{taxonomy-sankey.pdf}
+\captionof{figure}{Capability taxonomy over the full catalog. Ribbon height is one unit per source record, so both columns carry all \ReportNumber{\CensusRecords} records. Level~1 is one primary label per record; interaction paradigm and modality are recorded as separate facets and are not drawn here.}
+\label{fig:taxonomy-sankey}
+\end{minipage}
+\end{center}
+
+Figure~\ref{fig:taxonomy-trends} places the \CensusReleaseKnown{} records that carry a benchmark release date on their release year. The \FindingsMissingRelease{} records without one keep their classification in a separate column rather than leaving the figure. A year's share is read only where the evidence supports one, which takes more than a sufficient count: the OpenCompass Hub crawl stops at the discovery cutoff, so the truncated final year is drawn mostly from model reports and its share would measure the change of catalog rather than a change in the field. We therefore also require a year's source mix to stay close to the pooled mix. Over the reported years that mix is stable, and reweighting each year to a common source composition moves the agentic share by at most \TaxonomyMixAdjustment{} percentage points, so the rise is not an artifact of which catalog supplied a given year's records.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[width=\textwidth]{taxonomy-trends.pdf}
+\captionof{figure}{Release-year composition of the classified catalog. Panel~A holds every record: \CensusReleaseKnown{} on the year axis and \FindingsMissingRelease{} in the undated column, which carries its own scale. Panel~B reports shares only for years with at least \TaxonomyMinYearRecords{} dated records and a source mix close to the pooled one; the excluded years hold \TaxonomyExcludedFromShares{} dated records between them and remain counted in Panel~A. Series marked \emph{facet} are cross-cutting properties rather than Level~1 classes, so the lines in Panel~B overlap and do not sum to 100\%.}
+\label{fig:taxonomy-trends}
 \end{minipage}
 \end{center}
 
