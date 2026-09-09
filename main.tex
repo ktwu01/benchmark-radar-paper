@@ -40,6 +40,9 @@
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
 \input{figure-data.tex}
 \input{catalog-data.tex}
 \input{findings-data.tex}
@@ -265,16 +268,31 @@ Figure~\ref{fig:discovery-trends} complements source coverage with the daily rea
 \section{Worked Example: Checking Prior Art}
 \label{sec:worked-example}
 
-Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark RADAR client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Figure~\ref{fig:use-case-survey}.
+Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark RADAR client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Table~\ref{tab:use-case-survey}.
 
 The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark RADAR retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. The session has no measured time or accuracy baseline and combines local retrieval with web search. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering
-\includegraphics[width=0.92\textwidth]{survey-table.png}
-\captionof{figure}{Summary table of recent work on credit assignment in agentic training, assembled during the session.}
-\label{fig:use-case-survey}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.25}
+\resizebox{0.98\textwidth}{!}{%
+\begin{tabular}{L{0.45cm}L{3.05cm}L{1.5cm}L{2.35cm}L{3.45cm}L{2.55cm}L{2.9cm}}
+\toprule
+\textbf{\#} & \textbf{Work} & \textbf{Published} & \textbf{Qwen base model(s)} & \textbf{Credit-assignment focus} & \textbf{Agentic benchmarks used} & \textbf{Link} \\
+\midrule
+1 & SRPO: Self-Reflective Policy Optimization for Long-Horizon Reasoning & 2026-08-25 & Qwen3-8B (also Qwen3-1.7B / 32B scaling) & Reflection-conditioned dense token-level signals convert sparse terminal reward into training signal & AIME'24, WebShop, ALFWorld, SWE-Bench-Lite & \url{https://arxiv.org/abs/2608.23493} \url{https://github.com/Galleons2029/SRPO} \\
+2 & ContextPilot: Teaching Agents for Proactive Context Management via Fine-grained RL & 2026-08-28 & Qwen3-8B, Qwen3-14B & Coarse-grained $\rightarrow$ action-level credit assignment over branched trajectories during agentic RL & InfBench (InfiniteBench), NovelQA, LongMemEval, BrowseComp+ & \url{https://arxiv.org/abs/2608.28476} \url{https://github.com/Tencent/ContextPilot} \\
+3 & SkillGate: Training In-Policy Skill Selection in Long-Horizon Agents & 2026-08-21 & Qwen3.5-9B (SFT checkpoint, RL init) & Selector credit starvation; partitions token support into two credit channels (outcome vs.\ action-local advantage) & 5 agentic benchmarks incl.\ SkillsBench, SWE (16-candidate skill slate) & \url{https://arxiv.org/abs/2608.18852} \\
+4 & CIPO: Contextual Information Policy Optimization for Search Agents & 2026-08-06 & Qwen2.5-3B-Instruct, Qwen2.5-7B-Instruct & Dense turn-level credit (EALR) to evidence-using reasoning actions, combined with outcome reward & HotpotQA, 2WikiMultiHopQA, MuSiQue, Bamboogle + 3 OOD & \url{https://arxiv.org/abs/2608.06128} \\
+5 & MoRSE: Task-Oriented Multi-Agent System with Mixture of Role-Subtask Experts & 2026-08-10 & Qwen3-4B-Instruct (one of three backbones; also Llama-3.1-8B, Gemma-4-31B) & Hierarchical GRPO with two-layer credit assignment (isolates expert vs.\ routing quality) & Code-generation benchmarks (multi-agent), held-out task domains & \url{https://arxiv.org/abs/2608.09251} \\
+\bottomrule
+\end{tabular}%
+}
+\captionof{table}{Summary table of recent work on credit assignment in agentic training, assembled during the session. Each row links to its arXiv record and, where available, its repository.}
+\label{tab:use-case-survey}
 \end{minipage}
 \end{center}
 
@@ -571,16 +589,36 @@ The agent supplemented local queries with web search to find related work descri
 \end{minipage}
 \end{center}
 
-The resulting related-work table appears in Figure~\ref{fig:use-case-survey} in the main text.
+The resulting related-work table appears in Table~\ref{tab:use-case-survey} in the main text.
 
-Figure~\ref{fig:use-case-manual-table} shows a comparison table from an earlier benchmark-design effort by one contributor. It covers ten related benchmarks across six design dimensions, with each cell read from a source paper. The contributor reported that assembling it took more effort than any part of that project except producing the benchmark data. Benchmark Radar retrieves candidates for this kind of comparison and exposes the matching words and fields for inspection; the comparison itself requires reading the source evidence.
+Table~\ref{tab:benchmark-comparison} shows a prior-art comparison table from an earlier benchmark-design effort by one contributor. Each row is one related benchmark and each column one design dimension, with each cell read from a source paper. The contributor reported that assembling it took more effort than any part of that project except producing the benchmark data. Benchmark Radar retrieves candidates for this kind of comparison and exposes the matching words and fields for inspection; the comparison itself requires reading the source evidence.
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering
-\includegraphics[width=0.98\textwidth]{manual-prior-art-table.png}
-\captionof{figure}{A prior-art comparison table assembled manually for an earlier benchmark-design effort. Each row is one related benchmark and each column one design dimension, all read from the source papers by hand.}
-\label{fig:use-case-manual-table}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.2}
+\resizebox{0.98\textwidth}{!}{%
+\begin{tabular}{l c c c c c c}
+\toprule
+\textbf{Bench Name} & \textbf{End-to-End Tasks} & \textbf{Fine-Grained Eval} & \textbf{Researcher-Quality Eval} & \textbf{Data Generation} & \textbf{Multi-Harness Eval} & \textbf{\#Tasks} \\
+\midrule
+MLE-Bench~\citep{chan2025mle} & \xmark & \cmark & \xmark & Transfer\&Compose & \cmark & 75 \\
+MLGym-Bench~\citep{nathani2025mlgym} & \xmark & \cmark & \xmark & Automatic & \xmark & 13 \\
+EXP-Bench~\citep{kon2025exp} & \cmark & \xmark & \xmark & Automatic & \cmark & 461 \\
+ResearchCodeBench~\citep{hua2026researchcodebench} & \xmark & \cmark & \xmark & Transfer\&Compose & \xmark & 212 \\
+MLR-Bench~\citep{chen2026mlr} & \cmark & \xmark & \xmark & Automatic & \cmark & 201 \\
+PaperBench~\citep{starace2025paperbench} & \xmark & \cmark & \xmark & Transfer\&Compose & \xmark & 8316 \\
+AstaBench~\citep{bragg2025astabench} & \cmark & \cmark & \xmark & Transfer\&Compose & \cmark & 2400+ \\
+InnovatorBench~\citep{wu2025innovatorbench} & \cmark & \xmark & \xmark & Transfer\&Compose & \xmark & 20 \\
+AIRS-Bench~\citep{lupidi2026airs} & \xmark & \cmark & \xmark & Automatic & \cmark & 20 \\
+COMPOSITE-Stem~\citep{waters2026composite} & \cmark & \cmark & \xmark & Manual & \xmark & 70 \\
+ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \xmark & 169 \\
+\bottomrule
+\end{tabular}%
+}
+\captionof{table}{A prior-art comparison table assembled manually for an earlier benchmark-design effort. Each row is one related benchmark and each column one design dimension, all read from the source papers by hand.}
+\label{tab:benchmark-comparison}
 \end{minipage}
 \end{center}
 
