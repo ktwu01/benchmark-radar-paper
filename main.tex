@@ -74,7 +74,7 @@ Benchmark researchers and model developers need to find relevant evaluations, lo
 \begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=0.96\textwidth]{abstract_overview.png}
-\captionof{figure}{Benchmark RADAR connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples. The catalog count uses the frozen release.}
+\captionof{figure}{Benchmark RADAR connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples. The catalog count uses the v0.11.0 release.}
 \label{fig:abstract}
 \end{minipage}
 \end{center}
@@ -114,7 +114,7 @@ Benchmark RADAR complements these methods by making benchmark records, available
 
 Benchmark Radar adapts BuilderPulse's daily public-source collection approach \citep{builderpulse}. Figure~\ref{fig:pipeline} separates the benchmark catalog from discovery history. Model reports include model cards, technical reports, system cards, and release posts; they contribute through the same record structure as benchmark registries.
 
-Table~\ref{tab:catalog-sources} summarizes the four catalog sources and their primary uses in the frozen release.
+Table~\ref{tab:catalog-sources} summarizes the four catalog sources and their primary uses in the v0.11.0 release.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -131,7 +131,7 @@ Model reports & \ReportModelReportCount{} & Benchmarks mentioned in model report
 Total & \ReportNumber{\ReportCatalogCount} & All four sources, retaining each record's source label.\\
 \bottomrule
 \end{tabularx}
-\captionof{table}{Catalog sources in the frozen v0.11.0 release. Rows count source-specific benchmark records, including records without scores.}
+\captionof{table}{Catalog sources in the v0.11.0 release. Rows count source-specific benchmark records, including records without scores.}
 \label{tab:catalog-sources}
 \end{minipage}
 \end{center}
@@ -322,7 +322,7 @@ Task-capability classification also remains unvalidated in this rebuild. The det
 
 Benchmark RADAR brings daily benchmark discovery, catalog search, model-report mentions, and score histories into one living search engine. Readers can find candidate evaluations, locate task materials, inspect reporting choices, and follow the settings and citations behind a score. Shared benchmark IDs connect the web dashboard, downloadable catalog, and offline query clients.
 
-The frozen release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog analyses distinguish benchmark records, scored models, cited documents, and numeric observations.
+The v0.11.0 release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog analyses distinguish benchmark records, scored models, cited documents, and numeric observations.
 
 \section*{Author Contributions}
 \label{sec:author-contributions}
@@ -357,7 +357,7 @@ This census retains all \ReportNumber{\CensusRecords} source records, including 
 \section{Catalog Evidence and Measurement Coverage}
 \label{app:measurement-coverage}
 
-The following analyses use the same frozen catalog as Section~\ref{sec:results}. They document the evidence behind its records and the requirements for comparing measurements.
+The following analyses use the same catalog as Section~\ref{sec:results}. They document the evidence behind its records and the requirements for comparing measurements.
 
 \subsection{Cited Documents and Scored Models}
 
@@ -426,12 +426,12 @@ The documentation analysis covers all \ReportNumber{\FindingsRecords} benchmark 
 Total & \ReportNumber{\CensusRecords} & \ReportNumber{\CensusDocumentsKnown} & \ReportNumber{\CensusDocuments} & \ReportNumber{\FindingsDocumentsUnknownOrganization}\\
 \bottomrule
 \end{tabularx}
-\captionof{table}{Documentation across the complete frozen catalog. ``With docs'' counts benchmark records; the last two columns count distinct documents. Missing organization metadata remains unknown.}
+\captionof{table}{Documentation across the complete v0.11.0 catalog. ``With docs'' counts benchmark records; the last two columns count distinct documents. Missing organization metadata remains unknown.}
 \label{tab:report-mentions}
 \end{minipage}
 \end{center}
 
-Documentation is widespread, but the frozen evidence does not identify an organization for \ReportNumber{\FindingsDocumentsUnknownOrganization} cited documents. The complete export retains each document's identity and source URL on its benchmark record.
+Documentation is widespread, but the release data does not identify an organization for \ReportNumber{\FindingsDocumentsUnknownOrganization} cited documents. The complete export retains each document's identity and source URL on its benchmark record.
 
 \subsection{Reported Scores Across the Full Catalog}
 \label{sec:headroom}
@@ -450,7 +450,7 @@ The score analysis retains all \ReportNumber{\FindingsRecords} records and their
 Total & \ReportNumber{\CensusRecords} & \CensusScored{} & \CensusUnscored{} & \ReportNumber{\CensusNumericScores} & & \\
 \bottomrule
 \end{tabularx}
-\captionof{table}{Reported scores across every source in frozen v0.11.0. Models count distinct source model IDs within each benchmark record. Medians and maxima use records with known model counts; unscored records are not assigned zero models. Model counts are not summed across benchmarks. The record-level score export contains every catalog record, including raw maxima, all tied reporting models and citations, units, settings, and explicit missing values.}
+\captionof{table}{Reported scores across every source in the v0.11.0 release. Models count distinct source model IDs within each benchmark record. Medians and maxima use records with known model counts; unscored records are not assigned zero models. Model counts are not summed across benchmarks. The record-level score export contains every catalog record, including raw maxima, all tied reporting models and citations, units, settings, and explicit missing values.}
 \label{tab:reported-headroom}
 \end{minipage}
 \end{center}
@@ -475,7 +475,7 @@ The date analysis also retains all \ReportNumber{\FindingsRecords} source record
 Total & \ReportNumber{\CensusRecords} & \CensusReleaseKnown{} & \FindingsDocumentDateScores{} & \ReportNumber{\FindingsModelDateScores} & \FindingsUndatedScores{}\\
 \bottomrule
 \end{tabularx}
-\captionof{table}{Date evidence for the complete frozen catalog. The first two numeric columns count benchmark records; the final three count numeric score observations. Records with no scores remain in the Records column.}
+\captionof{table}{Date evidence for the complete v0.11.0 catalog. The first two numeric columns count benchmark records; the final three count numeric score observations. Records with no scores remain in the Records column.}
 \label{tab:score-coverage-gaps}
 \end{minipage}
 \end{center}
@@ -635,7 +635,7 @@ ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
-This revision uses the frozen \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
+This revision uses the \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
 
 The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff}. Table~\ref{tab:access-artifacts} lists the access and citation resources.
 
@@ -648,7 +648,7 @@ The data build normalizes the registry and model-report inputs into the shared c
 \textbf{Artifact} & \textbf{Canonical or permanent location}\\
 \midrule
 Archived paper (v0.9.0) & \url{https://doi.org/10.5281/zenodo.22167102}\\
-Frozen data (v0.11.0) & \url{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}\\
+Release data (v0.11.0) & \url{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}\\
 Source code & \url{https://github.com/ktwu01/benchmark-radar}\\
 Dashboard & \url{https://benchmark-radar.org/}\\
 Discovery observations (JSON) & \url{https://benchmark-radar.org/data/radar.json}\\
@@ -666,7 +666,7 @@ The census reads \texttt{site/data/benchmark-index.json}, the detail shards unde
 
 The paper repository contains \texttt{scripts/audit\_catalog.py}, which validates IDs and counts, computes the census, and exports \texttt{catalog-data.tex} plus \texttt{evidence/catalog-audit.json}. The JSON includes every source-record key, measurement state, per-record model and document counts, citation IDs, and SHA-256 hashes of the inputs. The script checks score-observation uniqueness, record-to-shard identity, document-registry coverage, and reconciliation of scored and unscored records. Its \texttt{--check} mode compares a fresh calculation against the committed outputs. Figure~\ref{fig:corpus-evidence} draws one linked dot per census record in source-key order.
 
-Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_findings.py} take the rebuilt software path. The findings audit writes \texttt{findings-data.tex} and \texttt{evidence/catalog-findings.json} plus a CSV export. Every analysis retains exactly the catalog's source-record IDs. It records native score maxima and all tied observations, units, settings, cited documents, model counts, and date evidence. Table cells and repeated numeric claims are generated from these same frozen inputs. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains a frozen earlier deposit; live dashboard counts require a retrieval date.
+Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_findings.py} take the rebuilt software path. The findings audit writes \texttt{findings-data.tex} and \texttt{evidence/catalog-findings.json} plus a CSV export. Every analysis retains exactly the catalog's source-record IDs. It records native score maxima and all tied observations, units, settings, cited documents, model counts, and date evidence. Table cells and repeated numeric claims are generated from these same inputs. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains an earlier deposit; live dashboard counts require a retrieval date.
 
 % \section{Licensing}
 % Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
