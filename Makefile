@@ -1,6 +1,7 @@
 # Build the manuscript and native TikZ figures from dated TeX inputs.
 LATEXMK ?= latexmk
 PYTHON ?= python3
+CHECK_SMALL_NUMBERS ?= 1
 FIGURE_NAMES := corpus-evidence cover-metrics pipeline-evaluation search-surface source-composition
 FIGURE_PDFS := $(addprefix figures/,$(addsuffix .pdf,$(FIGURE_NAMES)))
 FIGURE_SOURCES := $(addprefix figures/,$(addsuffix .tex,$(FIGURE_NAMES)))
@@ -24,8 +25,12 @@ main.pdf: main.tex references.bib figure-data.tex catalog-data.tex findings-data
 # Scan rendered text and raster figures on every normal build, even if the PDF
 # is up to date. Small numbers warn; unreadable inputs or missing tools fail.
 check-small-numbers: main.pdf
+ifeq ($(CHECK_SMALL_NUMBERS),1)
 	mkdir -p build
 	$(PYTHON) scripts/check_small_numbers.py main.pdf --json-output build/small-number-warnings.json
+else
+	@echo "Skipping rendered-number scan: no numeric LaTeX lines changed in this PR."
+endif
 
 # arXiv runs no BibTeX pass. Ship main.bbl, the dated numbers, native drawings,
 # and finished figures. All paper assets live in this repository.

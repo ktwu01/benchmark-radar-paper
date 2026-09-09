@@ -150,3 +150,24 @@ def test_standard_build_targets_always_schedule_the_full_number_scan(target):
     assert "scripts/check_small_numbers.py main.pdf" in planned
     assert "--json-output build/small-number-warnings.json" in planned
     assert "--text-only" not in planned
+
+
+def test_ci_can_skip_number_scan_when_no_numeric_latex_line_changed():
+    if not shutil.which("make"):
+        pytest.skip("make is not installed")
+    paper = Path(__file__).resolve().parents[1]
+    planned = subprocess.check_output(
+        [
+            "make",
+            "--no-print-directory",
+            "-n",
+            "-o",
+            "main.pdf",
+            "CHECK_SMALL_NUMBERS=0",
+            "arxiv",
+        ],
+        cwd=paper,
+        text=True,
+    )
+    assert "scripts/check_small_numbers.py" not in planned
+    assert "Skipping rendered-number scan" in planned

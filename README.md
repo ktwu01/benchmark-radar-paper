@@ -101,6 +101,10 @@ is a submission package, not evidence of an arXiv publication.
 
 CI builds the manuscript and submission package and uploads them as artifacts.
 Those artifacts do not update the checked-in `main.pdf` automatically.
+On pull requests, CI runs the rendered-number scan only when the diff adds or
+removes a digit on a `.tex` line. Pushes to `main` and manual workflow runs keep
+the full scan. Other PR changes still compile and test the paper, while
+superseded runs for the same PR are cancelled.
 
 ## Reproduce the paper's numbers
 

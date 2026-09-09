@@ -59,6 +59,9 @@
   percentages, or source-specific counts. `make` and `make arxiv` run the check
   on PDF text and OCR of rendered pages. Review the page/context warnings;
   do not change frozen evidence merely to silence them.
+- CI may set `CHECK_SMALL_NUMBERS=0` only for a pull request whose diff adds or
+  removes no digit on any `.tex` line. Pushes to `main`, manual workflow runs,
+  and local `make`/`make arxiv` retain the full rendered scan.
 - Do not restore `example-data.tex`, `scripts/audit_examples.py`, or
   `evidence/restored-examples.json`. Git history preserves the removed subset;
   `findings-data.tex` and the full-catalog exports are the current analysis.

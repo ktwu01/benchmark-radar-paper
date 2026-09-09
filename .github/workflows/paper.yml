@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: paper-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -14,6 +18,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Detect numeric LaTeX changes
+        id: number-scan
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [[ "$EVENT_NAME" != "pull_request" ]]; then
+            echo "enabled=1" >> "$GITHUB_OUTPUT"
+            echo "Rendered-number scan enabled for main/manual run."
+          elif git diff --word-diff=porcelain \
+            --word-diff-regex='[0-9]+([.,][0-9]+)*' \
+            "$BASE_SHA" "$HEAD_SHA" -- '*.tex' \
+            | grep -Eq '^[+-][^+-]*[0-9]'; then
+            echo "enabled=1" >> "$GITHUB_OUTPUT"
+            echo "Rendered-number scan enabled: numeric LaTeX lines changed."
+          else
+            echo "enabled=0" >> "$GITHUB_OUTPUT"
+            echo "Rendered-number scan skipped: no numeric LaTeX lines changed."
+          fi
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
@@ -28,10 +54,18 @@ jobs:
           python scripts/verify_frozen_findings.py frozen-software
           python -m pytest -q tests
       - name: Install TeX and PDF number scanning tools
+        env:
+          NUMBER_SCAN: ${{ steps.number-scan.outputs.enabled }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures poppler-utils tesseract-ocr
+          packages=(latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures)
+          if [[ "$NUMBER_SCAN" == "1" ]]; then
+            packages+=(poppler-utils tesseract-ocr)
+          fi
+          sudo apt-get install -y "${packages[@]}"
       - name: Build paper and standalone arXiv package
+        env:
+          CHECK_SMALL_NUMBERS: ${{ steps.number-scan.outputs.enabled }}
         run: |
           make arxiv
           mkdir -p /tmp/arxiv-check
