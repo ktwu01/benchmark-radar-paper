@@ -94,12 +94,18 @@ Benchmark RADAR gathers benchmark-related artifacts from public sources, groups 
 The system preserves one record per source benchmark, including entries without scores, dates, or citations. Reviewed identity links connect related records while retaining their separate measurements. We contribute this living search system, shared web and offline access to its evidence, and a reproducible full-catalog census. The census establishes the coverage behind the examples: \CensusNoScoreWithLinks{} unscored records still link to task materials, and score comparisons require explicit scale, date, and protocol checks. Section~\ref{sec:worked-example} shows how a contributor used retrieval and source inspection to assemble prior art.
 
 \section{Related Work and Scope}
+\label{sec:related-work}
 
 \paragraph{Benchmark catalogs and evaluations.}
-LLM Stats publishes benchmark descriptions and reported model results \citep{llmstats2026benchmarks}. OpenCompass provides an evaluation platform and a benchmark registry with artifact metadata \citep{opencompass2026datasetstatistics}. Artificial Analysis publishes model evaluations and their methodology \citep{artificialanalysis2026methodology}. Benchmark Radar uses records from these sources alongside model-report evidence. Benchmark RADAR adds daily discovery, artifact histories, benchmark retrieval, and source inspection through shared web and offline access. These functions help readers investigate evaluations across the contributing catalogs; they do not change the evaluations themselves.
+LLM Stats publishes benchmark descriptions and reported model results \citep{llmstats2026benchmarks}. OpenCompass provides an evaluation platform and a benchmark registry with artifact metadata \citep{opencompass2026datasetstatistics}. Artificial Analysis publishes model evaluations and their methodology \citep{artificialanalysis2026methodology}. Benchmark Radar uses records from these sources alongside model-report evidence. Benchmark RADAR adds daily discovery, artifact histories, benchmark retrieval, and source inspection through shared web and offline access, helping readers investigate evaluations across the contributing catalogs.
 
 \paragraph{Documenting evaluation evidence.}
 Model cards and datasheets motivate documenting evaluation conditions and dataset characteristics \citep{mitchell2019modelcards,gebru2021datasheets}. Benchmark Radar retains that information when the collected sources provide it, with citations for follow-up review. Benchmarks such as GPQA \citep{rein2023gpqa}, SWE-bench \citep{jimenez2023swebench}, and SciBench \citep{wang2023scibench} define different tasks; placing their records in one catalog does not make their scores interchangeable. The census measures which evidence is available for inspection and which metadata still needs review.
+
+\paragraph{Evaluating benchmarks themselves.}
+Recent work examines benchmark saturation, item quality, and the interpretation of aggregate scores. In a systematic study of 60 language model benchmarks, \citet{akhtar2026plateau} define saturation and report that nearly half exhibit it, with prevalence increasing with benchmark age. They associate resilience with expert curation rather than test-data privacy. Sample-level auditing of MMLU, ARC, WinoGrande, HellaSwag, and TruthfulQA identifies within-benchmark variation obscured by aggregate accuracy \citep{siedler2026benchmarks}. A reference-free judging framework assesses conversational-agent benchmarks on consistency, complexity, and policy coverage \citep{koren2026benchmarking}. For safety benchmarks developed for larger models, rankings of smaller models vary with the treatment of ambiguous responses \citep{shaik2026benchmarking}. Inverse-density weighting reduces the influence of benchmark multiplicity on aggregate scores \citep{lin2026balance}. \citet{gilda2026position} argue that evaluation scores should state their evidential scope and validity window, with conservative aggregation when component signals differ in reliability.
+
+Benchmark RADAR complements these methods by making benchmark records, available measurements, and provenance searchable. We used its command-line client to identify candidate papers for this section, supplemented the results with coauthor recommendations, and reviewed the source papers.
 
 \section{System and Methods}
 
@@ -279,7 +285,7 @@ The contributor used the table to assess whether the proposed evaluation duplica
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.25}
 \resizebox{0.98\textwidth}{!}{%
-\begin{tabular}{L{0.45cm}L{3.05cm}L{1.5cm}L{2.35cm}L{3.45cm}L{2.55cm}L{2.9cm}}
+\begin{tabular}{L{0.45cm}L{3.05cm}L{1.65cm}L{2.35cm}L{3.45cm}L{2.55cm}L{2.9cm}}
 \toprule
 \textbf{\#} & \textbf{Work} & \textbf{Published} & \textbf{Qwen base model(s)} & \textbf{Credit-assignment focus} & \textbf{Agentic benchmarks used} & \textbf{Link} \\
 \midrule
@@ -303,9 +309,11 @@ The contributor used the table to assess whether the proposed evaluation duplica
 
 The census describes this catalog at its recorded cutoff. Collection limits, failed requests, missing identifiers, and different snapshot dates affect its coverage. Source records are not a count of distinct underlying tests. Artifact links provide routes for inspection but do not verify present availability or licensing. Broader coverage requires additional source collection and review of the evidence already present.
 
-The study does not measure retrieval precision, task suitability, or time saved. The worked example combines local queries with web search and has no controlled baseline. Lexical matching can miss paraphrases and renamed tasks. Evaluating semantic retrieval \citep{reimers2019sentencebert} will require reviewed relevance judgments across queries and candidate records, including less familiar benchmark families.
+Retrieval precision, task suitability, and time saved remain to be evaluated. The worked example combines local queries with web search and has no controlled baseline. Lexical matching can miss paraphrases and renamed tasks. Evaluating semantic retrieval \citep{reimers2019sentencebert} will require reviewed relevance judgments across queries and candidate records, including less familiar benchmark families.
 
-The scale and date audit identifies metadata gaps. The full-catalog score, document, and date analyses retain measurements across all sources, without establishing benchmark saturation or score stagnation. Establishing those outcomes requires source review for comparable test versions and settings, and dates tied to actual score reporting or evaluation. Matching archive labels cannot verify independent repeated runs.
+The arXiv discovery route collects new submissions; it does not backfill papers first posted before the collection window when later versions appear. The searches used for Section~\ref{sec:related-work} missed two relevant earlier studies \citep{yang2026benchmark,akhtar2026plateau}, which a coauthor identified and read.
+
+Measuring benchmark saturation or score stagnation requires comparable test versions and settings, with dates tied to score reporting or evaluation.
 
 Task-capability classification also remains unvalidated in this rebuild. The deterministic null extractor used in CI assigns no capability levels to its \ReportNumber{\CensusUnclassified} discovery-derived tracks. Completing and evaluating those labels is a separate task from maintaining the benchmark catalog.
 
