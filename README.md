@@ -2,7 +2,7 @@
 
 [Read the paper](main.pdf) · [Edit the LaTeX](main.tex) · [Benchmark Radar](https://github.com/ktwu01/benchmark-radar)
 
-**Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research** describes how researchers can discover evaluations, retrieve candidates, and inspect their task materials and reported scores. Its document, score, and date analyses each retain the complete frozen benchmark catalog.
+**Benchmark Radar: A Living Search Engine for AI Benchmark Research** describes how researchers can discover evaluations, retrieve candidates, and inspect their task materials and reported scores. Its document, score, and date analyses each retain the complete frozen benchmark catalog.
 
 This repository contains the manuscript, bibliography, dated figure inputs, and all images needed to build the paper independently. The software repository pins a reviewed commit here as its `docs/technical-report/latex` submodule.
 

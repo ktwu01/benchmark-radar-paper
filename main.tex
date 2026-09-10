@@ -29,7 +29,7 @@
   linkcolor=LinkRed,
   urlcolor=CiteBlue,
   citecolor=CiteBlue,
-  pdftitle={Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research},
+  pdftitle={Benchmark Radar: A Living Search Engine for AI Benchmark Research},
   pdfauthor={Koutian Wu, Junjie Zhou, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, and Wanghan Xu}
 }
 
@@ -95,7 +95,7 @@
   \end{center}%
 }
 
-\title{\textbf{Benchmark RADAR: Living Search Engine for Retrieval and Discovery of AI Benchmark Research}}
+\title{\textbf{Benchmark Radar: A Living Search Engine for AI Benchmark Research}}
 \author{Koutian Wu$^{1,2}$ \footnote{\small Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^3$ \quad Ergan Shang$^4$ \quad Jiayu Wang$^5$\\[-0.05em]
 \quad Pengqian Han$^6$ \quad Junkai Wang$^8$ \quad Wanghan Xu$^7$\\[0.35em]
 \small $^1$ Earth-Space-AI \quad
@@ -113,14 +113,14 @@
 \maketitle
 \vspace{-2.0em}
 \begin{abstract}
-Benchmark researchers and model developers need to find relevant evaluations, locate their data and code, and understand the settings behind reported scores. We present Benchmark RADAR, a living search engine for retrieval and discovery of AI benchmark research. The system combines daily discovery of papers, repositories, datasets, and releases with a searchable benchmark catalog, model-report mentions, and score histories. It retains source identities and citations so readers can inspect candidate benchmarks and their evaluation evidence. At the \datacutoff{} cutoff, the catalog contains \ReportNumber{\CensusRecords} source records across \ReportCatalogSourceCount{} sources and \ReportNumber{\CensusNumericScores} numeric observations on \CensusScored{} records. Of its \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} link to task materials. We describe collection and retrieval, audit the full catalog, and examine reporting patterns and the limits of score comparisons. A contributor's prior-art workflow illustrates how catalog queries and source inspection inform evaluation design. We release the web dashboard, feeds, downloadable evidence, offline query interfaces, and reproducible analysis.
+Benchmark researchers and model developers need to find relevant evaluations, locate their data and code, and understand the settings behind reported scores. We present Benchmark Radar, a living search engine for retrieval and discovery of AI benchmark research. The system combines daily discovery of papers, repositories, datasets, and releases with a searchable benchmark catalog, model-report mentions, and score histories. It retains source identities and citations so readers can inspect candidate benchmarks and their evaluation evidence. At the \datacutoff{} cutoff, the catalog contains \ReportNumber{\CensusRecords} source records across \ReportCatalogSourceCount{} sources and \ReportNumber{\CensusNumericScores} numeric observations on \CensusScored{} records. Of its \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} link to task materials. We describe collection and retrieval, audit the full catalog, and examine reporting patterns and the limits of score comparisons. A contributor's prior-art workflow illustrates how catalog queries and source inspection inform evaluation design. We release the web dashboard, feeds, downloadable evidence, offline query interfaces, and reproducible analysis.
 \end{abstract}
 
 \begin{center}
 \begin{minipage}{\textwidth}
 \centering
 \includegraphics[width=0.96\textwidth]{abstract_overview.png}
-\captionof{figure}{Benchmark RADAR connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples. The catalog count uses the v0.11.0 release.}
+\captionof{figure}{Benchmark Radar connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples. The catalog count uses the v0.11.0 release.}
 \label{fig:abstract}
 \end{minipage}
 \end{center}
@@ -134,9 +134,9 @@ Evaluation also matters beyond general-purpose chat. In recommender systems, Tra
 
 Benchmarks differ in the abilities they test. Broad evaluations of knowledge and reasoning include MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle}. Others isolate more specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tests code generation with date-based splits to reduce contamination from training data \citep{jain2024livecodebench}, and Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. Domain-specific evaluations include FinanceBench for finance and economics \citep{islam2023financebench}, MATH for mathematics \citep{hendrycks2021math}, SciBench for scientific problem solving \citep{wang2023scibench}, LAB-Bench for biology \citep{laurent2024labbench}, and ChemBench for chemistry \citep{mirza2024chembench}. ESM-BENCH tests agents' understanding of Earth system model physics and code \citep{wu2026esm}; ResearchClawBench evaluates end-to-end autonomous scientific research \citep{xu2026researchclawbench}; and ASI-Bench examines scientific exploration and execution with progressively less methodological guidance \citep{zhou2026asi}. Their tasks and scoring rules specify which model behaviors count as successful performance.
 
-Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. Connecting newly released benchmarks to their task materials and later use in model reports can still require consulting several separate resources. Benchmark RADAR addresses this gap by combining catalog retrieval with daily discovery, mentions in model reports, and scores with documented evaluation settings and sources.
+Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. Connecting newly released benchmarks to their task materials and later use in model reports can still require consulting several separate resources. Benchmark Radar addresses this gap by combining catalog retrieval with daily discovery, mentions in model reports, and scores with documented evaluation settings and sources.
 
-Benchmark RADAR gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores (Figure~\ref{fig:abstract}). We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, documentation and scored-model coverage across all catalog sources, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
+Benchmark Radar gathers benchmark-related artifacts from public sources, groups observations with matching identifiers, and exposes a searchable index with source labels, dates, benchmark mentions, and scores (Figure~\ref{fig:abstract}). We present the search system, describe the collection and ranking methods needed to reproduce its outputs, and examine benchmark coverage, documentation and scored-model coverage across all catalog sources, source concentration, and gaps in evaluation settings.\footnote{Source code: \url{https://github.com/ktwu01/benchmark-radar}.}
 
 The system preserves one record per source benchmark, including entries without scores, dates, or citations. Reviewed identity links connect related records while retaining their separate measurements. We contribute this living search system, shared web and offline access to its evidence, and a reproducible full-catalog census. Section~\ref{sec:worked-example} shows how a contributor used retrieval and source inspection to assemble prior art.
 
@@ -144,7 +144,7 @@ The system preserves one record per source benchmark, including entries without 
 \label{sec:related-work}
 
 \paragraph{Benchmark catalogs and evaluations.}
-LLM Stats publishes benchmark descriptions and reported model results \citep{llmstats2026benchmarks}. OpenCompass provides an evaluation platform and a benchmark registry with artifact metadata \citep{opencompass2026datasetstatistics}. Artificial Analysis publishes model evaluations and their methodology \citep{artificialanalysis2026methodology}. Benchmark Radar uses records from these sources alongside model-report evidence. Benchmark RADAR adds daily discovery, artifact histories, benchmark retrieval, and source inspection through shared web and offline access, helping readers investigate evaluations across the contributing catalogs.
+LLM Stats publishes benchmark descriptions and reported model results \citep{llmstats2026benchmarks}. OpenCompass provides an evaluation platform and a benchmark registry with artifact metadata \citep{opencompass2026datasetstatistics}. Artificial Analysis publishes model evaluations and their methodology \citep{artificialanalysis2026methodology}. Benchmark Radar uses records from these sources alongside model-report evidence. Benchmark Radar adds daily discovery, artifact histories, benchmark retrieval, and source inspection through shared web and offline access, helping readers investigate evaluations across the contributing catalogs.
 
 \paragraph{Documenting evaluation evidence.}
 Model cards and datasheets motivate documenting evaluation conditions and dataset characteristics \citep{mitchell2019modelcards,gebru2021datasheets}. Benchmark Radar retains that information when the collected sources provide it, with citations for follow-up review. Benchmarks such as GPQA \citep{rein2023gpqa}, SWE-bench \citep{jimenez2023swebench}, and SciBench \citep{wang2023scibench} define different tasks. The census measures which evidence is available for inspection and which metadata still needs review.
@@ -152,7 +152,7 @@ Model cards and datasheets motivate documenting evaluation conditions and datase
 \paragraph{Evaluating benchmarks themselves.}
 Recent work examines benchmark saturation, item quality, and the interpretation of aggregate scores. In a systematic study of 60 language model benchmarks, \citet{akhtar2026plateau} define saturation and report that nearly half exhibit it, with prevalence increasing with benchmark age. They associate resilience with expert curation rather than test-data privacy. Sample-level auditing of MMLU, ARC, WinoGrande, HellaSwag, and TruthfulQA identifies within-benchmark variation obscured by aggregate accuracy \citep{siedler2026benchmarks}. A reference-free judging framework assesses conversational-agent benchmarks on consistency, complexity, and policy coverage \citep{koren2026benchmarking}. For safety benchmarks developed for larger models, rankings of smaller models vary with the treatment of ambiguous responses \citep{shaik2026benchmarking}. Inverse-density weighting reduces the influence of benchmark multiplicity on aggregate scores \citep{lin2026balance}. \citet{gilda2026position} argue that evaluation scores should state their evidential scope and validity window, with conservative aggregation when component signals differ in reliability.
 
-Benchmark RADAR complements these methods by making benchmark records, available measurements, and provenance searchable. We used its command-line client to identify candidate papers for this section, supplemented the results with coauthor recommendations, and reviewed the source papers.
+Benchmark Radar complements these methods by making benchmark records, available measurements, and provenance searchable. We used its command-line client to identify candidate papers for this section, supplemented the results with coauthor recommendations, and reviewed the source papers.
 
 \section{System and Methods}
 
@@ -273,7 +273,7 @@ The rebuilt catalog contains \ReportNumber{\ReportCatalogCount} source records a
 \RadarInlineLinkedFigure
   {https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}
   {hle-score-history.png}
-  {Inspecting Humanity's Last Exam in Benchmark RADAR. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Click the image to open the interactive view.}
+  {Inspecting Humanity's Last Exam in Benchmark Radar. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Click the image to open the interactive view.}
   {fig:hle-scores}
 
 Of the \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} have at least one paper, repository, or dataset link. In the full catalog, \CensusPaperLinks{} records link to papers, \CensusRepoLinks{} to repositories, and \CensusDatasetLinks{} to datasets. A record can contain more than one type of link. For example, the OpenCompass Hub record for A-Bench links a paper, code repository, and dataset despite having no archived score.
@@ -324,9 +324,9 @@ Figure~\ref{fig:discovery-trends} complements source coverage with the daily rea
 \section{Worked Example: Checking Prior Art}
 \label{sec:worked-example}
 
-Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark RADAR client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Table~\ref{tab:use-case-survey}.
+Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark Radar client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Table~\ref{tab:use-case-survey}.
 
-The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark RADAR retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
+The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark Radar retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
 
 \begin{center}
 \begin{minipage}{\textwidth}
@@ -369,7 +369,7 @@ Task-capability classification also remains unvalidated in this rebuild. The det
 
 \section{Conclusion}
 
-Benchmark RADAR brings daily benchmark discovery, catalog search, model-report mentions, and score histories into one living search engine. Readers can find candidate evaluations, locate task materials, inspect reporting choices, and follow the settings and citations behind a score. Shared benchmark IDs connect the web dashboard, downloadable catalog, and offline query clients.
+Benchmark Radar brings daily benchmark discovery, catalog search, model-report mentions, and score histories into one living search engine. Readers can find candidate evaluations, locate task materials, inspect reporting choices, and follow the settings and citations behind a score. Shared benchmark IDs connect the web dashboard, downloadable catalog, and offline query clients.
 
 The v0.11.0 release makes \ReportNumber{\CensusRecords} source records searchable and preserves \CensusNoScoreWithLinks{} unscored records with artifact links. Its full-catalog analyses distinguish benchmark records, scored models, cited documents, and numeric observations.
 
