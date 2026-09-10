@@ -702,10 +702,10 @@ The paper repository contains \texttt{scripts/audit\_catalog.py}, which validate
 
 Reproduce from a clean checkout at software commit \gitcommit{} using the README's six-step CI sequence. The software exporter writes \texttt{figure-data.tex}; the paper's \texttt{audit\_catalog.py} and \texttt{audit\_findings.py} take the rebuilt software path. The findings audit writes \texttt{findings-data.tex} and \texttt{evidence/catalog-findings.json} plus a CSV export. Every analysis retains exactly the catalog's source-record IDs. It records native score maxima and all tied observations, units, settings, cited documents, model counts, and date evidence. Table cells and repeated numeric claims are generated from these same inputs. Run each exporter's \texttt{--check} mode, build with \texttt{make arxiv}, compile the extracted package, and inspect the PDF. Normal builds use the committed inputs. The v0.9.0 DOI remains an earlier deposit; live dashboard counts require a retrieval date.
 
-% \section{Licensing}
-% Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
-% Commercial republication, resale, paid newsletters, dataset packaging, or commercial
-% product integration requires prior written permission from Koutian Wu. Third-party
-% source material remains under its original terms.
+\section*{Licensing}
+Software: MIT License. The paper and original editorial content: CC BY-NC 4.0.
+Commercial republication, resale, paid newsletters, dataset packaging, or commercial
+product integration requires prior written permission from Koutian Wu. Third-party
+source material remains under its original terms.
 
 \end{document}
