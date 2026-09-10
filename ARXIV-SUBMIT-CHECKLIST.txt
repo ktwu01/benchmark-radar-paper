@@ -1,0 +1,118 @@
+ARXIV SUBMISSION CHECKLIST - Benchmark Radar
+Prepared 2026-09-10. Paper repo: benchmark-radar-paper
+
+
+BEFORE YOU OPEN THE SUBMISSION FORM
+-----------------------------------
+
+[ ] 1. DECIDE THE LICENSE  (blocker)
+       The repo puts the report under CC BY-NC 4.0. arXiv has no NC option.
+       Pick one:
+         (a) arXiv non-exclusive license to distribute  <- recommended
+             You keep copyright. NC terms stay valid everywhere else.
+             No change needed to LICENSE-CONTENT.md or the manuscript notice.
+         (b) CC BY 4.0 / CC BY-SA 4.0
+             Permits commercial reuse. Contradicts your stated NC intent.
+             If chosen, update LICENSE-CONTENT.md AND the in-manuscript
+             licensing notice to match, or the paper contradicts itself.
+
+[ ] 2. CHECK ENDORSEMENT
+       cs.AI needs endorsement for first-time submitters with no arXiv record.
+       - Posted to cs.* before? You are fine, skip this.
+       - Never posted? Submitting from tacite.ai may trigger the endorsement
+         flow. Line up a coauthor with arXiv standing first:
+         CMU, SJTU, Tsinghua, XJTU, HDU, or Auckland.
+       Resolve this BEFORE starting, not halfway through the form.
+
+[ ] 3. FIX THE PACKAGE  (build-breaker)
+       arXiv deletes any PDF whose basename matches a .tex in the same
+       package, then tries to compile the .tex. Current collisions:
+         figures/corpus-evidence.tex     + corpus-evidence.pdf
+         figures/pipeline-evaluation.tex + pipeline-evaluation.pdf
+         figures/source-composition.tex  + source-composition.pdf
+       Fix: drop the figure .tex sources from arxiv.tar.gz (they are build
+       inputs, not submission inputs), or rename so basenames differ.
+       Keep figures/figure-style.tex and corpus-evidence-body.tex only if
+       main.tex actually inputs them.
+
+[ ] 4. RESOLVE UNCOMMITTED SUBMODULE STATE
+       git status shows modified: Makefile, main.tex, main.pdf, and five
+       figure PDFs. Two of those (cover-metrics, search-surface) no longer
+       exist on disk but are still referenced by the Makefile.
+       Commit or revert deliberately before building the final package.
+
+[ ] 5. REBUILD AND VERIFY THE PACKAGE
+       The tarball on disk is STALE: built 23:51, but main.tex/main.pdf were
+       modified at 00:01-00:02.
+         make arxiv
+       Then compile the tarball standalone in a clean temp dir. Do not skip:
+         mkdir /tmp/arxiv-test && tar xzf arxiv.tar.gz -C /tmp/arxiv-test
+         cd /tmp/arxiv-test && latexmk -pdf main.tex
+       It must build with no missing figures and no missing .bbl.
+       Confirm main.bbl is present (arXiv does not run BibTeX).
+
+[ ] 6. INDEPENDENT REVIEW
+       arXiv postings are public and permanently versioned; replacements
+       show as v2. Run a review pass before posting, not after.
+
+[ ] 7. CONFIRM DATA CUTOFF
+       Frozen at v0.11.0, discovery through 2026-09-07, commit 8f46bbf.
+       No cutoff advance needed for a submission today. Do not let a
+       routine edit pull in newer inputs.
+
+
+ON THE SUBMISSION FORM
+----------------------
+
+[ ] PRIMARY CATEGORY:  cs.AI   (Artificial Intelligence)
+       There is only ONE category field. This is it.
+
+[ ] CROSS-LISTS:  cs.IR, cs.LG
+       NOT on the submission form. There is no field for these.
+       Cross-listing happens AFTER the paper is announced:
+         1. Submit with cs.AI only.
+         2. Wait for announcement (next business day, after moderation).
+         3. Open the paper's page in your arXiv account.
+         4. Use the "Cross-list" link in the article admin area.
+       Cross-list requests are moderated separately and can be declined.
+       Full names, for reference:
+         cs.AI = Artificial Intelligence
+         cs.IR = Information Retrieval
+         cs.LG = Machine Learning
+       Skip stat.ML (Statistics > Machine Learning). No stats contribution.
+
+[ ] ACM CLASS:  leave blank
+       Optional. Uses the 1998 scheme that ACM itself retired in 2012.
+       Drives nothing: listings, search, and category feeds all key off the
+       category, not this field. Nobody browses by it.
+       If you insist on filling it:  H.3.3; H.3.4; I.2.0
+
+[ ] MSC CLASS:  leave blank
+       Mathematics Subject Classification. Math submissions only.
+       No natural code for this paper. Filling it in would look odd.
+
+[ ] TITLE / ABSTRACT / AUTHORS
+       These, plus the category, are what actually drive discoverability.
+       They feed the daily listing emails and arXiv search.
+       - Title and abstract must match the PDF exactly.
+       - Enter all 7 authors with correct affiliations.
+       - Corresponding author: k@tacite.ai
+       - Abstract field is plain text. Strip LaTeX macros; the abstract
+         uses \ReportIngestSourceCount, \CensusRecords, etc. Substitute the
+         rendered numbers by hand and check them against the built PDF.
+
+[ ] COMMENTS FIELD  (optional but useful)
+       Page count, and the project/dashboard URL.
+
+[ ] UPLOAD
+       Upload arxiv.tar.gz, not the PDF. Let arXiv compile it.
+       Review arXiv's compiled output before clicking submit. If its PDF
+       differs from your local main.pdf, stop and fix the package.
+
+
+AFTER SUBMISSION
+----------------
+
+[ ] Paper announced next business day after moderation clears.
+[ ] Add cs.IR and cs.LG cross-lists (see above).
+[ ] Update the repo with the arXiv ID once assigned.
