@@ -2,7 +2,7 @@
 LATEXMK ?= latexmk
 PYTHON ?= python3
 CHECK_SMALL_NUMBERS ?= 1
-FIGURE_NAMES := corpus-evidence cover-metrics pipeline-evaluation search-surface source-composition
+FIGURE_NAMES := corpus-evidence pipeline-evaluation source-composition
 FIGURE_PDFS := $(addprefix figures/,$(addsuffix .pdf,$(FIGURE_NAMES)))
 FIGURE_SOURCES := $(addprefix figures/,$(addsuffix .tex,$(FIGURE_NAMES)))
 # Drawn from the classified catalog and committed as finished PDFs.
