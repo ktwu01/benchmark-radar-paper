@@ -34,12 +34,14 @@ endif
 
 # arXiv runs no BibTeX pass. Ship main.bbl, the dated numbers, native drawings,
 # and finished figures. All paper assets live in this repository.
+# Ship no figure wrappers: they input ../figure-data.tex and ../catalog-data.tex,
+# paths that resolve outside the upload root, and arXiv flags them as missing.
 arxiv: check-small-numbers
 	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
 	rm -rf build/arxiv
 	mkdir -p build/arxiv/figures
 	cp main.tex main.bbl figure-data.tex catalog-data.tex findings-data.tex taxonomy-data.tex taxonomy-trend-data.tex build/arxiv/
-	cp $(FIGURE_PDFS) $(TAXONOMY_FIGURES) $(FIGURE_SOURCES) figures/figure-style.tex figures/corpus-evidence-body.tex figures/*.png build/arxiv/figures/
+	cp $(FIGURE_PDFS) $(TAXONOMY_FIGURES) figures/corpus-evidence-body.tex figures/*.png build/arxiv/figures/
 	tar -czf arxiv.tar.gz -C build/arxiv .
 
 # Keep tracked PDFs; remove only intermediates and the upload staging area.
