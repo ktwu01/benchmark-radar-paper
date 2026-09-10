@@ -210,7 +210,7 @@ The LaTeX directory's commit history was extracted from Benchmark Radar at
 IDs. The original history remains in the software repository. Use-case images
 were copied unchanged from its `assets/use-case-492/` directory.
 
-The paper and original editorial content use [CC BY-NC 4.0](LICENSE-CONTENT.md).
+The paper and original editorial content use [CC BY-NC-SA 4.0](LICENSE-CONTENT.md).
 Third-party material retains its original terms.
 
 The image `figures/hle-score-history.png` is the supplied screenshot, preserved byte-for-byte. Its provenance and comparison with the frozen HLE record are recorded in `evidence/hle-score-history.json`. Its 577 scores and displayed maximum of 55.47 agree with the frozen release. The horizontal axis uses model announcement dates, not evaluation dates; the chart does not establish matched protocols or percentage-scale eligibility. The interactive link may show later updates.
