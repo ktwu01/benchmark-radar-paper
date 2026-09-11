@@ -50,7 +50,7 @@ jobs:
           path: frozen-software
       - name: Verify findings against the frozen v0.11.0 release
         run: |
-          python -m pip install pytest
+          python -m pip install pytest PyYAML
           python scripts/verify_frozen_findings.py frozen-software
           python -m pytest -q tests
       - name: Install TeX and PDF number scanning tools
