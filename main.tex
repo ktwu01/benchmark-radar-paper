@@ -229,6 +229,25 @@ The same benchmark IDs reach web search, detail pages, dataset exports, and offl
 
 Candidate retrieval precedes suitability judgment. An analyst or agent can try focused query variants, inspect a record's tasks and score settings, and follow its citations. The interface preserves the evidence needed for that review. This paper evaluates catalog and measurement coverage; the contributor case illustrates usage without measuring retrieval accuracy or time saved.
 
+\subsection{Offline Query Engine and Agent Interface}
+\label{sec:cli-engine}
+
+To support reproducible evaluation audits, offline prior-art searches, and automated workflows, Benchmark Radar provides an offline query engine and CLI client backed by versioned local storage.
+
+\paragraph{Local versioned data store.}
+The command-line interface downloads checksummed dataset archives to a local directory via \texttt{benchmark-radar init} and tracks incremental updates with \texttt{benchmark-radar sync}. A local state manifest verifies SHA-256 archive integrity, tracks schema versions, and records dataset provenance. This architecture ensures that query operations execute deterministically without runtime network dependencies, enabling offline prior-art audits and reproducible benchmark discovery.
+
+\paragraph{Dual-scope query service.}
+The shared query service supports two search scopes over local data:
+\begin{itemize}
+\item \texttt{catalog}: Searches normalized benchmark records in the primary index, returning benchmark task definitions, capability classifications, paper and repository links, and reported scores.
+\item \texttt{radar}: Searches daily discovery snapshots for recent unverified signals, such as preprint announcements, newly released model cards, and repository updates.
+\end{itemize}
+Search queries support exact field-level filters including task modality, openness, source catalogs, and the verified presence of artifacts (\texttt{--has-paper}, \texttt{--has-repo}, \texttt{--has-dataset}).
+
+\paragraph{Structured machine interface and local HTTP service.}
+Commands return structured JSON payloads with stable schema versions when passed \texttt{--json}, exposing matched and missing query tokens, BM25F scoring breakdowns, phrase bonuses, and IDF coverage diagnostics. A built-in HTTP server (\texttt{benchmark-radar serve}) exposes the identical query contract over local endpoints, allowing local applications and autonomous coding agents to integrate benchmark retrieval into automated evaluation design loops.
+
 \subsection{Audit the Full Population}
 \label{sec:census-method}
 
