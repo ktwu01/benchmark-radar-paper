@@ -248,6 +248,9 @@ Search queries support exact field-level filters including task modality, openne
 \paragraph{Structured machine interface and local HTTP service.}
 Commands return structured JSON payloads with stable schema versions when passed \texttt{--json}, exposing matched and missing query tokens, BM25F scoring breakdowns, phrase bonuses, and IDF coverage diagnostics. A built-in HTTP server (\texttt{benchmark-radar serve}) exposes the identical query contract over local endpoints, allowing local applications and autonomous coding agents to integrate benchmark retrieval into automated evaluation design loops.
 
+\paragraph{Agent skill integration.}
+To enable frictionless adoption in agentic workflows, Benchmark Radar packages its query interface and decision protocols as an agent skill (\texttt{npx skills add ktwu01/benchmark-radar}). When imported by autonomous coding assistants, the specification provides the agent with capability triggers, task-directed query templates, and self-bootstrapping instructions that automatically install the CLI and initialize local data repositories on demand.
+
 \subsection{Audit the Full Population}
 \label{sec:census-method}
 
