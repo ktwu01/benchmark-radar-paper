@@ -227,29 +227,9 @@ Daily discovery contributes a different kind of evidence: collected mentions, re
 
 The same benchmark IDs reach web search, detail pages, dataset exports, and offline clients. Lexical search uses BM25F, a field-weighted word-matching score \citep{robertson2004bm25f}, with bounded boosts for name and phrase matches. Each result exposes matched and missing query words, the fields they occur in, and the score components. Source membership does not change the ranking. A shared query service supplies the CLI and HTTP interfaces with the same response format and local data provenance.
 
+The client keeps its own copy of the data. \texttt{benchmark-radar init} downloads the dataset archives and \texttt{benchmark-radar sync} updates them; a local manifest verifies each archive's SHA-256 checksum and records its schema version and provenance. Queries then run without network access, so a search can be repeated against a recorded dataset version. A search covers the normalized source records (\texttt{catalog}), the daily discovery snapshots (\texttt{radar}), or both (\texttt{all}). Filters restrict results by modality, openness, source, and the presence of a paper, repository, or dataset link. \texttt{benchmark-radar serve} answers the same queries on a local HTTP endpoint for programmatic use.
+
 Candidate retrieval precedes suitability judgment. An analyst or agent can try focused query variants, inspect a record's tasks and score settings, and follow its citations. The interface preserves the evidence needed for that review. This paper evaluates catalog and measurement coverage; the contributor case illustrates usage without measuring retrieval accuracy or time saved.
-
-\subsection{Offline Query Engine and Agent Interface}
-\label{sec:cli-engine}
-
-To support reproducible evaluation audits, offline prior-art searches, and automated workflows, Benchmark Radar provides an offline query engine and CLI client backed by versioned local storage.
-
-\paragraph{Local versioned data store.}
-The command-line interface downloads checksummed dataset archives to a local directory via \texttt{benchmark-radar init} and tracks incremental updates with \texttt{benchmark-radar sync}. A local state manifest verifies SHA-256 archive integrity, tracks schema versions, and records dataset provenance. This architecture ensures that query operations execute deterministically without runtime network dependencies, enabling offline prior-art audits and reproducible benchmark discovery.
-
-\paragraph{Dual-scope query service.}
-The shared query service supports two search scopes over local data:
-\begin{itemize}
-\item \texttt{catalog}: Searches normalized benchmark records in the primary index, returning benchmark task definitions, capability classifications, paper and repository links, and reported scores.
-\item \texttt{radar}: Searches daily discovery snapshots for recent unverified signals, such as preprint announcements, newly released model cards, and repository updates.
-\end{itemize}
-Search queries support exact field-level filters including task modality, openness, source catalogs, and the verified presence of artifacts (\texttt{--has-paper}, \texttt{--has-repo}, \texttt{--has-dataset}).
-
-\paragraph{Structured machine interface and local HTTP service.}
-Commands return structured JSON payloads with stable schema versions when passed \texttt{--json}, exposing matched and missing query tokens, BM25F scoring breakdowns, phrase bonuses, and IDF coverage diagnostics. A built-in HTTP server (\texttt{benchmark-radar serve}) exposes the identical query contract over local endpoints, allowing local applications and autonomous coding agents to integrate benchmark retrieval into automated evaluation design loops.
-
-\paragraph{Agent skill integration.}
-To enable frictionless adoption in agentic workflows, Benchmark Radar packages its query interface and decision protocols as an agent skill (\texttt{npx skills add ktwu01/benchmark-radar}). When imported by autonomous coding assistants, the specification provides the agent with capability triggers, task-directed query templates, and self-bootstrapping instructions that automatically install the CLI and initialize local data repositories on demand.
 
 \subsection{Audit the Full Population}
 \label{sec:census-method}
