@@ -63,7 +63,7 @@ jobs:
             packages="$packages poppler-utils tesseract-ocr"
           fi
           echo "list=$packages" >> "$GITHUB_OUTPUT"
-          echo "key=$(printf '%s' "$packages" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+          echo "key=v2-$(printf '%s' "$packages" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
       # Fetching TeX Live dominates the job and the package set almost never
       # changes, so keep the downloaded archives between runs.
       - name: Restore the cached TeX archives
@@ -84,15 +84,17 @@ jobs:
           sudo chown -R "$(id -u):$(id -g)" "$HOME/tex-archives"
       - name: Install TeX and PDF number scanning tools
         run: |
-          # The texlive-base postinst rebuilds every TeX format, which costs
-          # more than the rest of the install combined. The paper is built with
-          # pdflatex alone, so stub the rebuild out and make that one format
-          # afterwards. /usr/local/bin precedes /usr/bin on the sudo path.
-          printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/local/bin/fmtutil-sys >/dev/null
-          sudo chmod +x /usr/local/bin/fmtutil-sys
+          # The texlive postinst rebuilds all seventeen TeX formats, which
+          # costs more than the rest of the install combined. The paper is
+          # built with pdflatex alone, so divert the rebuild away during the
+          # install and make that one format afterwards.
+          sudo dpkg-divert --local --rename --add /usr/bin/fmtutil-sys
+          printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/bin/fmtutil-sys >/dev/null
+          sudo chmod +x /usr/bin/fmtutil-sys
           sudo dpkg --install --force-depends "$HOME"/tex-archives/*.deb
           sudo apt-get install -y --fix-broken --no-download
-          sudo rm -f /usr/local/bin/fmtutil-sys
+          sudo rm -f /usr/bin/fmtutil-sys
+          sudo dpkg-divert --local --rename --remove /usr/bin/fmtutil-sys
           sudo fmtutil-sys --byfmt pdflatex
       - name: Build paper and standalone arXiv package
         env:
