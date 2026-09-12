@@ -79,13 +79,21 @@ jobs:
         run: |
           sudo apt-get update
           mkdir -p "$HOME/tex-archives/partial"
-          sudo apt-get install -y --download-only \
+          sudo apt-get install -y --download-only --no-install-recommends \
             -o Dir::Cache::archives="$HOME/tex-archives" $PACKAGES
           sudo chown -R "$(id -u):$(id -g)" "$HOME/tex-archives"
       - name: Install TeX and PDF number scanning tools
         run: |
+          # The texlive-base postinst rebuilds every TeX format, which costs
+          # more than the rest of the install combined. The paper is built with
+          # pdflatex alone, so stub the rebuild out and make that one format
+          # afterwards. /usr/local/bin precedes /usr/bin on the sudo path.
+          printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/local/bin/fmtutil-sys >/dev/null
+          sudo chmod +x /usr/local/bin/fmtutil-sys
           sudo dpkg --install --force-depends "$HOME"/tex-archives/*.deb
           sudo apt-get install -y --fix-broken --no-download
+          sudo rm -f /usr/local/bin/fmtutil-sys
+          sudo fmtutil-sys --byfmt pdflatex
       - name: Build paper and standalone arXiv package
         env:
           CHECK_SMALL_NUMBERS: ${{ steps.number-scan.outputs.enabled }}
