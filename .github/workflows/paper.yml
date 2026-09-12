@@ -53,16 +53,39 @@ jobs:
           python -m pip install pytest PyYAML
           python scripts/verify_frozen_findings.py frozen-software
           python -m pytest -q tests
-      - name: Install TeX and PDF number scanning tools
+      - name: Resolve the TeX package set
+        id: tex-packages
         env:
           NUMBER_SCAN: ${{ steps.number-scan.outputs.enabled }}
         run: |
-          sudo apt-get update
-          packages=(latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures)
+          packages="latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures"
           if [[ "$NUMBER_SCAN" == "1" ]]; then
-            packages+=(poppler-utils tesseract-ocr)
+            packages="$packages poppler-utils tesseract-ocr"
           fi
-          sudo apt-get install -y "${packages[@]}"
+          echo "list=$packages" >> "$GITHUB_OUTPUT"
+          echo "key=$(printf '%s' "$packages" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+      # Fetching TeX Live dominates the job and the package set almost never
+      # changes, so keep the downloaded archives between runs.
+      - name: Restore the cached TeX archives
+        id: tex-cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/tex-archives/*.deb
+          key: tex-archives-${{ runner.os }}-${{ steps.tex-packages.outputs.key }}
+      - name: Download the TeX archives
+        if: steps.tex-cache.outputs.cache-hit != 'true'
+        env:
+          PACKAGES: ${{ steps.tex-packages.outputs.list }}
+        run: |
+          sudo apt-get update
+          mkdir -p "$HOME/tex-archives/partial"
+          sudo apt-get install -y --download-only \
+            -o Dir::Cache::archives="$HOME/tex-archives" $PACKAGES
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/tex-archives"
+      - name: Install TeX and PDF number scanning tools
+        run: |
+          sudo dpkg --install --force-depends "$HOME"/tex-archives/*.deb
+          sudo apt-get install -y --fix-broken --no-download
       - name: Build paper and standalone arXiv package
         env:
           CHECK_SMALL_NUMBERS: ${{ steps.number-scan.outputs.enabled }}
