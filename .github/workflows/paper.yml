@@ -88,13 +88,17 @@ jobs:
           # costs more than the rest of the install combined. The paper is
           # built with pdflatex alone, so divert the rebuild away during the
           # install and make that one format afterwards.
-          sudo dpkg-divert --local --rename --add /usr/bin/fmtutil-sys
-          printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/bin/fmtutil-sys >/dev/null
-          sudo chmod +x /usr/bin/fmtutil-sys
+          for tool in fmtutil fmtutil-sys; do
+            sudo dpkg-divert --local --rename --add "/usr/bin/$tool"
+            printf '#!/bin/sh\nexit 0\n' | sudo tee "/usr/bin/$tool" >/dev/null
+            sudo chmod +x "/usr/bin/$tool"
+          done
           sudo dpkg --install --force-depends "$HOME"/tex-archives/*.deb
           sudo apt-get install -y --fix-broken --no-download
-          sudo rm -f /usr/bin/fmtutil-sys
-          sudo dpkg-divert --local --rename --remove /usr/bin/fmtutil-sys
+          for tool in fmtutil fmtutil-sys; do
+            sudo rm -f "/usr/bin/$tool"
+            sudo dpkg-divert --local --rename --remove "/usr/bin/$tool"
+          done
           sudo fmtutil-sys --byfmt pdflatex
       - name: Build paper and standalone arXiv package
         env:
