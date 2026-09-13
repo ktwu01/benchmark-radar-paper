@@ -85,14 +85,12 @@
   \end{figure}%
 }
 \newcommand{\RadarInlineLinkedFigure}[5][\linewidth]{%
-  \begin{center}
-    \begin{minipage}{\linewidth}
-      \centering
-      \href{#2}{\includegraphics[width=#1]{#3}}
-      \captionof{figure}{#4}
-      \label{#5}
-    \end{minipage}
-  \end{center}%
+  \begin{figure}[!htbp]
+    \centering
+    \href{#2}{\includegraphics[width=#1]{#3}}
+    \caption{#4}
+    \label{#5}
+  \end{figure}%
 }
 
 \title{\textbf{Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation}}
@@ -117,14 +115,12 @@ $^9$ Cornell Tech
 Benchmark researchers and developers of large language models (LLMs) and other AI systems need to find relevant evaluations, locate their benchmark datasets and code, and understand the settings behind reported scores. We present Benchmark Radar, a living database and search engine for retrieval and discovery of AI benchmarks, covering LLM evaluation, agentic and tool-use benchmarks, coding, reasoning, safety, and domain-specific evaluations. The system combines daily discovery of benchmark papers, repositories, datasets, and releases with a searchable benchmark catalog, mentions in model cards and technical reports, and score histories. It retains source identities and citations so readers can inspect candidate benchmarks and their evaluation evidence. Daily discovery draws on \ReportIngestSourceCount{} sources: \ReportConnectorCount{} direct connectors and \ReportFirstPartyFeedCount{} first-party research and engineering feeds. The catalog contains \ReportNumber{\CensusRecords} source records drawn from \ReportCatalogSourceCount{} benchmark catalogs and \ReportNumber{\CensusNumericScores} numeric observations on \CensusScored{} records. We describe collection and retrieval, audit the full catalog, and examine benchmark saturation, adoption trends, and the limits of score comparisons. A worked example walks through a complete prior-art search, showing how to query the catalog and inspect benchmark evidence when designing a new evaluation. We release the web dashboard with a benchmark leaderboard, a Pareto frontier view of score against measured use, saturation and trend views, daily feeds, downloadable evidence, a command-line interface (CLI) for offline queries, and reproducible analysis.
 \end{abstract}
 
-\begin{center}
-\begin{minipage}{\textwidth}
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{abstract_overview.png}
-\captionof{figure}{Benchmark Radar connects discovery, retrieval, and source inspection. Named benchmarks, bars, and connections are schematic examples. The catalog count uses the v0.11.0 release.}
+\includegraphics[width=0.84\textwidth]{abstract_overview.png}
+\caption{Benchmark Radar connects discovery, retrieval, and source inspection.}
 \label{fig:abstract}
-\end{minipage}
-\end{center}
+\end{figure}
 
 \clearpage
 \section{Introduction}
@@ -373,7 +369,7 @@ The v0.11.0 release makes \ReportNumber{\CensusRecords} source records searchabl
 \section*{Author Contributions}
 \label{sec:author-contributions}
 
-Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang contributed review and copyediting. Wanghan Xu contributed review and copyediting. Lin Shi contributed to conceptualization and methodology, and advised the work.
+Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang and Wanghan Xu contributed review and copyediting. Lin Shi contributed to conceptualization and methodology, and advised the work.
 
 \section*{Acknowledgements}
 \label{sec:acknowledgements}
