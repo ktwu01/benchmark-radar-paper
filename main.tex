@@ -30,7 +30,7 @@
   urlcolor=CiteBlue,
   citecolor=CiteBlue,
   pdftitle={Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation},
-  pdfauthor={Koutian Wu, Junjie Zhou, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, Wanghan Xu, and Lin Shi}
+  pdfauthor={Koutian Wu, Junjie Zhou, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, Wanghan Xu, Songyuanyi Lu, and Lin Shi}
 }
 
 \setlength{\parindent}{1.2em}
@@ -95,7 +95,7 @@
 
 \title{\textbf{Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation}}
 \author{Koutian Wu$^{1,2}$ \footnote{\small Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^3$ \quad Ergan Shang$^4$ \quad Jiayu Wang$^5$\\[-0.05em]
-\quad Pengqian Han$^6$ \quad Junkai Wang$^7$ \quad Wanghan Xu$^8$ \quad Lin Shi$^9$\\[0.35em]
+\quad Pengqian Han$^6$ \quad Junkai Wang$^7$ \quad Wanghan Xu$^8$ \quad Songyuanyi Lu$^9$ \quad Lin Shi$^{10}$\\[0.35em]
 \footnotesize $^1$ Earth-Space-AI \quad
 $^2$ Tacite AI \quad
 $^3$ Hangzhou Dianzi University \quad
@@ -104,7 +104,8 @@ $^5$ Xi'an Jiaotong University\\[0.1em]
 \footnotesize $^6$ The University of Auckland \quad
 $^7$ Tsinghua University \quad
 $^8$ Shanghai Jiao Tong University \quad
-$^9$ Cornell Tech
+$^9$ The University of Hong Kong \quad
+$^{10}$ Cornell Tech
 }
 \date{}
 
@@ -129,7 +130,7 @@ The Transformer architecture established attention-based sequence modeling as a 
 
 Evaluation also matters beyond general-purpose chat. In recommender systems, Transformer-style sequence models and LLM-based methods support user, item, and preference modeling, with efficient training needed at production scale \citep{kang2018selfattentive,sun2019bert4rec,shang2026erase}. Foundation models are also used to model biological, geoscientific, and physical processes \citep{theodoris2023transfer,cui2024scgpt,shang2025predicting,zhang2025genetic,wu2024diurnal}. In social and political analysis, language models support text annotation and simulated human samples, while network methods quantify balance and polarization dynamics \citep{leskovec2010signed,gilardi2023chatgpt,argyle2023out,li2026matraix,ng2026microverse,shang2026inference}. Benchmark scores inform claims of progress across these scientific, industrial, and decision-support settings.
 
-Benchmarks differ in the abilities they test. Broad evaluations of knowledge and reasoning include MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle}. Others isolate more specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tests code generation with date-based splits to reduce contamination from training data \citep{jain2024livecodebench}, and Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. The Harbor framework ports more than 80 such benchmarks to a common execution contract so that arbitrary agents can be evaluated against them, and its Harbor-Index curates 82 difficult tasks drawn from 29 of those benchmarks \citep{shi2026harbor,harborframework}. Domain-specific evaluations include FinanceBench for finance and economics \citep{islam2023financebench}, MATH for mathematics \citep{hendrycks2021math}, SciBench for scientific problem solving \citep{wang2023scibench}, LAB-Bench for biology \citep{laurent2024labbench}, and ChemBench for chemistry \citep{mirza2024chembench}. ESM-BENCH tests agents' understanding of Earth system model physics and code \citep{wu2026esm}; ResearchClawBench evaluates end-to-end autonomous scientific research \citep{xu2026researchclawbench}; and ASI-Bench examines scientific exploration and execution with progressively less methodological guidance \citep{zhou2026asi}. Their tasks and scoring rules specify which model behaviors count as successful performance.
+Benchmarks differ in the abilities they test. Broad evaluations of knowledge and reasoning include MMLU \citep{hendrycks2021mmlu}, GPQA \citep{rein2023gpqa}, and Humanity's Last Exam \citep{phan2025hle}. Others isolate more specific capabilities: SWE-bench measures whether models can resolve real GitHub issues \citep{jimenez2023swebench}, LiveCodeBench tests code generation with date-based splits to reduce contamination from training data \citep{jain2024livecodebench}, and Terminal-Bench and Long-Horizon-Terminal-Bench test command-line agents on operational tasks \citep{merrill2026terminalbench,li2026long}. The Harbor framework ports more than 80 such benchmarks to a common execution contract so that arbitrary agents can be evaluated against them, and its Harbor-Index curates 82 difficult tasks drawn from 29 of those benchmarks \citep{shi2026harbor,harborframework}. Domain-specific evaluations include FinanceBench for finance and economics \citep{islam2023financebench}, MATH for mathematics \citep{hendrycks2021math}, SciBench for scientific problem solving \citep{wang2023scibench}, LAB-Bench for biology \citep{laurent2024labbench}, and ChemBench for chemistry \citep{mirza2024chembench}. ESM-BENCH tests agents' understanding of Earth system model physics and code \citep{wu2026esm}; ResearchClawBench evaluates end-to-end autonomous scientific research \citep{xu2026researchclawbench}; and ASI-Bench examines scientific exploration and execution with progressively less methodological guidance \citep{zhou2026asi}. Benchmark construction is itself being automated: Benchmark Agent builds benchmarks end to end, from query analysis and subtask design to annotation and quality control \citep{xiong2026benchmark}. Their tasks and scoring rules specify which model behaviors count as successful performance.
 
 Finding a benchmark, its dataset or repository, and reports of its use requires searching paper servers, code hosting sites, dataset hubs, vendor releases, blogs, and benchmark catalogs. Existing resources such as LLM Stats, OpenCompass, and Artificial Analysis provide leaderboards, evaluation platforms, and model-analysis views \citep{llmstats2026benchmarks,opencompass2026datasetstatistics,artificialanalysis2026methodology}. Connecting newly released benchmarks to their task materials and later use in model reports can still require consulting several separate resources. Benchmark Radar addresses this gap by combining catalog retrieval with daily discovery, mentions in model reports, and scores with documented evaluation settings and sources.
 
@@ -369,12 +370,12 @@ The v0.11.0 release makes \ReportNumber{\CensusRecords} source records searchabl
 \section*{Author Contributions}
 \label{sec:author-contributions}
 
-Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang and Wanghan Xu contributed review and copyediting. Lin Shi contributed to conceptualization and methodology, and advised the work.
+Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang and Wanghan Xu contributed review and copyediting. Songyuanyi Lu contributed discussion and improvements to Benchmark Radar. Lin Shi contributed to conceptualization and methodology, and advised the work.
 
 \section*{Acknowledgements}
 \label{sec:acknowledgements}
 
-We thank Songyuanyi Lu, Ruohan Xu, Wenjun Zhang, Yifan Xu, Ran Hong, Hejia Geng, Haozhe Zhang, and Zhenxin Huang for discussion and for improving Benchmark Radar.
+We thank Ruohan Xu, Wenjun Zhang, Yifan Xu, Ran Hong, Hejia Geng, Haozhe Zhang, and Zhenxin Huang for discussion and for improving Benchmark Radar.
 
 \begingroup
 \small
@@ -653,7 +654,7 @@ ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \
 
 This revision uses the \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release}, software commit \gitcommit{}, with a discovery cutoff of \datacutoff{}. The release preserves the inputs already audited for this paper; later data is outside its scope. A fresh detached checkout passed the six required CI steps in order: linting, formatting checks, catalog normalization, classification, release construction, and tests. The dated registry inputs remain the August snapshots registered in \texttt{data/leaderboard\_snapshots.yml}; the September cutoff does not imply that those sources were recrawled on that day.
 
-The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff}. Table~\ref{tab:access-artifacts} lists the access and citation resources.
+The data build normalizes the registry and model-report inputs into the shared catalog, then classifies discovery tracks and packages the catalog with checksums. Installed clients validate an update before activating it. The manuscript and its dated analysis files build independently of the software checkout. The project provides a DOI and Citation File Format record for citation \citep{smith2016,katz2021,cff,benchmark-radar}. Table~\ref{tab:access-artifacts} lists the access and citation resources.
 
 \begin{center}
 \centering
