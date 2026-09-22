@@ -58,7 +58,7 @@ jobs:
         env:
           NUMBER_SCAN: ${{ steps.number-scan.outputs.enabled }}
         run: |
-          packages="latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures"
+          packages="latexmk latexml texlive-latex-extra texlive-fonts-recommended texlive-pictures"
           if [[ "$NUMBER_SCAN" == "1" ]]; then
             packages="$packages poppler-utils tesseract-ocr"
           fi
@@ -100,6 +100,10 @@ jobs:
             sudo dpkg-divert --local --rename --remove "/usr/bin/$tool"
           done
           sudo fmtutil-sys --byfmt pdflatex
+      - name: Verify converted author affiliations
+        env:
+          REQUIRE_LATEXML: "1"
+        run: python -m pytest -q tests/test_author_affiliations.py
       - name: Build paper and standalone arXiv package
         env:
           CHECK_SMALL_NUMBERS: ${{ steps.number-scan.outputs.enabled }}

@@ -22,6 +22,7 @@
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage[hypcap=false]{caption}
 \usepackage[section]{placeins}
+\usepackage{authblk}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -94,20 +95,37 @@
 }
 
 \title{\textbf{Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation}}
-\author{Koutian Wu$^{1,2}$ \footnote{\small Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}} \quad Junjie Zhou$^3$ \quad Ergan Shang$^4$ \quad Jiayu Wang$^5$\\[-0.05em]
-\quad Pengqian Han$^6$ \quad Junkai Wang$^7$ \quad Wanghan Xu$^8$ \quad Songyuanyi Lu$^9$ \quad Lin Shi$^{10}$\\[0.35em]
-\parbox{\textwidth}{\centering\fontsize{6.5}{7.5}\selectfont $^1$ Earth-Space-AI\hspace{0.1em}
-$^2$ Tacite AI\hspace{0.1em}
-$^3$ Hangzhou Dianzi University\hspace{0.1em}
-$^4$ Carnegie Mellon University\hspace{0.1em}
-$^5$ Xi'an Jiaotong University\\[0.1em]
-$^6$ The University of Auckland\hspace{0.1em}
-$^7$ Tsinghua University\hspace{0.1em}
-$^8$ Shanghai Jiao Tong University\hspace{0.1em}
-$^9$ The University of Hong Kong\hspace{0.1em}
-\mbox{$^{10}$ Cornell Tech}
-}
-}
+% Explicit labels keep the same author-affiliation relationships in PDF and HTML.
+\renewcommand{\Authfont}{\normalfont\large}
+\renewcommand{\Affilfont}{\normalfont\fontsize{7.5}{8.5}\selectfont}
+\renewcommand{\Authsep}{\quad}
+\renewcommand{\Authand}{\quad}
+\renewcommand{\Authands}{\quad}
+\setlength{\affilsep}{0.35em}
+% Only change authblk's PDF separator so affiliations wrap compactly; the
+% individual labeled declarations below remain the source for both formats.
+\makeatletter
+\def\AB@affilsepx{\protect\quad\protect\Affilfont}
+\makeatother
+\author[1,2]{Koutian~Wu\thanks{Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}}}
+\author[3]{Junjie~Zhou}
+\author[4]{Ergan~Shang}
+\author[5]{Jiayu~Wang}
+\author[6]{Pengqian~Han}
+\author[7]{Junkai~Wang}
+\author[8]{Wanghan~Xu}
+\author[9]{Songyuanyi~Lu}
+\author[10]{Lin~Shi}
+\affil[1]{Earth-Space-AI}
+\affil[2]{Tacite~AI}
+\affil[3]{Hangzhou~Dianzi~University}
+\affil[4]{Carnegie~Mellon~University}
+\affil[5]{Xi'an~Jiaotong~University}
+\affil[6]{The~University~of~Auckland}
+\affil[7]{Tsinghua~University}
+\affil[8]{Shanghai~Jiao~Tong~University}
+\affil[9]{The~University~of~Hong~Kong}
+\affil[10]{Cornell~Tech}
 \date{}
 
 \begin{document}
