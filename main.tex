@@ -343,9 +343,9 @@ Figure~\ref{fig:discovery-trends} complements source coverage with the daily rea
 \section{Worked Example: Checking Prior Art}
 \label{sec:worked-example}
 
-Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark Radar client and its public Skill, downloaded the corpus, and searched locally. It inspected the recorded paper, repository, and dataset links, tried additional web searches for work described in different terms, and read the source evidence before assembling the related-work table in Table~\ref{tab:use-case-survey}.
+Before designing a new evaluation, a contributor surveyed August work on credit assignment in agentic training, with small Qwen-series models as a requirement for reproducible baselines. A coding agent installed the Benchmark Radar Skill, confirmed the local corpus, and searched locally. It inspected the recorded paper, repository, and dataset links and read the candidates' primary sources before assembling the related-work table in Table~\ref{tab:use-case-survey}.
 
-The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark Radar retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. Appendix~\ref{app:use-case} retains the session screenshots and an earlier manually assembled comparison.
+The contributor used the table to assess whether the proposed evaluation duplicated existing work. The workflow separates candidate retrieval from comparison: Benchmark Radar retrieves candidates and exposes their evidence; the researcher or agent judges their relevance and compares the designs. Appendix~\ref{app:use-case} shows the agent session and an earlier manually assembled comparison.
 
 \begin{center}
 \centering
@@ -613,31 +613,15 @@ Meta Research & LangChain\\
 
 The contributor wanted to determine whether a proposed evaluation duplicated existing work. They surveyed work published in August 2026 on credit assignment in agentic training, using small Qwen-series models as a requirement for reproducible baseline experiments. The search produced a focused comparison table that the contributor used to assess the proposed design.
 
-The contributor gave the task to a coding agent together with the public setup instructions for Benchmark Radar. The agent installed the command-line client and the Benchmark Radar Skill, a set of instructions for using the client. It then downloaded the local corpus and queried candidate records offline (Figure~\ref{fig:use-case-session}).
+The contributor gave the task to a coding agent together with the public setup instructions for Benchmark Radar. The agent installed the Benchmark Radar Skill, confirmed the local data health and the newest discovery evidence (Figure~\ref{fig:use-case-session}).
 
-\RadarFigure
-  {agent-session.png}
-  {A coding agent installs the Benchmark Radar client and its usage instructions, then runs local queries.}
-  {fig:use-case-session}
+It then searched both data layers by topic, comparing the normalized catalog records against the unverified discovery leads, and opened each August candidate's primary source to confirm the small-Qwen requirement before selecting records to compare. Figure~\ref{fig:use-case-session} shows the commands, the returned fields, and the verified candidates.
 
-The agent inspected paper, repository, and dataset links to decide which sources to open next. Figures~\ref{fig:use-case-paper} and~\ref{fig:use-case-code} show two retrieved discovery records: one has a repository link, and the other has both paper and repository links. Neither records a dataset link, leaving dataset availability for a follow-up check.
-
-\RadarFigure
-  {artifact-status-paper.png}
-  {A retrieved discovery record with a repository link for inspecting the implementation. Paper and dataset links are missing from the record.}
-  {fig:use-case-paper}
-
-\RadarFigure
-  {artifact-status-code.png}
-  {A second discovery record provides both paper and repository links. Its dataset link needs a follow-up check.}
-  {fig:use-case-code}
-
-The agent supplemented local queries with web search to find related work described in different terms. It cross-checked the candidate sets and inspected the source evidence before selecting records for the comparison. Figure~\ref{fig:use-case-cross} shows the word matches and score components available for inspecting one retrieved candidate.
-
-\RadarFigure
-  {cross-validation.png}
-  {A candidate record with query-word matches and retrieval-score components for the agent to inspect when judging relevance.}
-  {fig:use-case-cross}
+\begin{center}
+\resizebox{0.98\textwidth}{!}{\input{figures/use-case-session-body.tex}}
+\captionof{figure}{A coding agent runs the prior-art check with Benchmark Radar. The session installs the Skill, checks local data health and the newest discovery evidence, searches both data layers, and verifies each August candidate against its primary source. The \texttt{catalog} layer holds normalized benchmark records; the \texttt{radar} layer holds recent, unverified leads. Search is lexical and its scores are query-local, so each hit reports the query tokens it matched and missed, together with its paper, repository, and dataset link flags.}
+\label{fig:use-case-session}
+\end{center}
 
 \FloatBarrier
 
