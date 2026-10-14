@@ -1,0 +1,65 @@
+% Worked use-case session panel, inlined by main.tex (Appendix E).
+% Colours and macros are local to the enclosing group.
+\begingroup
+\definecolor{UCInk}{HTML}{1F2328}
+\definecolor{UCMuted}{HTML}{8A8F98}
+\definecolor{UCBorder}{HTML}{E3E5E8}
+\definecolor{UCBg}{HTML}{FFFFFF}
+\definecolor{UCPanel}{HTML}{F4F5F7}
+\definecolor{UCOk}{HTML}{10A37F}
+\newcommand{\ucCmd}[1]{{\ttfamily\fontsize{6.9}{8.4}\selectfont\color{UCInk}#1}}
+\newcommand{\ucBody}[1]{{\sffamily\fontsize{6.6}{7.9}\selectfont\color{UCMuted}#1}}
+\newcommand{\ucLabel}[1]{{\sffamily\bfseries\fontsize{6.2}{7.6}\selectfont\color{UCMuted}#1}}
+\newcommand{\ucStep}[1]{{\sffamily\bfseries\fontsize{6.6}{8}\selectfont\color{UCMuted}#1}}
+\newcommand{\ucRaw}[1]{{\setlength{\fboxsep}{3pt}%
+  \colorbox{UCPanel}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}%
+  \ttfamily\fontsize{6.3}{7.8}\selectfont\color{UCInk}#1\end{minipage}}}}
+\newcommand{\ucSep}{\par\vspace{3pt}{\color{UCBorder}\rule{\linewidth}{0.5pt}}\par\vspace{3pt}}
+\setlength{\fboxsep}{7pt}%
+\noindent
+\fcolorbox{UCBorder}{UCBg}{%
+\begin{minipage}{452bp}
+\setlength{\parindent}{0pt}\raggedright
+\ucLabel{REQUEST}\par\vspace{2pt}
+\ucBody{``Search work published in August 2026 on credit assignment in agentic training, with small Qwen-series models as reproducible baselines...''}%
+\par\vspace{4pt}{\color{UCBorder}\rule{\linewidth}{0.6pt}}\par\vspace{4pt}
+
+\begin{minipage}[t]{172bp}\raggedright
+\ucStep{1}\hspace{3pt}\ucCmd{npx skills add ktwu01/benchmark-radar}\par\vspace{1.5pt}
+\ucBody{skill installed; the CLI was already present}
+\ucSep
+\ucStep{2}\hspace{3pt}\ucCmd{benchmark-radar status --json}\par\vspace{1.5pt}
+\ucRaw{"catalog": \char"7B "count": 3228, "shard\_count": 3228, "validated\_shard\_count": 3228 \char"7D\\
+"data": \char"7B "data\_version": "2026-10-13T12-17-48.873567Z-b0783ed6fd1b" \char"7D\\
+"radar": \char"7B "ingest\_health": [ huggingface 247, github 300, kaggle\_datasets 48 ] \char"7D}
+\ucSep
+\ucStep{3}\hspace{3pt}\ucCmd{benchmark-radar recent --json}\par\vspace{1.5pt}
+\ucRaw{"title": "embeddings-benchmark/mteb 2.24.12"\\
+"source": "GitHub Release"  "event\_kind": "released"\\
+"published\_at": "2026-10-13T03:48:36+00:00"\\
+"recommended": true\\
+"evidence\_score": 80.0  "relevance\_score": 25.0  "total\_score": 63.33\\
+"metrics": \char"7B "stars": 3455.0 \char"7D}\par\vspace{1.5pt}
+\ucBody{newest Radar evidence, fresh 2026-10-12/13 items}
+\end{minipage}%
+\hspace{20bp}%
+\begin{minipage}[t]{260bp}\raggedright
+\ucStep{4}\hspace{3pt}\ucCmd{benchmark-radar search "credit assignment" --scope catalog}\par\vspace{1.5pt}
+\ucRaw{SCOPE: catalog   STATUS: partial\_candidates\_only\\
+TOTAL\_MATCHES: 4   FULL: 0   PARTIAL: 4\\
+{[2]} FraudBench   src=claire\_radar   paper=True   matched=credit missing=assignment}\par\vspace{1.5pt}
+\ucBody{4 partial matches, all finance ``credit'', no benchmark record}
+\ucSep
+\ucStep{5}\hspace{3pt}\ucCmd{benchmark-radar search "credit assignment" --scope radar --limit 200}\par\vspace{1.5pt}
+\ucRaw{[5] From Reasoning to Agentic: Credit Assignment in RL for LLMs\\
+\quad date=2026-08-11  src=arXiv  paper=True repo=False data=False  matched=assignment+credit  missing=  url=arxiv.org/abs/2604.09459}\par\vspace{1.5pt}
+\ucBody{47 full matches of 225; 38 dated 2026-08}
+\ucSep
+\ucStep{6}\hspace{3pt}\ucCmd{benchmark-radar search "Qwen" --scope catalog}\par\vspace{1pt}
+\ucBody{12 records. The August leads were then opened on arXiv:}\par\vspace{1.5pt}
+\ucRaw{SRPO\hspace{2em}arXiv 2608.23493\hspace{2em}Qwen3-8B\\
+HindSearch\hspace{1em}arXiv 2608.01597\hspace{1em}Qwen2.5-3B-Instruct}\par\vspace{1.5pt}
+\ucBody{Tier 1 --- August 2026 $\cdot$ credit assignment $\cdot$ small Qwen $\cdot$ code released}
+\end{minipage}%
+\end{minipage}}%
+\endgroup

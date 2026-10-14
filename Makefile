@@ -41,7 +41,7 @@ arxiv: check-small-numbers
 	rm -rf build/arxiv
 	mkdir -p build/arxiv/figures
 	cp main.tex main.bbl figure-data.tex catalog-data.tex findings-data.tex taxonomy-data.tex taxonomy-trend-data.tex build/arxiv/
-	cp $(FIGURE_PDFS) $(TAXONOMY_FIGURES) figures/corpus-evidence-body.tex figures/*.png build/arxiv/figures/
+	cp $(FIGURE_PDFS) $(TAXONOMY_FIGURES) figures/corpus-evidence-body.tex figures/use-case-session-body.tex figures/*.png build/arxiv/figures/
 	tar -czf arxiv.tar.gz -C build/arxiv .
 
 # Keep tracked PDFs; remove only intermediates and the upload staging area.
