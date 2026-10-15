@@ -55,10 +55,9 @@ BEFORE YOU OPEN THE SUBMISSION FORM
        arXiv postings are public and permanently versioned; replacements
        show as v2. Run a review pass before posting, not after.
 
-[ ] 7. CONFIRM DATA CUTOFF
-       Frozen at v0.11.0, discovery through 2026-09-07, commit 8f46bbf.
-       No cutoff advance needed for a submission today. Do not let a
-       routine edit pull in newer inputs.
+[ ] 7. CONFIRM DATA VERSION
+       Confirm that every count, table, and figure in the PDF uses the
+       data version named in the README.
 
 
 ON THE SUBMISSION FORM

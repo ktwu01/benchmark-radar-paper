@@ -27,11 +27,9 @@ waive the questions for a task.
 - Keep work on the task branch. Update local or remote `main`, or merge a pull
   request, only when the user explicitly requests it. Creating or updating a PR
   does not authorize a merge.
-- Follow the README's v0.11.0 data cutoff rule: software commit
-  `8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0`, discovery through 2026-09-07,
-  and the recorded input hashes. Preserve these released inputs during routine
-  edits. Publishing unchanged audited inputs does not require a new audit; a
-  changed cutoff requires an explicitly agreed new paper version.
+- The manuscript reports one data version, named in the README. Every count,
+  table, and figure uses that version. A move to newer data refreshes all
+  quantitative inputs together through the audit below.
 - Edit `main.tex` directly; it is the single source of manuscript prose.
 - Keep `references.bib`, all required images, native figure sources, and dated
   `figure-data.tex` in this repository so it builds without the software checkout.

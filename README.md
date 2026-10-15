@@ -6,25 +6,17 @@
 
 This repository contains the manuscript, bibliography, dated figure inputs, and all images needed to build the paper independently. The software repository pins a reviewed commit here as its `docs/technical-report/latex` submodule.
 
-## Data cutoff rule: v0.11.0
+## Data version
 
-**All data used in this paper is cut off at the
-[Benchmark Radar v0.11.0 release](https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0)**,
+The current manuscript reports the
+[Benchmark Radar v0.11.0 release](https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0),
 which pins software commit
 [`8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0`](https://github.com/ktwu01/benchmark-radar/commit/8f46bbfa91f5d9900c8b08a5d552c3df5c9597b0).
-The discovery cutoff remains **2026-09-07**; registry snapshots retain their
+Its discovery data runs through **2026-09-07**; registry snapshots retain their
 recorded collection dates.
 
-This rule covers discovery snapshots, registry inputs, model reports, scores,
-tables, and figures. Routine paper edits must preserve the released inputs and
-the hashes in `figure-data.tex`. Do not refresh from later data, current `main`,
-or the live website. Changing the cutoff requires an explicitly agreed new
-paper version.
-
-The release preserves the inputs already audited for this paper. Publishing
-those unchanged inputs does not require repeating the audit. A correction that
-changes inputs or quantitative claims requires verification of the affected
-claims. Rebuild and inspect the PDF after manuscript or figure edits.
+A change to inputs or quantitative claims requires verification of the
+affected claims. Rebuild and inspect the PDF after manuscript or figure edits.
 
 The release includes
 [`benchmark-radar-paper-data-v0.11.0.zip`](https://github.com/ktwu01/benchmark-radar/releases/download/v0.11.0/benchmark-radar-paper-data-v0.11.0.zip),
@@ -160,8 +152,7 @@ collection dates. The census has 1,283 source records, including 790 scored and
 464 provide artifact links. These counts preserve separate source records for
 related benchmarks; they do not count distinct underlying tests.
 
-Keep the release cutoff fixed and review the prose, figures, and rendered PDF
-together. Commit the analysis outputs, figure sources and PDFs, and `main.pdf`
+Review the prose, figures, and rendered PDF together. Commit the analysis outputs, figure sources and PDFs, and `main.pdf`
 together. Push the reviewed paper commit. Update the parent pointer only when
 the user explicitly requests it, using the workflow below. The full-corpus rules in
 [principle.md](https://github.com/ktwu01/benchmark-radar/blob/main/principle.md)
