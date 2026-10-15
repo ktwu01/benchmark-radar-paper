@@ -376,6 +376,32 @@ The contributor used the table to assess whether the proposed evaluation duplica
 
 
 
+\section{Worked Use Case: Selecting an Evaluation Suite for a Scientific Software Agent}
+\label{sec:industry-agent-use-case}
+
+We evaluated a concrete decision faced by a research engineer maintaining scientific Python repositories: which benchmark suite should be used for an agent that triages an issue, retrieves relevant papers and code, proposes a patch, and verifies the change? An incorrect patch or unsupported scientific claim can waste expert review time and invalidate downstream analysis. We predeclared two inclusion rules: a candidate had to exercise scientific research or repository-level engineering, and its task, metric, and evaluation protocol had to be inspectable from a cited source. General coding scores without a research or repository interpretation were excluded.
+
+We ran the following searches against the frozen v0.11.0 catalog (software commit \texttt{8f46bbf}, discovery cutoff 2026-09-07): \texttt{PaperBench} and \texttt{software engineering agent}. We then inspected the three source records \texttt{model-reports:swe\_bench\_science}, \texttt{opencompass:1730}, and \texttt{llm-stats:swe\_lancer} with \texttt{benchmark-radar show}. The machine-readable comparison, commands, snapshot, and record identifiers are committed in \texttt{docs/technical-report/agent-evaluation-use-case.yml}.
+
+\begin{center}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{0.99\textwidth}{L{2.5cm}L{2.0cm}L{3.0cm}L{2.0cm}L{2.0cm}}
+\toprule
+\textbf{Candidate} & \textbf{Task fit} & \textbf{Protocol and evidence} & \textbf{Evidence gaps} & \textbf{Decision} \\
+\midrule
+SWE-bench Science~\citep{openmoss2026swebenchscience} & High for scientific issue triage and patch verification & 119 repository tasks across 98 repositories and 20 scientific domains; three task paradigms & Radar records the paper but no repository or dataset link & Primary suite \\
+PaperBench~\citep{paperbench2025} & High for literature-led replication and experiment execution & 20 ICML 2024 paper-replication tasks decomposed into 8,316 rubric-graded subtasks with hierarchical judging & Paper and repository are recorded & Complementary research track \\
+SWE-Lancer~\citep{nair2025swelancer} & Medium for general software engineering & Freelance software tasks with client communication and real-world constraints & Radar records a repository but no paper or dataset link & External-validity control \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Evidence-backed evaluation-suite selection for a scientific software research agent. The systems are not combined into one score because their task units, verifiers, and protocols differ.}
+\label{tab:industry-agent-suite}
+\end{center}
+
+We therefore recommend a two-track primary suite: SWE-bench Science for repository repair and PaperBench for evidence-producing research replication. SWE-Lancer remains useful as a non-scientific engineering control, but it should not determine whether the research agent is suitable for scientific work. The decision is a recommendation from the stated workflow and source evidence, not a claim that either primary system is complete or that their scores are directly comparable.
+
 \section{Limitations and Future Work}
 \label{sec:caveat-future-work}
 
