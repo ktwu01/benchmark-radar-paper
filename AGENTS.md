@@ -1,5 +1,26 @@
 # Paper repository instructions
 
+## Answer before starting work
+
+Before substantive manuscript, figure, or analysis work, ask the user these
+four questions and wait for the answers:
+
+1. What outcome do I really want?
+2. What is the highest-leverage variable that determines this outcome?
+3. Is what I am doing today moving that variable, or just making me feel busy?
+4. Who is the customer, and what do they really want? (This may differ from
+   what they say they want.)
+
+The user must answer the questions. Do not answer for the user, guess the
+answers, or treat the task request as an answer. If answers are missing, ask
+only the unanswered questions. Reuse answers already given for the same task.
+If the outcome, variable, or customer changes, ask for updated answers.
+Routine maintenance with a clear scope, such as a rebuild, a commit and push of
+existing changes, or a small mechanical edit, is exempt. The user may also
+waive the questions for a task.
+
+## Repository rules
+
 - Keep paper-only edits and PRs in this repository by default. Update the parent
   Benchmark Radar repository, including its submodule pointer, only when the user
   explicitly requests it.

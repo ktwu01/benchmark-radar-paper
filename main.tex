@@ -31,7 +31,7 @@
   urlcolor=CiteBlue,
   citecolor=CiteBlue,
   pdftitle={Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation},
-  pdfauthor={Koutian Wu, Junjie Zhou, Wenjun Zhang, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, Wanghan Xu, Songyuanyi Lu, Rudy Mizrahi Celekli, and Lin Shi}
+  pdfauthor={Koutian Wu, Junjie Zhou, Wenjun Zhang, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, Wanghan Xu, Songyuanyi Lu, Rudy Mizrahi Celekli, Lazizbek Ravshanov, Yaoliang Bian, and Lin Shi}
 }
 
 \setlength{\parindent}{1.2em}
@@ -117,7 +117,9 @@
 \author[9]{Wanghan~Xu}
 \author[10]{Songyuanyi~Lu}
 \author[11]{Rudy~Mizrahi~Celekli}
-\author[12]{Lin~Shi}
+\author[12]{Lazizbek~Ravshanov}
+\author[13,14]{Yaoliang~Bian}
+\author[15]{Lin~Shi}
 \affil[1]{Earth-Space-AI}
 \affil[2]{Tacite~AI}
 \affil[3]{Hangzhou~Dianzi~University}
@@ -129,7 +131,10 @@
 \affil[9]{Shanghai~Jiao~Tong~University}
 \affil[10]{The~University~of~Hong~Kong}
 \affil[11]{Gradia}
-\affil[12]{Cornell~Tech}
+\affil[12]{University~of~Cincinnati}
+\affil[13]{Westlake~University}
+\affil[14]{Shenzhen~Loop~Area~Institute}
+\affil[15]{Cornell~Tech}
 \date{}
 
 \begin{document}
@@ -257,7 +262,7 @@ The census starts with every record in the rebuilt catalog index and reads its d
 
 Eligibility depends on the measurement a calculation needs. A declared percentage unit, known score direction, and numeric values within 0--100 permit a percentage-scale summary. Rescaling a displayed value or reading an aggregator's declared maximum does not establish that unit. Matching scales also do not establish matching test versions, prompts, tools, attempts, or evaluators.
 
-Date coverage counts valid recorded benchmark release dates. Score entries retain their own date basis, including model announcements and document publication. We do not substitute those dates for an evaluation date. Appendix~\ref{app:reproducibility} provides the software revision, input hashes, census script, and validation procedure.
+Date coverage counts valid recorded benchmark release dates. Score entries retain their own date basis, including model announcements and document publication. We do not substitute those dates for an evaluation date. Appendix~\ref{app:reproducibility} records the software revision and links to the input hashes, census script, and validation procedure.
 
 \section{Results}
 \label{sec:results}
@@ -393,7 +398,7 @@ The v0.11.0 release makes \ReportNumber{\CensusRecords} source records searchabl
 \section*{Author Contributions}
 \label{sec:author-contributions}
 
-Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Wenjun Zhang contributed discussion and improvements to Benchmark Radar. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang and Wanghan Xu contributed review and copyediting. Songyuanyi Lu contributed discussion and improvements to Benchmark Radar. Rudy Mizrahi Celekli improved corpus identity preservation and report reliability in Benchmark Radar. Lin Shi contributed to conceptualization and methodology, and advised the work.
+Koutian Wu led the work and manuscript preparation, built the initial collection pipeline, and implemented data aggregation across sources. Junjie Zhou prepared the score-archive audit and contributed report revisions. Wenjun Zhang contributed discussion and improvements to Benchmark Radar. Ergan Shang prepared figures and contributed copyediting. Jiayu Wang contributed the worked use case and its supporting evidence. Pengqian Han contributed data analysis and copyediting. Junkai Wang and Wanghan Xu contributed review and copyediting. Songyuanyi Lu contributed discussion and improvements to Benchmark Radar. Rudy Mizrahi Celekli, Lazizbek Ravshanov, and Yaoliang Bian contributed to software development for Benchmark Radar. Lin Shi contributed to conceptualization and methodology, and advised the work.
 
 \section*{Acknowledgements}
 \label{sec:acknowledgements}
@@ -677,9 +682,11 @@ ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \
 
 This revision uses the \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar v0.11.0 release} (software commit \gitcommit{}), with a discovery cutoff of \datacutoff{}. Registry inputs are the August snapshots recorded in that release; they were not recrawled at the September cutoff. The release archive contains the catalog index, per-benchmark detail records, the document and model registries, discovery observations, and dated snapshots, with a SHA-256 hash for each input.
 
-Every number, table, and figure in this paper is generated from that archive. The software's exporter writes the figure inputs. Two audit scripts in the paper repository compute the rest: the catalog audit validates source-record IDs, checks that each score observation is counted once and that scored and unscored records reconcile with the catalog total, and computes the census; the findings audit computes the document, score, and date analyses. Both retain every source-record ID and record the input hashes, and a check mode recomputes their outputs for comparison with the published values.
+The catalog census and the document, score, and date analyses are computed from the frozen archive. The software exporter supplies the catalog and discovery figure inputs. The catalog audit validates source-record IDs, score-observation uniqueness, and reconciliation of scored and unscored records; the findings audit computes the document, score, and date analyses. Both retain every source-record ID and record the input hashes. Their check modes recompute the outputs for comparison with the published values.
 
-Table~\ref{tab:access-artifacts} lists the access and citation resources. The project also provides a Citation File Format record \citep{smith2016,katz2021,cff}.
+Capability classification and its time trends use separate generated inputs and are not covered by these audit checks. Schematic illustrations, supplied interface screenshots, and manually assembled related-work tables have separate provenance, described in their captions and accompanying text.
+
+The paper repository's \href{https://github.com/ktwu01/benchmark-radar-paper/blob/44f4146b1f67ba82b9af71d93d80b249b8887e93/README.md\#reproduce-the-papers-numbers}{reproduction guide} identifies the scripts, input hashes, and validation procedure. Table~\ref{tab:access-artifacts} lists the access and citation resources. The project also provides a Citation File Format record \citep{smith2016,katz2021,cff}.
 
 \begin{center}
 \centering
