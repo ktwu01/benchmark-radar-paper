@@ -18,13 +18,12 @@ recorded collection dates.
 A change to inputs or quantitative claims requires verification of the
 affected claims. Rebuild and inspect the PDF after manuscript or figure edits.
 
-The release includes
-[`benchmark-radar-paper-data-v0.11.0.zip`](https://github.com/ktwu01/benchmark-radar/releases/download/v0.11.0/benchmark-radar-paper-data-v0.11.0.zip),
-containing the catalog index, detail shards, model registry, discovery JSON, and
-dated snapshots used by the audit. `SHA256SUMS` verifies the release assets;
-`release-data.json` inside the archive records the commit and individual input
-hashes. These fixed assets, rather than the rolling `cli-data` release, are the
-paper's data reference.
+The public dataset is on
+[Hugging Face](https://huggingface.co/datasets/ktwu01/benchmark-radar). The
+audited inputs for this manuscript are the catalog index, detail shards, model
+registry, discovery JSON, and dated snapshots rebuilt from the software commit
+above. `scripts/verify_frozen_findings.py` checks them against the hashes that
+the release records in `release-data.json`.
 
 ```text
 site/data/radar.json SHA-256: 029dc413770f39cad1fcd1c3ec2abeeea214544e3c909e2772b1fe2d9c52c4b9

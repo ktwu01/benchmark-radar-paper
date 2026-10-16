@@ -43,7 +43,6 @@ waive the questions for a task.
   full-corpus baseline of 1,259+ records across 4+ sources.
 - Refresh `figure-data.tex` only through the software repository's exporter after
   that audit. Cite the software commit, input evidence, and cutoff for new claims.
-- The v0.9.0 Zenodo deposit remains frozen in the software repository.
 - Preserve author contribution statements, final approval, and accountability.
   Overleaf's Git commit author does not represent all coauthors' contributions.
 - Read the README for Overleaf sync and submodule updates. When a parent pointer
