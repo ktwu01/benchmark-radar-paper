@@ -298,7 +298,7 @@ The rebuilt catalog contains \ReportNumber{\ReportCatalogCount} source records a
 \RadarInlineLinkedFigure
   {https://benchmark-radar.org/saturation/?lscore=70&lfrontier=artificial-analysis-humanitys-last-exam}
   {hle-score-history.png}
-  {Inspecting Humanity's Last Exam in Benchmark Radar. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. The image links to the interactive view.}
+  {Inspecting Humanity's Last Exam in Benchmark Radar. This Artificial Analysis record contains \FindingsHleAAScores{} reported scores; the highest displayed score is \FindingsHleDisplayMax{}. Marks identify model organizations, and the line connects successive best scores ordered by model release date. Release dates stand in for evaluation dates, and each score keeps the settings its source reported. The image links to the interactive view.}
   {fig:hle-scores}
 
 Of the \CensusUnscored{} unscored records, \CensusNoScoreWithLinks{} have at least one paper, repository, or dataset link. In the full catalog, \CensusPaperLinks{} records link to papers, \CensusRepoLinks{} to repositories, and \CensusDatasetLinks{} to datasets. For example, the OpenCompass Hub record for A-Bench links a paper, code repository, and dataset despite having no archived score.
@@ -558,7 +558,7 @@ A separate priority score for daily recommendations combines relevance (35\%), e
 \section{Source Inventory and Health}
 \label{app:source-inventory}
 
-Benchmark Radar ingests from \ReportIngestSourceCount{} sources: \ReportConnectorCount{} direct connectors and \ReportFirstPartyFeedCount{} first-party feeds. The direct connectors read arXiv \citep{arxivapi}, Hugging Face Hub \citep{huggingfacehub}, GitHub Search and GitHub Releases \citep{githubsearchdocs,githubreleasesdocs}, Kaggle \citep{kaggleapi}, Zenodo \citep{zenodoapi}, Crossref \citep{crossrefapi}, OpenAlex \citep{priem2022openalex}, OpenReview \citep{openreview}, Semantic Scholar \citep{kinney2023semanticscholar}, Brave Search \citep{bravesearchapi}, and Hacker News \citep{hnalgoliaapi}. Table~\ref{tab:healthy-connectors} lists source connectors that completed successfully at the cutoff. Row counts are measured before duplicate removal and ranking. A connector is healthy when its request succeeds and its response parses. Core sources cover papers, shared model or dataset artifacts, and code.
+Benchmark Radar ingests from \ReportIngestSourceCount{} sources: \ReportConnectorCount{} direct connectors and \ReportFirstPartyFeedCount{} first-party feeds. The direct connectors read arXiv \citep{arxivapi}, Hugging Face Hub and Hugging Face Papers \citep{huggingfacehub}, GitHub Search, GitHub Organizations, and GitHub Releases \citep{githubsearchdocs,githubreleasesdocs}, Kaggle \citep{kaggleapi}, Zenodo \citep{zenodoapi}, Crossref \citep{crossrefapi}, OpenAlex \citep{priem2022openalex}, OpenReview \citep{openreview}, Semantic Scholar \citep{kinney2023semanticscholar}, and Brave Search \citep{bravesearchapi}. A Hacker News collector \citep{hnalgoliaapi} supplies attention signals alongside the evidence connectors. Table~\ref{tab:healthy-connectors} lists source connectors that completed successfully at the cutoff. Row counts are measured before duplicate removal and ranking. A connector is healthy when its request succeeds and its response parses. Core sources cover papers, shared model or dataset artifacts, and code.
 
 \begin{center}
 \centering
@@ -678,7 +678,7 @@ ScienceBoard~\citep{sun2025scienceboard} & \xmark & \cmark & \xmark & Manual & \
 \section{Reproducibility, Access, and Citation}
 \label{app:reproducibility}
 
-All reported numbers come from \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.13.0}{Benchmark Radar release v0.13.0}, with discovery data through \datacutoff{}. Two audit scripts recompute the census and the document, score, and date analyses from that release's catalog, registries, and dated snapshots. Capability classification and its time trends are generated separately and are not covered by these scripts.
+All reported numbers come from \href{https://github.com/ktwu01/benchmark-radar/releases/tag/v0.11.0}{Benchmark Radar release v0.11.0}, with discovery data through \datacutoff{}. Two audit scripts recompute the census and the document, score, and date analyses from that release's catalog, registries, and dated snapshots. Capability classification and its time trends are generated separately and are not covered by these scripts.
 
 The paper repository's \href{https://github.com/ktwu01/benchmark-radar-paper/blob/44f4146b1f67ba82b9af71d93d80b249b8887e93/README.md\#reproduce-the-papers-numbers}{reproduction guide} identifies the scripts, input hashes, and validation procedure. Table~\ref{tab:access-artifacts} lists the access and citation resources. The project also provides a Citation File Format record \citep{smith2016,katz2021,cff}.
 
