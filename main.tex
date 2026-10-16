@@ -23,6 +23,7 @@
 \usepackage[hypcap=false]{caption}
 \usepackage[section]{placeins}
 \usepackage{authblk}
+\usepackage[bottom]{footmisc}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -31,7 +32,7 @@
   urlcolor=CiteBlue,
   citecolor=CiteBlue,
   pdftitle={Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation},
-  pdfauthor={Koutian Wu, Junjie Zhou, Wenjun Zhang, Ergan Shang, Jiayu Wang, Pengqian Han, Junkai Wang, Wanghan Xu, Songyuanyi Lu, Rudy Mizrahi Celekli, Lazizbek Ravshanov, Yaoliang Bian, and Lin Shi}
+  pdfauthor={Koutian Wu, Junjie Zhou, Wenjun Zhang, Pengqian Han, Ergan Shang, Jiayu Wang, Junkai Wang, Wanghan Xu, Songyuanyi Lu, Rudy Mizrahi Celekli, Lazizbek Ravshanov, Yaoliang Bian, and Lin Shi}
 }
 
 \setlength{\parindent}{1.2em}
@@ -110,9 +111,9 @@
 \author[1,2]{Koutian~Wu\thanks{Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}}}
 \author[3]{Junjie~Zhou}
 \author[4]{Wenjun~Zhang}
-\author[5]{Ergan~Shang}
-\author[6]{Jiayu~Wang}
-\author[7]{Pengqian~Han}
+\author[5]{Pengqian~Han}
+\author[6]{Ergan~Shang}
+\author[7]{Jiayu~Wang}
 \author[8]{Junkai~Wang}
 \author[9]{Wanghan~Xu}
 \author[10]{Songyuanyi~Lu}
@@ -124,9 +125,9 @@
 \affil[2]{Tacite~AI}
 \affil[3]{Hangzhou~Dianzi~University}
 \affil[4]{The~University~of~Queensland}
-\affil[5]{Carnegie~Mellon~University}
-\affil[6]{Xi'an~Jiaotong~University}
-\affil[7]{The~University~of~Auckland}
+\affil[5]{The~University~of~Auckland}
+\affil[6]{Carnegie~Mellon~University}
+\affil[7]{Xi'an~Jiaotong~University}
 \affil[8]{Tsinghua~University}
 \affil[9]{Shanghai~Jiao~Tong~University}
 \affil[10]{The~University~of~Hong~Kong}
@@ -144,9 +145,9 @@
 Benchmark researchers and developers of large language models (LLMs) and other AI systems need to find relevant evaluations, locate their benchmark datasets and code, and understand the settings behind reported scores. We present Benchmark Radar, a living database and search engine for retrieval and discovery of AI benchmarks, covering LLM evaluation, agentic and tool-use benchmarks, coding, reasoning, safety, and domain-specific evaluations. The system combines daily discovery of benchmark papers, repositories, datasets, and releases with a searchable benchmark catalog, mentions in model cards and technical reports, and score histories. It retains source identities and citations so readers can inspect candidate benchmarks and their evaluation evidence. Daily discovery draws on \ReportIngestSourceCount{} sources: \ReportConnectorCount{} direct connectors and \ReportFirstPartyFeedCount{} first-party research and engineering feeds. The catalog contains \ReportNumber{\CensusRecords} source records drawn from \ReportCatalogSourceCount{} benchmark catalogs and \ReportNumber{\CensusNumericScores} numeric observations on \CensusScored{} records. We describe collection and retrieval, audit the full catalog, and examine benchmark saturation, adoption trends, and the limits of score comparisons. A worked example walks through a complete prior-art search, showing how to query the catalog and inspect benchmark evidence when designing a new evaluation. We release the web dashboard with a benchmark leaderboard, a Pareto frontier view of score against measured use, saturation and trend views, daily feeds, downloadable evidence, a command-line interface (CLI) for offline queries, and reproducible analysis.
 \end{abstract}
 
-\begin{figure}[!htbp]
+\begin{figure}[!b]
 \centering
-\includegraphics[width=0.84\textwidth]{abstract_overview.png}
+\includegraphics[width=0.74\textwidth]{abstract_overview.png}
 \caption{Benchmark Radar connects discovery, retrieval, and source inspection.}
 \label{fig:abstract}
 \end{figure}
