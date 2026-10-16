@@ -617,17 +617,18 @@ The contributor gave the task to a coding agent together with the public setup i
 
 It then searched both data layers by topic, comparing the normalized catalog records against the unverified discovery leads, and opened each August candidate's primary source to confirm the small-Qwen requirement before selecting records to compare. Figure~\ref{fig:use-case-session} shows the commands, the returned fields, and the verified candidates.
 
-\begin{center}
+\begin{figure}[!htbp]
+\centering
 \resizebox{0.98\textwidth}{!}{\input{figures/use-case-session-body.tex}}
-\captionof{figure}{A coding agent runs the prior-art check with Benchmark Radar. The session installs the Skill, checks local data health and the newest discovery evidence, searches both data layers, and verifies each August candidate against its primary source. The \texttt{catalog} layer holds normalized benchmark records; the \texttt{radar} layer holds recent, unverified leads. Search is lexical and its scores are query-local, so each hit reports the query tokens it matched and missed, together with its paper, repository, and dataset link flags.}
+\caption{A coding agent runs the prior-art check with Benchmark Radar. The session installs the Skill, checks local data health and the newest discovery evidence, searches both data layers, and verifies each August candidate against its primary source. The \texttt{catalog} layer holds normalized benchmark records; the \texttt{radar} layer holds recent, unverified leads. Search is lexical and its scores are query-local, so each hit reports the query tokens it matched and missed, together with its paper, repository, and dataset link flags.}
 \label{fig:use-case-session}
-\end{center}
-
-\FloatBarrier
+\end{figure}
 
 The resulting related-work table appears in Table~\ref{tab:use-case-survey} in the main text.
 
 Table~\ref{tab:benchmark-comparison} shows a prior-art comparison table from an earlier benchmark-design effort by one contributor. Each row is one related benchmark and each column one design dimension, with each cell read from a source paper. The contributor reported that assembling it took more effort than any part of that project except producing the benchmark data. Benchmark Radar retrieves candidates for this kind of comparison and exposes the matching words and fields for inspection; the comparison itself requires reading the source evidence.
+
+\FloatBarrier
 
 \begin{center}
 \centering
