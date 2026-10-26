@@ -108,8 +108,17 @@
 \makeatletter
 \def\AB@affilsepx{\protect\quad\protect\Affilfont}
 \makeatother
+% Co-first authorship: in the PDF, Wenjun Zhang points at Koutian Wu's
+% "contributed equally" footnote. LaTeXML (the arXiv HTML) renders that bare
+% \footnotemark inside the byline as the text "footnotemark:", so there the
+% note is attached to Wenjun Zhang directly.
+\makeatletter
+\@ifundefined{lx@notemark}%
+  {\newcommand{\CoFirstMark}{\protect\footnotemark[1]}}%
+  {\newcommand{\CoFirstMark}{\thanks{These authors contributed equally to this work.}}}
+\makeatother
 \author[1,2]{Koutian~Wu\thanks{These authors contributed equally to this work.}\thanks{Corresponding author: \href{mailto:k@tacite.ai}{k@tacite.ai}}}
-\author[4]{Wenjun~Zhang\protect\footnotemark[1]}
+\author[4]{Wenjun~Zhang\CoFirstMark}
 \author[3]{Junjie~Zhou}
 \author[5]{Pengqian~Han}
 \author[5,6]{Qiming~Bao}
