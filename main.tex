@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 
-\usepackage[letterpaper,margin=0.9in]{geometry}
+\usepackage[letterpaper,margin=0.9in,headheight=14pt]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{xcolor}
 \definecolor{MidnightBlue}{HTML}{12233F}
@@ -25,6 +25,7 @@
 \usepackage{authblk}
 \usepackage[bottom]{footmisc}
 \usepackage{hyperref}
+\usepackage{fancyhdr}
 
 \hypersetup{
   colorlinks=true,
@@ -97,7 +98,7 @@
 
 \title{\vspace{-2em}\textbf{Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation}}
 % Explicit labels keep the same author-affiliation relationships in PDF and HTML.
-\renewcommand{\Authfont}{\normalfont\large}
+\renewcommand{\Authfont}{\normalfont\normalsize}
 \renewcommand{\Affilfont}{\normalfont\fontsize{7.5}{8.5}\selectfont}
 \renewcommand{\Authsep}{\quad}
 \renewcommand{\Authand}{\quad}
@@ -151,7 +152,18 @@
 \affil[16]{Shenzhen~Loop~Area~Institute}
 \affil[17]{University~of~Sussex}
 \affil[18]{Cornell~Tech}
-\date{}
+% Project links under the byline and in the running header: a reader who lands
+% on any page, or screenshots a figure, still sees where the project lives.
+\date{\small Dashboard: \href{https://benchmark-radar.org/}{benchmark-radar.org}\quad
+  Code: \href{https://github.com/ktwu01/benchmark-radar}{github.com/ktwu01/benchmark-radar}}
+% The header sits inside the 0.9in top margin, so the text block is unchanged.
+\fancypagestyle{radar}{%
+  \fancyhf{}%
+  \fancyhead[L]{\small\color{gray}Benchmark Radar}%
+  \fancyhead[R]{\small\href{https://benchmark-radar.org/}{benchmark-radar.org}\,\textbar\,\href{https://github.com/ktwu01/benchmark-radar}{github.com/ktwu01/benchmark-radar}}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+\pagestyle{radar}
 
 \begin{document}
 \maketitle
